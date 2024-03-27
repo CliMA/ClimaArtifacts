@@ -132,4 +132,4 @@ end
 create_aerosol(FILE_PATH, joinpath(output_dir, "aero_2005.nc"), target_z)
 
 @info "Data file generated!"
-create_add_artifact_guided(output_dir; artifact_name = basename(@__DIR__))
+create_artifact_guided(output_dir; artifact_name = basename(@__DIR__))
