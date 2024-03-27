@@ -23,7 +23,8 @@ artifacts.
 
 ## Artifacts available
 
-- Aerosol data for the year 2005 (monthly means averaged over the years 2000-2009)
+- [Aerosol data for the year 2005 (monthly means averaged over the years
+  2000-2009)](https://github.com/CliMA/ClimaArtifacts/tree/main/aerosol2005)
 
 
 # The ultimate guide to ClimaArtifacts
