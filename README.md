@@ -1,4 +1,7 @@
-# ClimaArtifacts
+<h1 align="center">
+  <img src="logo.svg" width="180px"> <br>
+ClimaArtifacts
+</h1>
 
 Pre-processing pipelines for the input data used by the CliMA project and
 `Artifacts.toml` entry to use those artifacts.
@@ -225,3 +228,7 @@ system.
 > changing the `JULIA_DEPOT_PATH` resets `Base.DEPOT_PATH`, so that the system
 > depots are ignored. We use `JULIA_DEPOT_PATH` extensively in `slurm-buildkite`.
 
+
+### Credits
+
+The logo contains elements designed by Adrien Coquet.
