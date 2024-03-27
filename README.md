@@ -32,7 +32,7 @@ artifacts.
 
 # The ultimate guide to ClimaArtifacts
 
-Last update: 27 March 2023
+Last update: 27 March 2024
 
 #### What is an artifact?
 
