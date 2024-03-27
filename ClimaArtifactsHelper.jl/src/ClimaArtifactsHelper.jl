@@ -71,7 +71,12 @@ function create_add_artifact_guided(artifact_dir; artifact_name)
         "I will try to download your freshly minted artifact to check that it works (might take a while)",
     )
 
-    # Bind the artifact, retrieve the Artifact.toml, and print it
+    # This is where we save the string we create
+    output_artifacts = "OutputArtifacts.toml"
+    isfile(output_artifacts) && @warn "Found $output_artifacts. It will be overwritten"
+
+    # Bind the artifact to a temporary Artifact.toml, retrieve it, and print it.
+    # We crate a temporary Artifact.toml to ensure that it is an empty file.
     mktempdir() do path
         artifact_toml = joinpath(path, "Artifacts.toml")
         ArtifactUtils.add_artifact!(artifact_toml, artifact_name, tarball_url)
@@ -83,8 +88,10 @@ function create_add_artifact_guided(artifact_dir; artifact_name)
             println()
             println(artifact_str)
         end
+        Base.mv(artifact_toml, output_artifacts)
     end
 
+    println("Artifact string saved to $output_artifacts")
     println("Feel free to add other metadata and make it lazy")
     println("Enjoy the rest of your day!")
 end
