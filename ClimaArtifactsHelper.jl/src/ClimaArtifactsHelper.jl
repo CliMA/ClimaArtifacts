@@ -82,7 +82,10 @@ function _create_downloadable_artifact(
     println("Artifact archived!")
 
     println(
-        "Now, upload $tar_path to the Caltech Data Archive, paste here the link, and press ENTER",
+        "Now, upload $tar_path to the Caltech Data Archive or Box, paste here the link, and press ENTER",
+    )
+    println(
+        "If you upload it to Box, make it visible and share the static link",
     )
     print("> ")
     tarball_url = readline()

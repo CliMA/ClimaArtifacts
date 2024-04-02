@@ -195,8 +195,17 @@ can be correctly downloaded and corresponds to the hash.
 
 For large artifacts, we rely on the `Overrides.toml` mechanism described in the
 previous section. In this case, you will have to copy the data to the
-`/groups/esm/ClimaArtifacts/artifact` folder on the cluster and add a new entry
-to the `Overrides.toml` that lives there.
+`/groups/esm/ClimaArtifacts/artifacts` folder on the cluster and add a new entry
+to the `Overrides.toml` that lives there. Add a line of comment to tell others
+about your new artifact and where it is used.
+
+To test that your artifact works, create a new folder, e.g., `/tmp/mynewfolder`,
+create an `Artifacts.toml` file in it, the content of which has to be the
+`OutputArtifacts.toml` file created by the `create_artifact_guided` function.
+Then, call `julia --project -e 'using Artifacts; prinln(artifact"AAAAAA")'` from
+that folder, where `AAAAAA` is the name of your artifact. It should print
+`/groups/esm/ClimaArtifacts/artifacts/AAAAAA`, where `AAAAAA` is the folder you
+just uploaded.
 
 #### How are artifacts managed on the Caltech cluster?
 
