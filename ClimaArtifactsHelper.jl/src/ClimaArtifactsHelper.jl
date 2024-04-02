@@ -8,7 +8,7 @@ import SHA: sha1
 
 export create_artifact_guided
 
-const MB = 1024 * 1024 * 1024
+const MB = 1024 * 1024
 
 # Mark files larger than this as "undownloadable". This will prevent them from
 # being mirrored by the Julia servers
