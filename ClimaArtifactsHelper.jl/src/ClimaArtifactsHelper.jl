@@ -56,7 +56,7 @@ end
 function _recommend_uploading_to_cluster(hash, artifact_name, artifact_dir)
     println("The id of your artifact is $hash")
     println(
-        "Create the folder `/groups/esm/artifacts/$artifact_name` on the cluster",
+        "Create the folder `/groups/esm/ClimaArtifacts/artifacts/$artifact_name` on the cluster",
     )
     println("Then, upload the content of $artifact_dir to that folder")
     println(
