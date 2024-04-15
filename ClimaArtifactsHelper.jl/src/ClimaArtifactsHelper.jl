@@ -5,8 +5,9 @@ using REPL.TerminalMenus
 using Pkg.Artifacts
 
 import SHA: sha1
+import Downloads: download
 
-export create_artifact_guided
+export create_artifact_guided, create_artifact_guided_one_file
 
 const MB = 1024 * 1024
 
@@ -160,6 +161,38 @@ function create_artifact_guided(artifact_dir; artifact_name)
     println("Artifact string saved to $output_artifacts")
     println("Feel free to add other metadata/properties (e.g., laziness)")
     println("Enjoy the rest of your day!")
+end
+
+"""
+    create_artifact_guided_one_file(file_path; artifact_name, file_url)
+
+Start a guided process to create an artifact from one file.
+
+If the file is not present at `file_path`, it will be downloaded from `file_url`.
+"""
+function create_artifact_guided_one_file(
+    file_path;
+    artifact_name,
+    file_url = nothing,
+)
+
+    output_dir = artifact_name
+
+    if isdir(output_dir)
+        @warn "$output_dir already exists. Content will end up in the artifact and may be overwritten."
+        @warn "Abort this calculation, unless you know what you are doing."
+    else
+        mkdir(output_dir)
+    end
+
+    if !isfile(file_path)
+        isnothing(file_url) && error("File not found but file url not provided")
+        @info "$file_path not found, downloading it (might take a while)"
+        downloaded_file = download(file_url)
+        Base.mv(downloaded_file, file_path)
+    end
+
+    create_artifact_guided(output_dir; artifact_name)
 end
 
 end
