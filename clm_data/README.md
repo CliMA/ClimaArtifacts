@@ -1,14 +1,14 @@
 # Surface Data for CLM: Plant Functional Types
 
 ## Overview
-This repository contains the `surfdata_0.9x1.25_hist_17pfts_nocft_CMIP6_simyr1700_c230809.nc` file used in the Community Land Model (CLM) for historical climate modeling. The dataset is tailored for simulations that emphasize natural vegetation dynamics without the inclusion of cultivated crops (CFTs).
+This repository contains the `surfdata_0.9x1.25_16pfts__CMIP6_simyr2000_c170616.nc` file used in the Community Land Model (CLM) for historical climate modeling. The dataset is tailored for simulations that emphasize natural vegetation dynamics without the inclusion of cultivated crops (CFTs).
 
 ## File Description
 The netCDF file includes comprehensive environmental data with a focus on vegetation represented through 17 different Plant Functional Types (PFTs). These PFTs play a crucial role in modeling biophysical processes and ecosystem functions within CLM simulations.
 
 ### Key Variables Related to PFTs
 - **`PCT_NATVEG`**: This variable gives the percentage of natural vegetation cover across the land units, essential for assessing non-agricultural land cover.
-- **`PCT_NAT_PFT`**: Indicates the percentage composition of each PFT within natural vegetation land units, providing a granular look at vegetation distribution.
+- **`PCT_NAT_PFT`**: Indicates the percentage composition of each PFT (16) within natural vegetation land units, providing a granular look at vegetation distribution.
 
 These PFT variables are pivotal for simulating how natural ecosystems respond to historical climatic conditions and can be used to project changes in vegetation patterns due to climatic shifts.
 
