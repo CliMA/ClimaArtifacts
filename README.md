@@ -29,14 +29,13 @@ artifacts.
 - [Aerosol data for the year 2005 (monthly means averaged over the years
   2000-2009)](https://github.com/CliMA/ClimaArtifacts/tree/main/aerosol2005)
 - [CLM surface data for the year 2000](https://github.com/CliMA/ClimaArtifacts/tree/main/clm_data)
-
 - [Soil parameters needed for Richards equation; global at 1km resolution from
 S. Gupta et al 2022, 2024](https://github.com/CliMA/ClimaArtifacts/tree/main/soil_params_Gupta2020_2022)
 
 
 # The ultimate guide to ClimaArtifacts
 
-Last update: 27 March 2024
+Last update: 30 April 2024
 
 #### What is an artifact?
 
@@ -178,10 +177,12 @@ simulations.
 
 CliMA artifacts must be reproducible, respect the licenses under which original
 data is released, and be consistent across different repositories. The
-`ClimaArtifacts` collects the pipelines and environments used to produce data,
-as well as tools to help creating Julia artifacts.
+`ClimaArtifacts` repository collects the pipelines and environments used to
+produce data, as well as tools to help creating Julia artifacts. In
+`ClimaArtifacts`, we focus on artifacts that are important for a full Earth
+System Model, especially those that might be shared across components.
 
-To create a new artifact:
+To create a new artifact in `ClimaArtifacts`:
 1. Clone the `ClimaArtifacts` repository
 2. Create a new folder with the name of your artifact, e.g., `dormouse1819`
 3. Create a new Julia project with the script that acquires and processes the
@@ -191,6 +192,17 @@ To create a new artifact:
    artifact_name = basename(@__DIR__))`
 5. The `create_artifact_guided` starts a guided process that gives you the
    string to put in your `Artifacts.toml` files.
+   
+If your artifact is tied to your particular module, you may elect to add it to
+your repository instead. To do so, follow the same steps above with the
+exception that you have to create a new `artifacts` folder (if one does not
+already exist) and create `dormouse1819` in there. You can obtain
+`ClimaArtifactsHelper.jl` with:
+``` julia
+using Pkg
+Pkg.develop(url="https://github.com/CliMA/ClimaArtifacts.git", subdir="ClimaArtifactsHelper.jl")
+```
+The other steps are the same.
 
 The `create_artifact_guided` behaves differently depending on the size of the
 artifact. For small artifacts, it creates and archive, prompt you to upload the
