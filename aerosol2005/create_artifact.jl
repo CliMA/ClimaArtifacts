@@ -6,7 +6,7 @@ using ProgressMeter
 
 using ClimaArtifactsHelper
 
-const FILE_URL = "https://caltech.box.com/shared/static/40ojnyjxqbh9m15fo479od8d0kzzm2ic.nc"
+const FILE_URL = "https://caltech.box.com/shared/static/rr0mg80yhukexcwz8lb99sdt9cut0zlk.nc"
 const FILE_PATH = "aero_1.9x2.5_L26_2000-2009.nc"
 
 const H_EARTH = 7000.0
