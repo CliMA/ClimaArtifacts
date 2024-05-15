@@ -1,0 +1,6 @@
+[digits_of_pi]
+git-tree-sha1 = "6307170bf740c1811125ad598fbe058e515ea977"
+
+    [[digits_of_pi.download]]
+    sha256 = "af1f4af436e49bcdcba1af4a14ea522d582277d0fc411f7fddebc00af5e2cff9"
+    url = "https://caltech.box.com/shared/static/7uhnp6ds8uxwf0g15hh99ko3t3g4btdi.gz"
