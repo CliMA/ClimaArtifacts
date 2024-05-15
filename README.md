@@ -31,7 +31,7 @@ artifacts.
 - [CLM surface data for the year 2000](https://github.com/CliMA/ClimaArtifacts/tree/main/clm_data)
 - [Soil parameters needed for Richards equation; global at 1km resolution from
 S. Gupta et al 2022, 2024](https://github.com/CliMA/ClimaArtifacts/tree/main/soil_params_Gupta2020_2022)
-
+- [GPCP precipitation data](https://github.com/CliMA/ClimaArtifacts/tree/main/precipitation_obs)
 
 # The ultimate guide to ClimaArtifacts
 
