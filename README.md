@@ -35,7 +35,7 @@ S. Gupta et al 2022, 2024](https://github.com/CliMA/ClimaArtifacts/tree/main/soi
 
 # The ultimate guide to ClimaArtifacts
 
-Last update: 15 May 2024
+Last update: 20 May 2024
 
 #### What is an artifact?
 
@@ -236,8 +236,11 @@ Change from "Invited people only to" "People with link"
 
 ![screenshot2](./screenshots/screenshot2.png)
 
-Go on "Link Settings", and disable "Disable Shared Link on". Copy the Direct
-Link at the bottom
+If the screen says that you don't have permission, go back and check that you
+selected "People with link" in the previous step.
+
+Next, go on "Link Settings", and disable "Disable Shared Link on". Copy the
+Direct Link at the bottom
 
 ![screenshot3](./screenshots/screenshot3.png)
 
