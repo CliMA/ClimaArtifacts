@@ -1,0 +1,15 @@
+dt: 500secs
+t_end: 3000days 
+ode_algo: ARS343
+moist: equil 
+forcing: held_suarez 
+precip_model: 0M 
+job_id: sphere_held_suarez_rhoe_equilmoist
+dt_save_state_to_disk: 200days
+output_dir: atmos_held_suarez_obs_artifact/truth_simulation
+output_default_diagnostics: false
+diagnostics:
+  - reduction_time: average
+    short_name: ta
+    period: 60days
+    writer: nc
