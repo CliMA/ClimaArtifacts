@@ -6,14 +6,14 @@
 # https://agupubs.onlinelibrary.wiley.com/doi/full/10.1029/2020MS002242
 
 # Water retention curve parameters derived by
-# Gupta, S., Papritz, A., Lehmann, P., Hengl, T., Bonetti, S., & Or, D. (2022). 
-# Global Mapping of Soil Water Characteristics Parameters—Fusing Curated Data with 
+# Gupta, S., Papritz, A., Lehmann, P., Hengl, T., Bonetti, S., & Or, D. (2022).
+# Global Mapping of Soil Water Characteristics Parameters—Fusing Curated Data with
 # Machine Learning and Environmental Covariates. Remote Sensing, 14(8), 1947.
 
-# First, navigate to https://zenodo.org/records/3935359 and https://zenodo.org/records/6348799 
+# First, navigate to https://zenodo.org/records/3935359 and https://zenodo.org/records/6348799
 # and download saturated hydraulic conductivity data (former) and water retention
 # parameter data (latter)
-# stored in the .tif files there. There are four files per variable, corresponding to 
+# stored in the .tif files there. There are four files per variable, corresponding to
 # four different soil depths.
 
 # The following `filedir` is missing intentionally - it must be replaced with paths to the tif files
