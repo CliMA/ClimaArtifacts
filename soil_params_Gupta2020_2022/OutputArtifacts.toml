@@ -1,6 +1,6 @@
 [soil_params_Gupta2020_2022]
-git-tree-sha1 = "ffc4c3fa76ea632ba46ae5d58671d4161124af29"
+git-tree-sha1 = "8e28b4274b10020b6cdd54b8e7585221379d9d33"
 
     [[soil_params_Gupta2020_2022.download]]
-    sha256 = "636db48ecb387a9aa59afbff8af86f0ccc092690c688f0cbb52041c133361e22"
+    sha256 = "97dcf1158cba03b1fd397262bdfaf85a523f57038c337bcce163e32664d3616b"
     url = "https://caltech.box.com/shared/static/f2y23qx0lggjskftzgh7ht7fsbh36gmm.gz"
