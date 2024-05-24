@@ -1,0 +1,6 @@
+[snowmip]
+git-tree-sha1 = "da5999b8dacf81acebd7ad5ac88dd3aa847de5cb"
+
+    [[snowmip.download]]
+    sha256 = "f1ad75041519cac56a6efa032445b91a8f52ffc0397663e538f88d6c06b57f43"
+    url = "https://caltech.box.com/shared/static/0vqhet1hsj36sgmy0ajrcrb24cihcfd7.gz"

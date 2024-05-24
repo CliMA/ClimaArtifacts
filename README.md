@@ -34,6 +34,7 @@ S. Gupta et al 2022, 2024](https://github.com/CliMA/ClimaArtifacts/tree/main/soi
 - [GPCP precipitation data](https://github.com/CliMA/ClimaArtifacts/tree/main/precipitation_obs)
 - [RMSE for CMIP models](https://github.com/CliMA/ClimaArtifacts/tree/main/cmip_model_rmse)
 - [Temperature average and restart file for ClimaAtmos Held-Suarez perfect model calibration](https://github.com/CliMA/ClimaArtifacts/tree/main/atmos_held_suarez_obs)
+- [ESM-SnowMIP data](https://github.com/CliMA/ClimaArtifacts/tree/main/snowmip)
 
 # The ultimate guide to ClimaArtifacts
 
