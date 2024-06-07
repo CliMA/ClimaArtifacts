@@ -1,4 +1,4 @@
-# Aerosol data, monthly means, average from 2000 to 2009
+# Aerosol data, monthly means, decadal averages from 1970 to 2030
 
 This artifact repackages data coming from [CMIP5 recommended data](https://tntcat.iiasa.ac.at/RcpDb/dsd?Action=htmlpage&page=download) and
 contains mass concentration for a variety of aerosols.
@@ -21,3 +21,6 @@ shift the dates by 15 days so that the data is defined approximately in the
 middle of the month as opposed to its last day.
 
 The output is a NetCDF file that contains concentrations for a set of aerosols defined on a lon-lat-z-time grid.
+
+
+License: Creative Commons Attribution 4.0 International
