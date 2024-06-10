@@ -1,6 +1,6 @@
 [cmip_model_rmse]
-git-tree-sha1 = "aa2d5178a656e9ce7a37698d978d8ed92aa46d99"
+git-tree-sha1 = "53a27731c0a2ec60756af24e4c60ac37da4a32bc"
 
     [[cmip_model_rmse.download]]
-    sha256 = "b019d40510cebc678899a74d2cf14e33aa60452805478b2bf7176b891012aa97"
+    sha256 = "3e8fa41df226dda9d375f8cb9dbeee3e10f9fceabcad2c7b91c9633b489b0437"
     url = "https://caltech.box.com/shared/static/lmzvnjkxctlb0fanieeqxll0vdrbei9e.gz"
