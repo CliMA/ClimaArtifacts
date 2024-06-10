@@ -26,8 +26,7 @@ artifacts.
 
 ## Artifacts available
 
-- [Aerosol data for the year 2005 (monthly means averaged over the years
-  2000-2009)](https://github.com/CliMA/ClimaArtifacts/tree/main/aerosol2005)
+- [Aerosol concentrations (monthly mean, decadal averaged from 1970 to 2030)](https://github.com/CliMA/ClimaArtifacts/tree/main/aerosol_concentrations)
 - [CLM surface data for the year 2000](https://github.com/CliMA/ClimaArtifacts/tree/main/clm_data)
 - [Soil parameters needed for Richards equation; global at 1km resolution from
 S. Gupta et al 2022, 2024](https://github.com/CliMA/ClimaArtifacts/tree/main/soil_params_Gupta2020_2022)
