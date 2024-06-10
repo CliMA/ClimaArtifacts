@@ -9,7 +9,7 @@ nvars = 3
 file_urls = [
     "https://caltech.box.com/shared/static/mcqusd1t9x8sw2kukhv9m1udc2nulmna.hdf5",
     "https://caltech.box.com/shared/static/f5ornm3pogihk7kziy7825h4emoszf1w.hdf5",
-    "https://caltech.box.com/shared/static/mcqusd1t9x8sw2kukhv9m1udc2nulmna.hdf5",
+    "https://caltech.box.com/shared/static/e3h6zukujlvu7mem7i79058c5o1gnkrt.hdf5",
 ]
 
 file_paths = [
