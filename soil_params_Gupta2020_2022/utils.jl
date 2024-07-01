@@ -14,12 +14,14 @@ is then applied to the mean.
 No regridding in depth is carried out.
 """
 function regrid(data, (lon, lat), resolution, transform, nlayers)
-    lat_count = Int(floor((90.0 - (-90.0)) / resolution)) + 1 # how many points we want in the model
-    lon_count = Int(floor((180.0 - (-180.0)) / resolution)) + 1 # how many points we want in the model
+    (lat_min, lat_max) = extrema(lat)
+    (lon_min, lon_max) = extrema(lon)
+
+    lat_count = Int(ceil((lat_max - lat_min) / resolution)) + 1
+    lon_count = Int(ceil((lon_max - lon_min) / resolution)) + 1
+    
     outdata = zeros(Float32, lon_count, lat_count, nlayers)
 
-    lat_min = -90.0
-    lon_min = -180.0
     for lat_id in 1:1:lat_count
         for lon_id in 1:1:lon_count
             lat_mask =
@@ -29,26 +31,28 @@ function regrid(data, (lon, lat), resolution, transform, nlayers)
                 (lon .>= lon_min + resolution * (lon_id - 1)) .&
                 (lon .< lon_min + resolution * lon_id)
             x = data[lon_mask, lat_mask, :]
-            x_land_mask = x .!== -3.4f38
+            # If `x` is Missing, we are over the ocean, and not over the land.
+            # Here we make a land mask by checking where x is *not* Missing.
+            x_land_mask = .!ismissing.(x)
             if sum(x_land_mask) / prod(size(x)) > 0.5 # count as land
                 outdata[lon_id, lat_id, :] .= transform(mean(x[x_land_mask]))
             else
-                nothing # all set to zero
+                outdata[lon_id, lat_id, :] .= 0f0 # all set to zero
             end
 
         end
     end
     return outdata,
-    range(stop = 90.0, step = resolution, length = lat_count),
-    range(stop = 180.0, step = resolution, length = lon_count)
+    range(stop = lat_max, step = resolution, length = lat_count),
+    range(stop = lon_max, step = resolution, length = lon_count)
 end
 
-function read_tif_data!(data, files, filedir)
+function read_nc_data!(data, files, filedir)
     for i in 1:nlayers
         @show(i)
         filepath = joinpath(filedir, files[i])
-        img = TiffImages.load(filepath)
-        data[:, :, i] .= transpose(getfield.(img, 1))
+        nc_data = NCDatasets.NCDataset(filepath)
+        data[:, :, i] .= nc_data["Band1"][:,:];
     end
 end
 
