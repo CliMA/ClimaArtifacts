@@ -20,7 +20,7 @@ $P_S$ is a function of time, and we preserve that in interpolating to z. We also
 shift the dates by 15 days so that the data is defined approximately in the
 middle of the month as opposed to its last day.
 
-The output is a NetCDF file that contains concentrations for a set of aerosols defined on a lon-lat-z-time grid.
+The output is a NetCDF file that contains concentrations (in kg/kg, dry mass) for a set of aerosols defined on a lon-lat-z-time grid.
 
 
 License: Creative Commons Attribution 4.0 International
