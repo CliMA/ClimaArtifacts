@@ -28,7 +28,9 @@ site_lat = ["lat", 45.29,  54.05, 54.650000, 54.530000 , 43.186000, 43.060000,37
 site_lon = ["lon", 5.7669,-106.3333,-105.200000,-116.783000,-116.783000, 141.328600,-107.726280, 26.590000,-107.711320, 9.807]
 site_elev = ["elevation", 1325, 601, 629, 579, 2043, 17, 3714, 179, 3371, 2536]
 site_class = ["class", "alpine", "boreal", "boreal", "boreal", "alpine", "maritime", "alpine", "artic", "alpine", "alpine"]
-site_data = hcat(site_name, site_lat, site_lon, site_elev, site_class)
+site_year_start = ["year_start",1994,1997,1997,1997,1988,2005,2005,2007,2005,1996]
+site_year_end = ["year_end",2014,2010,2010,2010,2008,2015,2015,2014,2015,2016]
+site_data = hcat(site_name, site_lat, site_lon, site_elev, site_class, site_year_start, site_year_end)
 
 open(joinpath(outputdir, "site_metadata.txt"), "w") do io
     writedlm(io, site_data)
