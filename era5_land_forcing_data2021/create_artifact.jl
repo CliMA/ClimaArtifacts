@@ -1,5 +1,5 @@
 using Downloads
-
+using NCDatasets
 using ClimaArtifactsHelper
 
 # This file is 20GB
@@ -23,6 +23,9 @@ end
 @info "Raw data file generated!"
  # create processed data
 processeddata_path = joinpath(output_dir,"era5_2021_0.9x1.25_clima.nc")
+processedlaidata_path = joinpath(output_dir,"era5_lai_2021_0.9x1.25_clima.nc")
+
+process_raw_LAIdata(rawdata_path, processedlaidata_path)
 process_raw_era5data(rawdata_path, processeddata_path)
 
 create_artifact_guided(output_dir; artifact_name = basename(@__DIR__))
@@ -54,16 +57,6 @@ function process_raw_era5data(rawdata_path, processeddata_path)
             attrib =Dict("long_name" => "Neutral wind speed at 10m", "units" => "m s**-1"),
         )
     ws[:, :, :] = @. sqrt((ncin["v10n"][:,:,:]^2 + ncin["u10n"][:,:,:]^2))
-    @show("Adding LAI...")
-
-    lai = defVar(
-            ncout,
-            "lai",
-            FT,
-            ("lon", "lat", "time"),
-            attrib =Dict("long_name" => "Total leaf area index", "units" => "m**2 m**-2"),
-        )
-    lai[:, :, :] = ncin["lai_hv"][:,:,:] .+ ncin["lai_lv"][:,:,:];
     @show("Adding rain...")
 
     rf = defVar(
@@ -124,5 +117,41 @@ function process_raw_era5data(rawdata_path, processeddata_path)
     end
 
    ncout.attrib["Modifications"] = "Modified by the Clima Land team (unit conversions, e.g.), 2024"
+    close(ncout)
+end
+function process_raw_LAIdata(rawdata_path, processeddata_path)
+    FT = Float32
+    ncin = NCDataset(rawdata_path)
+    ncout = NCDataset(processeddata_path,"c")
+    n_hours = length(ncin["time"]); # Raw data is hourly
+    # We'll save LAI every week, since it changes slowly
+    ntime = Int(floor(n_hours/(7*24)))
+    times = (0:1:(ntime-1)).*7 .*24 .+ 1
+    defDim(ncout, "lon", length(ncin["lon"]))
+    defDim(ncout, "lat", length(ncin["lat"]))
+    defDim(ncout, "time", ntime)
+
+    lon = defVar(ncout, "lon", FT, ("lon",), attrib = ncin["lon"].attrib)
+    lon[:] = Array(ncin["lon"])
+
+    lat = defVar(ncout, "lat", FT, ("lat",), attrib = ncin["lat"].attrib)
+    lat[:] = Array(ncin["lat"])
+
+    time_ = defVar(ncout, "time", FT, ("time",), attrib = ncin["time"].attrib)
+    time_[:] = Array(ncin["time"][times]) 
+    @show("Adding LAI...")
+    lai = defVar(
+            ncout,
+            "lai",
+            FT,
+            ("lon", "lat", "time"),
+            attrib =Dict("long_name" => "Total leaf area index", "units" => "m**2 m**-2"),
+        )
+    lai[:, :, :] = ncin["lai_hv"][:,:,times] .+ ncin["lai_lv"][:,:,times];
+    for (k,v) in ncin.attrib
+        ncout.attrib[k] = v
+    end
+
+    ncout.attrib["Modifications"] = "Modified by the Clima Land team (unit conversions, e.g.), 2024"
     close(ncout)
 end
