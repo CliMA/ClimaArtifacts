@@ -21,15 +21,7 @@ if !isfile(FILE_PATH)
 end
 
 @info "Raw data file generated!"
- # create processed data
-processeddata_path = joinpath(output_dir,"era5_2021_0.9x1.25_clima.nc")
-processedlaidata_path = joinpath(output_dir,"era5_lai_2021_0.9x1.25_clima.nc")
-
-process_raw_LAIdata(rawdata_path, processedlaidata_path)
-process_raw_era5data(rawdata_path, processeddata_path)
-
-create_artifact_guided(output_dir; artifact_name = basename(@__DIR__))
-
+rawdata_path = FILE_PATH
 
 function process_raw_era5data(rawdata_path, processeddata_path)
     FT = Float32
@@ -110,7 +102,7 @@ function process_raw_era5data(rawdata_path, processeddata_path)
 
     RH = relative_humidity.(ncin["d2m"][:,:,:], ncin["t2m"][:,:,:]);
     esat = saturation_vapor_pressure.(ncin["t2m"][:,:,:]);
-    q[:,:,:] = specific_humidity.(esat, RH)[:,:,:];
+    q[:,:,:] = specific_humidity.(esat, RH);
 
     for (k,v) in ncin.attrib
         ncout.attrib[k] = v
@@ -155,3 +147,12 @@ function process_raw_LAIdata(rawdata_path, processeddata_path)
     ncout.attrib["Modifications"] = "Modified by the Clima Land team (unit conversions, e.g.), 2024"
     close(ncout)
 end
+
+
+processeddata_path = joinpath(output_dir,"era5_2021_0.9x1.25_clima.nc")
+processedlaidata_path = joinpath(output_dir,"era5_lai_2021_0.9x1.25_clima.nc")
+
+process_raw_LAIdata(rawdata_path, processedlaidata_path)
+process_raw_era5data(rawdata_path, processeddata_path)
+
+create_artifact_guided(output_dir; artifact_name = basename(@__DIR__))
