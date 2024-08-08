@@ -1,0 +1,9 @@
+[deps]
+ArtifactUtils = "8b73e784-e7d8-4ea5-973d-377fed4e3bce"
+ClimaArtifactsHelper = "6ffa2572-8378-4377-82eb-ea11db28b255"
+Dates = "ade2ca70-3891-5945-98fb-dc099432e06a"
+Downloads = "f43a241f-c20a-4ad4-852c-f6b1247861c6"
+Interpolations = "a98d9a8b-a2ab-59e6-89dd-64a1c18fca59"
+NCDatasets = "85f8d34a-cbdd-5861-8df4-14fed0d494ab"
+Pkg = "44cfe95a-1eb2-52ea-b672-e2afdf69b78f"
+ProgressMeter = "92933f4c-e287-5a05-a399-4b506db050ca"
