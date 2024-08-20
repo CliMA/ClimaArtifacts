@@ -1,6 +1,9 @@
 <h1 align="center">
   <img src="logo.svg" width="180px"> <br>
 ClimaArtifacts
+
+[![FAQs](https://img.shields.io/badge/FAQs-click_me!-blue.svg)](https://github.com/CliMA/ClimaArtifacts#frequently-asked-questions)
+
 </h1>
 
 Pre-processing pipelines for the input data used by the CliMA project and
@@ -279,6 +282,34 @@ system.
 > changing the `JULIA_DEPOT_PATH` resets `Base.DEPOT_PATH`, so that the system
 > depots are ignored. We use `JULIA_DEPOT_PATH` extensively in `slurm-buildkite`.
 
+
+## Frequently Asked Questions
+
+### `ClimaArtifactsHelper` is not able to load my artifact
+
+One of the most common reasons for that is malformed Box links. Your Box link should look something like
+```
+https://caltech.box.com/shared/static/pdsre5tumpc04qbomzjduw07ryd3emwj.gz
+```
+It has to have a `/shared/static` portion and an extension. If that's not the
+case, chances are you copied the link from the wrong page. Make sure you are in
+the "Link Settings" page (see screenshot above).
+
+### I just want to create an artifact with one file
+
+If you want to create an artifact with only one file, you can use the
+`crate_artifact_guided_one_file` function.
+
+For example:
+
+``` julia
+using ClimaArtifactsHelper
+
+const FILE_URL = "https://svn-ccsm-inputdata.cgd.ucar.edu/trunk/inputdata/lnd/clm2/surfdata_map/surfdata_0.9x1.25_hist_17pfts_nocft_CMIP6_simyr1700_c230809.nc"
+const FILE_PATH = "surfdata_0.9x1.25_hist_17pfts_nocft_CMIP6_simyr1700_c230809.nc"
+
+create_artifact_guided_one_file(FILE_PATH; artifact_name = basename(@__DIR__), file_url = FILE_URL)
+```
 
 ### Credits
 
