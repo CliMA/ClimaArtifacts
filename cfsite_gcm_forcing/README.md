@@ -1,6 +1,6 @@
-# CFsite GCM forcing file 
+# CfSite GCM forcing 
 
-This artifact is derived from HadGEM2-A and contains large-scale forcing to drive single-column models for several cfSites. These locations in the East Pacific Ocean focus on reproducing the stratocumulus (site 17) to shallow cumulus (site 23) transition and are important to model accurately for the global warming budget. The artifact contains variables measured every 6 hours in July from the years 2004 to 2008 (600 total time windows) at the following 21 sites:
+This artifact is derived from HadGEM2-A and contains large-scale forcing to drive single-column models for several cfSites. These locations in the East Pacific Ocean focus on reproducing the stratocumulus (site 17) to shallow cumulus (site 23) transition and are important to model accurately for the global warming budget. The artifact contains variables measured every 6 hours in July from the years 2004 to 2008 (600 total time windows) at the following 21 sites shown below. The artifact is currently being used in [ClimaAtmos](https://github.com/CliMA/ClimaAtmos.jl) to force single column simulations. 
 <p align="center">
   <img src="shen2022_f1.png" alt="Description of Image" width="500" height=auto> 
 
@@ -22,6 +22,5 @@ As well as static variables:
 ```julia
 label, coszen, gustiness, windstd, windrms
 ```
-
 
 License: Creative Commons Attribution 4.0 International
