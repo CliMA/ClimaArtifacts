@@ -2,7 +2,6 @@ using Downloads
 
 using ClimaArtifactsHelper
 
-
 const FILE_URL = "https://caltech.box.com/shared/static/elv5ksf3av3kum9552jxhnmlgu7vxr8u.nc"
 const FILE_PATH = "HadGEM2-A_amip.2004-2008.07.nc"
 
