@@ -45,7 +45,7 @@ S. Gupta et al 2022, 2024](https://github.com/CliMA/ClimaArtifacts/tree/main/soi
 
 # The ultimate guide to ClimaArtifacts
 
-Last update: 20 May 2024
+Last update: 25 August 2024
 
 #### What is an artifact?
 
