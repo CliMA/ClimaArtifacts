@@ -107,7 +107,7 @@ function _create_downloadable_artifact(
         open(artifact_toml, "r") do file
             artifact_str = read(file, String)
             println(
-                "Here is your artifact string. Copy and past it to your Artifacts.toml",
+                "Here is your artifact string. Copy and paste it to your Artifacts.toml",
             )
             println()
             println(artifact_str)
@@ -141,7 +141,7 @@ function create_artifact_guided(artifact_dir; artifact_name)
 
         _recommend_uploading_to_cluster(hash, artifact_name, artifact_dir)
         println(
-            "Here is your artifact string. Copy and past it to your Artifacts.toml",
+            "Here is your artifact string. Copy and paste it to your Artifacts.toml",
         )
         println()
         artifacts_str = "[$artifact_name]\ngit-tree-sha1 = \"$hash\"\n"
