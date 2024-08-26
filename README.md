@@ -36,6 +36,7 @@ S. Gupta et al 2022, 2024](https://github.com/CliMA/ClimaArtifacts/tree/main/soi
 - [RMSE for CMIP models](https://github.com/CliMA/ClimaArtifacts/tree/main/cmip_model_rmse)
 - [Temperature average and restart file for ClimaAtmos Held-Suarez perfect model calibration](https://github.com/CliMA/ClimaArtifacts/tree/main/atmos_held_suarez_obs)
 - [ESM-SnowMIP data](https://github.com/CliMA/ClimaArtifacts/tree/main/snowmip)
+- [Large-scale forcing from HadGEM2-A at cfSites for driving single column models in ClimaAtmos.jl](https://github.com/CliMA/ClimaArtifacts/tree/main/cfsite_gcm_forcing)
 
 # The ultimate guide to ClimaArtifacts
 

@@ -1,0 +1,7 @@
+[cfsite_gcm_forcing]
+git-tree-sha1 = "2f196bcac8950f8cb79ead41821f423d092b8951"
+lazy = true
+
+    [[cfsite_gcm_forcing.download]]
+    sha256 = "78f13efcbc71350609c8a73ed66ff28fe3653fb7a0274e34b52d720651c1c2ec"
+    url = "https://caltech.box.com/shared/static/elv5ksf3av3kum9552jxhnmlgu7vxr8u.nc"
