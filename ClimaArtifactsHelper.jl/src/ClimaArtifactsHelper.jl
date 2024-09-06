@@ -175,7 +175,6 @@ function create_artifact_guided_one_file(
     artifact_name,
     file_url = nothing,
 )
-
     output_dir = artifact_name
 
     if isdir(output_dir)
@@ -191,6 +190,8 @@ function create_artifact_guided_one_file(
         downloaded_file = download(file_url)
         Base.mv(downloaded_file, file_path)
     end
+
+    Base.cp(file_path, joinpath(output_dir, basename(file_path)))
 
     create_artifact_guided(output_dir; artifact_name)
 end
