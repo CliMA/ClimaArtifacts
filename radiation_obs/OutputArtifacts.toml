@@ -1,6 +1,2 @@
 [radiation_obs]
-git-tree-sha1 = "c9eef049fc3bf057f35332c316755a694b0eb5ef"
-
-    [[radiation_obs.download]]
-    sha256 = "3274926803246cd3738e2d9f36c3fc2652fdb564fba80ddcb10860fd5d8cb552"
-    url = "https://caltech.box.com/shared/static/odvaz76hi3ujakhwgkilzbitk49ty1fw.gz"
+git-tree-sha1 = "945e31f8028a581f7e8435cb691462124484567a"
