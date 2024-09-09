@@ -42,6 +42,7 @@ S. Gupta et al 2022, 2024](https://github.com/CliMA/ClimaArtifacts/tree/main/soi
 - [Large-scale forcing from HadGEM2-A at cfSites for driving single column models in ClimaAtmos.jl](https://github.com/CliMA/ClimaArtifacts/tree/main/cfsite_gcm_forcing)
 - [Measured sea ice concentration and sea surface
   temperature](https://github.com/CliMA/ClimaArtifacts/tree/main/historical_sst_sic)
+- [Global land-sea mask](https://github.com/CliMA/ClimaArtifacts/tree/main/land_sea_mask)
 
 # The ultimate guide to ClimaArtifacts
 
@@ -202,7 +203,7 @@ To create a new artifact in `ClimaArtifacts`:
    artifact_name = basename(@__DIR__))`
 5. The `create_artifact_guided` starts a guided process that gives you the
    string to put in your `Artifacts.toml` files.
-   
+
 If your artifact is tied to your particular module, you may elect to add it to
 your repository instead. To do so, follow the same steps above with the
 exception that you have to create a new `artifacts` folder (if one does not
