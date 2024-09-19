@@ -39,7 +39,7 @@ The netCDF file includes comprehensive environmental data with a focus on vegeta
 
   For information about each PFT and its parameters see the [CLM5 Docs](https://www2.cesm.ucar.edu/models/cesm2/land/CLM50_Tech_Note.pdf)
 
-- **Key Variables Related to PFTs**:
+- **Variables Related to PFTs**:
     - `PCT_NATVEG`: This variable gives the percentage of natural vegetation cover across the land units, essential for assessing non-agricultural land cover.
     - `PCT_NAT_PFT`: Indicates the percentage composition of each PFT (15) within natural vegetation land units, providing a granular look at vegetation distribution.
 
@@ -62,7 +62,7 @@ In addition to the PFTs in `surfdata_0.9x1.25_16pfts__CMIP6_simyr2000_c170616.nc
 
   For information about each PFT and its parameters see the [CLM5 Docs](https://www2.cesm.ucar.edu/models/cesm2/land/CLM50_Tech_Note.pdf)
 
-- **Key Variables**:
+- **Variables**:
     - `taulnir`: Leaf transmittance: near-IR
     - `taulvis`: Leaf transmittance: visible
     - `tausnir`: Stem transmittance: near-IR
@@ -75,7 +75,7 @@ In addition to the PFTs in `surfdata_0.9x1.25_16pfts__CMIP6_simyr2000_c170616.nc
 ### 3. `clm5_params.c171117.nc`
 Contains various parameters required by the CLM5 model.
 
-- **Key Variables**:
+- **Variables**:
     - `medlynslope`: Medlyn slope of conductance-photosynthesis relationship
     - `medlynintercept`: Medlyn intercept of conductance-photosynthesis relationship
 
