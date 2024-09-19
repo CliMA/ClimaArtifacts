@@ -47,7 +47,10 @@ run(`python pft_variables.py`)
 run(`python dominant_mechanism.py`)
 
 for output_file in OUTPUT_FILES
-    Base.cp(output_file, joinpath(output_dir, basename(output_file)); force=true)
+    output_path = joinpath(output_dir, basename(output_file))
+    if !isfile(output_path)
+        Base.cp(output_file, output_path; force=true)
+    end
 end
 
 create_artifact_guided(

@@ -17,6 +17,7 @@ lon = dominant_pft_dataset.variables['LONGXY'][:]
 surface_dataset = nc.Dataset(surface_file, 'r')
 pft_values = surface_dataset.variables['PCT_NAT_PFT'][:]
 pft_dominant_values = np.argmax(pft_values, axis = 0)
+# pft index 14 is the only C4 pft
 c3_dominant_map = pft_dominant_values != 14
 c3_dominant_map = c3_dominant_map.astype(float)
 proportion_c3_map = np.ones_like(c3_dominant_map) - (pft_values[14]/100)

@@ -1,7 +1,7 @@
 # Surface Data for CLM: Plant Functional Types
 
 ## Overview
-This artifcat contains scripts that process several Community Land Model (CLM) data files and maps vegetation properties based on Plant Functional Types (PFTs).
+This artifact contains scripts that process several Community Land Model (CLM) data files and maps vegetation properties based on Plant Functional Types (PFTs).
 Below is a detailed description of each file and its purpose.
 
 <!-- This repository contains the `surfdata_0.9x1.25_16pfts__CMIP6_simyr2000_c170616.nc` file used in the Community Land Model (CLM) for historical climate modeling. The dataset is tailored for simulations that emphasize natural vegetation dynamics without the inclusion of cultivated crops (CFTs). -->
@@ -10,7 +10,7 @@ To recreate the artifact:
 1. Create a python virtual environment
 2. Activate the new virtual env
 3. In the same terminal run `pip install -r requirements.txt`
-4. In the same terminal run `julia --project=. create_artifact.jl`
+4. In the same terminal run `julia --project create_artifact.jl`
 
 ### Requirements
 - Python >=3.8
@@ -18,11 +18,28 @@ To recreate the artifact:
 ## Input Files
 
 ### 1. `surfdata_0.9x1.25_16pfts__CMIP6_simyr2000_c170616.nc`
-The netCDF file includes comprehensive environmental data with a focus on vegetation represented through 16 different Plant Functional Types (PFTs). These PFTs play a crucial role in modeling biophysical processes and ecosystem functions within CLM simulations.
+The netCDF file includes comprehensive environmental data with a focus on vegetation represented through 15 different Plant Functional Types (PFTs). These PFTs play a crucial role in modeling biophysical processes and ecosystem functions within CLM simulations.
+
+-**Plant Functional Types**
+  - `not_vegetated`
+  - `needleleaf_evergreen_temperate_tree`
+  - `needleleaf_evergreen_boreal_tree`
+  - `needleleaf_deciduous_boreal_tree`
+  - `broadleaf_evergreen_tropical_tree`
+  - `broadleaf_evergreen_temperate_tree`
+  - `broadleaf_deciduous_tropical_tree`
+  - `broadleaf_deciduous_temperate_tree`
+  - `broadleaf_deciduous_boreal_tree`
+  - `broadleaf_evergreen_shrub`
+  - `broadleaf_deciduous_temperate_shrub`
+  - `broadleaf_deciduous_boreal_shrub`
+  - `c3_arctic_grass`
+  - `c3_non-arctic_grass`
+  - `c4_grass`
 
 - **Key Variables Related to PFTs**
     - `PCT_NATVEG`: This variable gives the percentage of natural vegetation cover across the land units, essential for assessing non-agricultural land cover.
-    - `PCT_NAT_PFT`: Indicates the percentage composition of each PFT (16) within natural vegetation land units, providing a granular look at vegetation distribution.
+    - `PCT_NAT_PFT`: Indicates the percentage composition of each PFT (15) within natural vegetation land units, providing a granular look at vegetation distribution.
 
 These PFT variables are pivotal for simulating how natural ecosystems respond to historical climatic conditions and can be used to project changes in vegetation patterns due to climatic shifts.
 
@@ -30,7 +47,16 @@ These PFT variables are pivotal for simulating how natural ecosystems respond to
 [CCSM Input Data Repository](https://svn-ccsm-inputdata.cgd.ucar.edu/trunk/inputdata/lnd/clm2/surfdata_map/)
 
 ### 2. `pft-physiology.c110225.nc`
-Contains physiological parameters for each of the 21 PFTs in a previous version of CLM, when vcmax25 did not depend on nitrogen content.
+Contains physiological parameters for each of the 21 PFTs in a previous version of CLM, when maximum rate of carboxylation did not depend on nitrogen content.
+
+-**Plant Functional Types**
+In addition to the PFTs in `surfdata_0.9x1.25_16pfts__CMIP6_simyr2000_c170616.nc`, this file also includes:
+  - `c3_crop`
+  - `c3_irrigated`
+  - `corn`
+  - `spring_wheat`
+  - `winter_wheat`
+  - `soybean`
 
 - **Key Variables**
     - `taulnir`: Leaf transmittance: near-IR
@@ -97,8 +123,9 @@ in a grid cell that use C3 photosynthesis.
 - **Description**: Script to determine the dominant photsynthesis mechanism for each grid cell.
 - **Functionality**:
   - Reads the percent plant functional type for each grid cell (% of total plants in cell) from `surfdata_0.9x1.25_16pfts__CMIP6_simyr2000_c170616.nc`.
-  - If the PFT with the highest percentage in a cell is not PFT #14, then the cell is marked as C3 dominant, and a 1.0 is placed in the grid cell in the output parameter `c3_dominant`. If the highest percentage is PFT #14, a value of 0.0 is placed in the grid cell.
-  - For `c3_proportion`, the value for each cell is the total percentage of the non-C4 PFTs, which is the sum of the percentages for all PFTS except #14.
+  - The `c4_grass` PFT is the only PFT that uses C4 photosynthesis
+  - If the PFT with the highest percentage in a cell is not `c4_grass`, then the cell is marked as C3 dominant, and a 1.0 is placed in the grid cell in the output parameter `c3_dominant`. If the highest percentage is PFT `c4_grass`, a value of 0.0 is placed in the grid cell.
+  - For `c3_proportion`, the value for each cell is the total percentage of the non-C4 PFTs, which is the sum of the percentages for all PFTS except `c4_grass`.
   - Outputs the mapped parameters to `mechanism_map.nc`
 - **Purpose**: Processes the surface data to create the `mechanism_map.nc` file.
 
