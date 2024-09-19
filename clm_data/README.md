@@ -109,6 +109,13 @@ in a grid cell that use C3 photosynthesis.
   - `c3_dominant(lat, lon)` (0.0 and 1.0)
   - `c3_proportion(lat, lon)` (0 to 1)
 
+### 4. `root_map.nc`
+Contains the rooting_depth parameter, which is calculated from the root Beta value of
+the dominant PFT for each cell.
+- **Contents**:
+  - `rooting_depth(lat, lon)` parameter for root_distribution (m)
+    - Describes the depth where ~2/3 of the roots are above
+
 ## Scripts
 
 ### 1. `dominant_pft.py`
@@ -132,6 +139,14 @@ in a grid cell that use C3 photosynthesis.
   - For `c3_proportion`, the value for each cell is the total percentage of the non-C4 PFTs, which is the sum of the percentages for all PFTS except `c4_grass`.
   - Outputs the mapped parameters to `mechanism_map.nc`
 - **Purpose**: Processes the surface data to create the `mechanism_map.nc` file.
+
+### 4. `dominant_root_beta.py`
+- **Description**: Script to determine the dominant rooting_depth  parameter  for each grid cell.
+- **Functionality**:
+  - Reads the dominant PFT for each cell from `dominant_PFT.nc`
+  - Finds the rooting beta parameter for the dominant pft, and then calculates the `rooting_depth` parameter
+  - Outputs the mapped `rooting_depth` to `root_map.nc`
+- **Purpose**: Processes the CLM data to create the `root_map.nc` file.
 
 ## References
 For additional context on the development and capabilities of the Community Land Model, refer to the following publication:
