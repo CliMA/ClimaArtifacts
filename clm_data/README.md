@@ -20,7 +20,7 @@ To recreate the artifact:
 ### 1. `surfdata_0.9x1.25_16pfts__CMIP6_simyr2000_c170616.nc`
 The netCDF file includes comprehensive environmental data with a focus on vegetation represented through 15 different Plant Functional Types (PFTs). These PFTs play a crucial role in modeling biophysical processes and ecosystem functions within CLM simulations.
 
--**Plant Functional Types**
+- **Plant Functional Types**:
   - `not_vegetated`
   - `needleleaf_evergreen_temperate_tree`
   - `needleleaf_evergreen_boreal_tree`
@@ -37,19 +37,21 @@ The netCDF file includes comprehensive environmental data with a focus on vegeta
   - `c3_non-arctic_grass`
   - `c4_grass`
 
-- **Key Variables Related to PFTs**
+  For information about each PFT and its parameters see the [CLM5 Docs](https://www2.cesm.ucar.edu/models/cesm2/land/CLM50_Tech_Note.pdf)
+
+- **Key Variables Related to PFTs**:
     - `PCT_NATVEG`: This variable gives the percentage of natural vegetation cover across the land units, essential for assessing non-agricultural land cover.
     - `PCT_NAT_PFT`: Indicates the percentage composition of each PFT (15) within natural vegetation land units, providing a granular look at vegetation distribution.
 
 These PFT variables are pivotal for simulating how natural ecosystems respond to historical climatic conditions and can be used to project changes in vegetation patterns due to climatic shifts.
 
-- **Data Download** The dataset can be downloaded from the official input data repository for the Community Climate System Model:
+- **Data Download**: The dataset can be downloaded from the official input data repository for the Community Climate System Model:
 [CCSM Input Data Repository](https://svn-ccsm-inputdata.cgd.ucar.edu/trunk/inputdata/lnd/clm2/surfdata_map/)
 
 ### 2. `pft-physiology.c110225.nc`
 Contains physiological parameters for each of the 21 PFTs in a previous version of CLM, when maximum rate of carboxylation did not depend on nitrogen content.
 
--**Plant Functional Types**
+- **Plant Functional Types**:
 In addition to the PFTs in `surfdata_0.9x1.25_16pfts__CMIP6_simyr2000_c170616.nc`, this file also includes:
   - `c3_crop`
   - `c3_irrigated`
@@ -58,24 +60,26 @@ In addition to the PFTs in `surfdata_0.9x1.25_16pfts__CMIP6_simyr2000_c170616.nc
   - `winter_wheat`
   - `soybean`
 
-- **Key Variables**
+  For information about each PFT and its parameters see the [CLM5 Docs](https://www2.cesm.ucar.edu/models/cesm2/land/CLM50_Tech_Note.pdf)
+
+- **Key Variables**:
     - `taulnir`: Leaf transmittance: near-IR
     - `taulvis`: Leaf transmittance: visible
     - `tausnir`: Stem transmittance: near-IR
     - `tausvis`: Stem transmittance: visible
     - `vcmx25`: Maximum rate of carboxylation
 
-- **Data Download** The dataset can be downloaded
+- **Data Download:** The dataset can be downloaded
 [here](https://svn-ccsm-inputdata.cgd.ucar.edu/trunk/inputdata/lnd/clm2/pftdata/pft-physiology.c110225.nc)
 
 ### 3. `clm5_params.c171117.nc`
 Contains various parameters required by the CLM5 model.
 
-- **Key Variables**
+- **Key Variables**:
     - `medlynslope`: Medlyn slope of conductance-photosynthesis relationship
     - `medlynintercept`: Medlyn intercept of conductance-photosynthesis relationship
 
-- **Data Download** The dataset can be downloaded
+- **Data Download**: The dataset can be downloaded
 [here](https://svn-ccsm-inputdata.cgd.ucar.edu/trunk/inputdata/lnd/clm2/paramdata/clm5_params.c171117.nc)
 
 
