@@ -94,6 +94,8 @@ Contains the mapped vegetation properties for each grid cell.
 - **Contents**:
   - `medlynslope(lat, lon)`: Medlyn slope of conductance-photosynthesis relationship (kPa^0.5)
   - `medlynintercept(lat, lon)`: Medlyn intercept of conductance-photosynthesis relationship (umol m^-2 s^-1)
+  - `rholnir(lat, lon)`: Leaf reflectance: near-IR (fraction)
+  - `rholvis(lat, lon)`: Leaf reflectance: visible (fraction)
   - `taulnir(lat, lon)`: Leaf transmittance: near-IR (fraction)
   - `taulvis(lat, lon)`: Leaf transmittance: visible (fraction)
   - `tausnir(lat, lon)`: Stem transmittance: near-IR (fraction)
