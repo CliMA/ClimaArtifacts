@@ -38,7 +38,6 @@ for (file_path, file_url) in zip(FILE_PATHS, FILE_URLS)
         println(file_path)
         downloaded_file = Downloads.download(file_url; downloader)
         Base.mv(downloaded_file, file_path)
-        Base.cp(file_path, joinpath(output_dir, basename(file_path)))
     end
 end
 
@@ -49,9 +48,8 @@ run(`python dominant_root_beta.py`)
 
 for output_file in OUTPUT_FILES
     output_path = joinpath(output_dir, basename(output_file))
-    if !isfile(output_path)
-        Base.cp(output_file, output_path)
-    end
+    # set force to true to overwrite existing output files
+    Base.cp(output_file, output_path; force=true)
 end
 
 create_artifact_guided(
