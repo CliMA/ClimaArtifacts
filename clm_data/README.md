@@ -101,20 +101,12 @@ Contains the mapped vegetation properties for each grid cell.
   - `tausnir(lat, lon)`: Stem transmittance: near-IR (fraction)
   - `tausvis(lat, lon)`: Stem transmittance: visible (fraction)
   - `vcmx25(lat, lon)`: Maximum rate of carboxylation (umol CO2/m**2/s)
-
-### 3. `mechanism_map.nc`
-Contains two variables which describe the photosynthesis mechanism for each grid cell.
-`c3_dominant` has a value of 1.0 when C3 is the dominant photosynthesis mechanism for that grid cell and a
-value of 0.0 if C4 is dominant. `c3_proportion` has values in [0.0, 1.0] which represent the proportion of plants
-in a grid cell that use C3 photosynthesis.
-- **Contents**:
   - `c3_dominant(lat, lon)` (0.0 and 1.0)
+    - has a value of 1.0 when C3 is the dominant photosynthesis mechanism for that grid cell and a
+value of 0.0 if C4 is dominant.
   - `c3_proportion(lat, lon)` (0 to 1)
-
-### 4. `root_map.nc`
-Contains the rooting_depth parameter, which is calculated from the root Beta value of
-the dominant PFT for each cell.
-- **Contents**:
+    - has values in [0.0, 1.0] which represent the proportion of plants
+    in a grid cell that use C3 photosynthesis.
   - `rooting_depth(lat, lon)` parameter for root_distribution (m)
     - Describes the depth where ~2/3 of the roots are above
 
@@ -127,28 +119,16 @@ the dominant PFT for each cell.
 ### 2. `pft_variables.py`
 - **Description**: Main script for mapping vegetation properties based on the dominant PFT.
 - **Functionality**:
-  - Reads the dominant PFT for each grid cell from `dominant_PFT_map.nc`.
+  - Calculates the dominant PFT for each grid cell using `surfdata_0.9x1.25_16pfts__CMIP6_simyr2000_c170616.nc` .
   - Reads physiological parameters from `pft-physiology.c110225.nc`.
   - Maps these parameters to the global grid based on the dominant PFT.
+  - Reads parameters from `clm5_params.c171117.nc` and maps them based on the dominant PFT/
+  - Maps photosynthesis mechanism based on the dominant PFT.
+    - If `c4_grass` is dominant, then the cell is marked as C3 dominant. If not
+    the cell is marked as C4 dominant.
+    - Maps proportion C3 mechanism by taking the sum of the percentages for all PFTS except `c4_grass`.
+  - Finds the rooting beta parameter for the dominant pft, and then calculates and maps the `rooting_depth` parameter
   - Outputs the mapped parameters to `vegetation_properties_map.nc`.
-
-### 3. `dominant_mechanism.py`
-- **Description**: Script to determine the dominant photsynthesis mechanism for each grid cell.
-- **Functionality**:
-  - Reads the percent plant functional type for each grid cell (% of total plants in cell) from `surfdata_0.9x1.25_16pfts__CMIP6_simyr2000_c170616.nc`.
-  - The `c4_grass` PFT is the only PFT that uses C4 photosynthesis
-  - If the PFT with the highest percentage in a cell is not `c4_grass`, then the cell is marked as C3 dominant, and a 1.0 is placed in the grid cell in the output parameter `c3_dominant`. If the highest percentage is PFT `c4_grass`, a value of 0.0 is placed in the grid cell.
-  - For `c3_proportion`, the value for each cell is the total percentage of the non-C4 PFTs, which is the sum of the percentages for all PFTS except `c4_grass`.
-  - Outputs the mapped parameters to `mechanism_map.nc`
-- **Purpose**: Processes the surface data to create the `mechanism_map.nc` file.
-
-### 4. `dominant_root_beta.py`
-- **Description**: Script to determine the dominant rooting_depth  parameter  for each grid cell.
-- **Functionality**:
-  - Reads the dominant PFT for each cell from `dominant_PFT.nc`
-  - Finds the rooting beta parameter for the dominant pft, and then calculates the `rooting_depth` parameter
-  - Outputs the mapped `rooting_depth` to `root_map.nc`
-- **Purpose**: Processes the CLM data to create the `root_map.nc` file.
 
 ## References
 For additional context on the development and capabilities of the Community Land Model, refer to the following publication:
