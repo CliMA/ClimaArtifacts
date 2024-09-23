@@ -1,0 +1,2 @@
+netCDF4==1.7.1.post2
+numpy==2.1.1
