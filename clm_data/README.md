@@ -124,8 +124,8 @@ value of 0.0 if C4 is dominant.
   - Maps these parameters to the global grid based on the dominant PFT.
   - Reads parameters from `clm5_params.c171117.nc` and maps them based on the dominant PFT/
   - Maps photosynthesis mechanism based on the dominant PFT.
-    - If `c4_grass` is dominant, then the cell is marked as C3 dominant. If not
-    the cell is marked as C4 dominant.
+    - If `c4_grass` is dominant, then the cell is marked as C4 dominant. If not
+    the cell is marked as C3 dominant.
     - Maps proportion C3 mechanism by taking the sum of the percentages for all PFTS except `c4_grass`.
   - Finds the rooting beta parameter for the dominant pft, and then calculates and maps the `rooting_depth` parameter
   - Outputs the mapped parameters to `vegetation_properties_map.nc`.

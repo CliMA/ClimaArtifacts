@@ -58,6 +58,7 @@ for i in range(dominant_pft.shape[0]):
         if pft_index >= 0:
             medlynslope_map[i, j] = medlynslope_values[pft_index]
             medlynintercept_map[i, j] = medlynintercept_values[pft_index]
+            # convert beta parameter to rooting depth parameter for root probability distribution
             rooting_depth_map[i, j] = (-1)/(100*np.log(beta_values[0][pft_index]))
             rholnir_map[i,j]= rholnir_values[pft_index]
             rholvis_map[i,j]= rholvis_values[pft_index]
