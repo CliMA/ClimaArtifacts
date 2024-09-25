@@ -1,6 +1,6 @@
 # This file is machine-generated - editing it directly is not advised
 
-julia_version = "1.10.4"
+julia_version = "1.10.5"
 manifest_format = "2.0"
 project_hash = "bc38cccf5a894e2e6af41cf603e1d09c81c6c65b"
 
@@ -44,7 +44,7 @@ uuid = "179af706-886a-5703-950a-314cd64e0468"
 version = "0.1.3"
 
 [[deps.ClimaArtifactsHelper]]
-deps = ["ArtifactUtils", "Pkg", "REPL", "SHA"]
+deps = ["ArtifactUtils", "Downloads", "Pkg", "REPL", "SHA"]
 path = "../ClimaArtifactsHelper.jl"
 uuid = "6ffa2572-8378-4377-82eb-ea11db28b255"
 version = "0.0.1"
@@ -487,7 +487,7 @@ version = "1.1.2+0"
 [[deps.libblastrampoline_jll]]
 deps = ["Artifacts", "Libdl"]
 uuid = "8e850b90-86db-534c-a0d3-1478176c7d93"
-version = "5.8.0+1"
+version = "5.11.0+0"
 
 [[deps.libzip_jll]]
 deps = ["Artifacts", "Bzip2_jll", "GnuTLS_jll", "JLLWrappers", "Libdl", "XZ_jll", "Zlib_jll", "Zstd_jll"]

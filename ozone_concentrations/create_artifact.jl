@@ -19,31 +19,38 @@ const HPA_TO_PA = 100.0
 
 Plvl_inv(P) = -H_EARTH * log(P / P0)
 
-function create_ozone(infile_paths, outfile_path)
-    FT = Float32
-
+function create_ozone(infile_paths, outfile_path; small = false)
     ncin = NCDataset(infile_paths, aggdim = "time")
     ncout = NCDataset(outfile_path, "c")
 
-    defDim(ncout, "lon", length(ncin["lon"]))
-    defDim(ncout, "lat", length(ncin["lat"]))
-    defDim(ncout, "z", length(ncin["plev"]))
-    defDim(ncout, "time", length(ncin["time"]))
+    THINNING_FACTOR = 1
+    MAX_TIME = length(ncin["time"])
+    FT = Float32
+
+    if small
+        THINNING_FACTOR = 6
+        MAX_TIME = 12
+    end
+
+    defDim(ncout, "lon", Int(ceil(length(ncin["lon"]) // THINNING_FACTOR)))
+    defDim(ncout, "lat", Int(ceil(length(ncin["lat"]) // THINNING_FACTOR)))
+    defDim(ncout, "z", Int(ceil(length(ncin["plev"]) // THINNING_FACTOR)))
+    defDim(ncout, "time", MAX_TIME)
 
     lon = defVar(ncout, "lon", FT, ("lon",), attrib = ncin["lon"].attrib)
-    lon[:] = Array(ncin["lon"])
+    lon[:] = Array(ncin["lon"])[begin:THINNING_FACTOR:end]
 
     lat = defVar(ncout, "lat", FT, ("lat",), attrib = ncin["lat"].attrib)
-    lat[:] = Array(ncin["lat"])
+    lat[:] = Array(ncin["lat"])[begin:THINNING_FACTOR:end]
 
     z = defVar(ncout, "z", FT, ("z",))
-    plevin = ncin["plev"][:] .* HPA_TO_PA
+    plevin = ncin["plev"][begin:THINNING_FACTOR:end] .* HPA_TO_PA
     @. z = Plvl_inv(plevin)
     z.attrib["long_name"] = "altitude"
     z.attrib["units"] = "meters"
 
     time_ = defVar(ncout, "time", FT, ("time",), attrib = ncin["time"].attrib)
-    time_[:] = Array(ncin["time"])
+    time_[:] = Array(ncin["time"])[begin:MAX_TIME]
 
     defVar(
         ncout,
@@ -52,7 +59,7 @@ function create_ozone(infile_paths, outfile_path)
         ("lon", "lat", "z", "time"),
         attrib = ncin["vmro3"].attrib,
     )
-    ncout["vmro3"][:,:,:,:] = ncin["vmro3"][:,:,:,:]
+    ncout["vmro3"][:,:,:,:] = ncin["vmro3"][begin:THINNING_FACTOR:end,begin:THINNING_FACTOR:end,begin:THINNING_FACTOR:end,begin:MAX_TIME]
 
     close(ncin)
     close(ncout)
@@ -79,3 +86,23 @@ create_ozone(FILE_PATHs, joinpath(output_dir, "ozone_concentrations.nc"))
 
 @info "Data file generated!"
 create_artifact_guided(output_dir; artifact_name = basename(@__DIR__))
+
+output_dir_lowres = "ozone_artifact_lowres"
+
+if isdir(output_dir_lowres)
+    @warn "$output_dir already exists. Content will end up in the artifact and may be overwritten."
+    @warn "Abort this calculation, unless you know what you are doing."
+else
+    mkdir(output_dir_lowres)
+end
+
+create_ozone(
+    FILE_PATHs,
+    joinpath(output_dir_lowres, "ozone_concentrations_lowres.nc"),
+    small = true,
+)
+
+create_artifact_guided(
+    output_dir_lowres;
+    artifact_name = basename(@__DIR__) * "_lowres",
+)
