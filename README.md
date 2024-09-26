@@ -45,7 +45,7 @@ S. Gupta et al 2022, 2024](https://github.com/CliMA/ClimaArtifacts/tree/main/soi
 
 # The ultimate guide to ClimaArtifacts
 
-Last update: 25 August 2024
+Last update: 26 September 2024
 
 #### What is an artifact?
 
@@ -202,6 +202,10 @@ To create a new artifact in `ClimaArtifacts`:
    artifact_name = basename(@__DIR__))`
 5. The `create_artifact_guided` starts a guided process that gives you the
    string to put in your `Artifacts.toml` files.
+
+If you are creating multiple artifacts from the same file, consider adding
+`append = true` to ensure that the `OutputArtifacts.toml` has all the
+information.
    
 If your artifact is tied to your particular module, you may elect to add it to
 your repository instead. To do so, follow the same steps above with the

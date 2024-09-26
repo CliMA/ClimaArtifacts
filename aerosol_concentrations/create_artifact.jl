@@ -203,4 +203,5 @@ create_aerosol(
 create_artifact_guided(
     output_dir_lowres;
     artifact_name = basename(@__DIR__) * "_lowres",
+    append = true
 )
