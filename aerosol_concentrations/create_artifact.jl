@@ -179,7 +179,7 @@ create_artifact_guided(output_dir; artifact_name = basename(@__DIR__))
 output_dir_lowres = "aerosol_artifact_lowres"
 
 if isdir(output_dir_lowres)
-    @warn "$output_dir already exists. Content will end up in the artifact and may be overwritten."
+    @warn "$output_dir_lowres already exists. Content will end up in the artifact and may be overwritten."
     @warn "Abort this calculation, unless you know what you are doing."
 else
     mkdir(output_dir_lowres)
