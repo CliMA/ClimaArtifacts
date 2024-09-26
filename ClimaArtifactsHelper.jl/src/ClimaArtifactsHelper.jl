@@ -72,7 +72,10 @@ function _create_downloadable_artifact(
     artifact_dir;
     artifact_name,
     output_artifacts = "OutputArtifacts.toml",
+    append = false
 )
+    open_mode = append ? "a" : "w"
+
     println("First, we will create the artifact tarball")
     println(
         "You will upload it to the Caltech Data Archive and provide the direct link",
@@ -112,7 +115,9 @@ function _create_downloadable_artifact(
             println()
             println(artifact_str)
         end
-        Base.mv(artifact_toml, output_artifacts, force = true)
+        open(output_artifacts, open_mode) do file
+            write(file, read(artifact_toml))
+        end
         println("You should also consider uploading your data to the cluster")
         _recommend_uploading_to_cluster(hash, artifact_name, artifact_dir)
     end
@@ -122,12 +127,16 @@ end
     create_artifact_guided(artifact_dir)
 
 Start a guided process to create an artifact from a directory of files.
+
+When the `append` flag is set to `true`, append the new artifact string to
+the existing `OutputArtifacts.toml` file.
 """
-function create_artifact_guided(artifact_dir; artifact_name)
+function create_artifact_guided(artifact_dir; artifact_name, append = false)
     output_artifacts = "OutputArtifacts.toml"
+    open_mode = append ? "a" : "w"
+
     # This is where we save the string we create
-    isfile(output_artifacts) &&
-        @warn "Found $output_artifacts. It will be overwritten"
+    !append || (isfile(output_artifacts) && @warn "Found $output_artifacts. It will be overwritten")
 
     if foldersize(artifact_dir) > LARGE_FILESIZE
         # Artifacts that are too large. In this case, we have to manually create an hash and
@@ -147,7 +156,7 @@ function create_artifact_guided(artifact_dir; artifact_name)
         artifacts_str = "[$artifact_name]\ngit-tree-sha1 = \"$hash\"\n"
         println(artifacts_str)
 
-        open(output_artifacts, "w") do file
+        open(output_artifacts, open_mode) do file
             write(file, artifacts_str)
         end
     else
@@ -155,6 +164,7 @@ function create_artifact_guided(artifact_dir; artifact_name)
             artifact_dir;
             artifact_name,
             output_artifacts,
+            append
         )
     end
 
@@ -169,11 +179,15 @@ end
 Start a guided process to create an artifact from one file.
 
 If the file is not present at `file_path`, it will be downloaded from `file_url`.
+
+When the `append` flag is set to `true`, append the new artifact string to
+the existing `OutputArtifacts.toml` file.
 """
 function create_artifact_guided_one_file(
     file_path;
     artifact_name,
     file_url = nothing,
+    append = false
 )
     output_dir = artifact_name
 
@@ -193,7 +207,7 @@ function create_artifact_guided_one_file(
 
     Base.cp(file_path, joinpath(output_dir, basename(file_path)))
 
-    create_artifact_guided(output_dir; artifact_name)
+    create_artifact_guided(output_dir; artifact_name, append)
 end
 
 end
