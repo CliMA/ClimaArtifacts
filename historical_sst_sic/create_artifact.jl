@@ -24,13 +24,27 @@ for (path, url) in
         @info "$path not found, downloading it (might take a while)"
         downloaded_file = Downloads.download(url)
         Base.mv(downloaded_file, path)
-        Base.cp(path, joinpath(output_dir, basename(path)))
     end
+    Base.cp(path, joinpath(output_dir, basename(path)))
 end
 
 @info "Data file generated!"
 create_artifact_guided(output_dir; artifact_name = basename(@__DIR__))
 
+"""
+   thin_artifact(
+       filein,
+       fileout,
+       varname;
+       THINNING_FACTOR = 6,
+       MAX_TIME = 12,
+   )
+
+Take the file in `filein` and write a thinned-down version to `fileout` for the given `varname`.
+
+Thinning means taking one very `THINNING_FACTOR` points, and `2MAX_TIME` times
+(at the beginning and end).
+"""
 function thin_artifact(
     filein,
     fileout,
@@ -44,7 +58,7 @@ function thin_artifact(
 
     defDim(ncout, "lon", Int(ceil(length(ncin["lon"]) // THINNING_FACTOR)))
     defDim(ncout, "lat", Int(ceil(length(ncin["lat"]) // THINNING_FACTOR)))
-    defDim(ncout, "time", MAX_TIME)
+    defDim(ncout, "time", 2MAX_TIME)
 
     lon = defVar(ncout, "lon", FT, ("lon",), attrib = ncin["lon"].attrib)
     lon[:] = Array(ncin["lon"])[begin:THINNING_FACTOR:end]
@@ -53,7 +67,8 @@ function thin_artifact(
     lat[:] = Array(ncin["lat"])[begin:THINNING_FACTOR:end]
 
     time_ = defVar(ncout, "time", FT, ("time",), attrib = ncin["time"].attrib)
-    time_[:] = Array(ncin["time"])[begin:MAX_TIME]
+    # First and last year
+    time_[:] = vcat(Array(ncin["time"])[begin:MAX_TIME], Array(ncin["time"])[(end-MAX_TIME+1):end])
 
     defVar(
         ncout,
@@ -62,11 +77,17 @@ function thin_artifact(
         ("lon", "lat", "time"),
         attrib = ncin[varname].attrib,
     )
-    ncout[varname][:, :, :] = ncin[varname][
+    ncout[varname][:, :, begin:MAX_TIME] = ncin[varname][
         begin:THINNING_FACTOR:end,
         begin:THINNING_FACTOR:end,
         begin:MAX_TIME,
     ]
+    ncout[varname][:, :, (MAX_TIME+1):end] = ncin[varname][
+        begin:THINNING_FACTOR:end,
+        begin:THINNING_FACTOR:end,
+        (end-MAX_TIME+1):end,
+    ]
+
 
     close(ncin)
     close(ncout)

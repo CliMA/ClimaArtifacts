@@ -24,4 +24,8 @@ If you are using this dataset, please consider the following citation:
 > surface temperature and sea ice concentration data set. Version 6.1.
 > UCAR/NCAR - GDEX. https://doi.org/10.5065/r33v-sv91. 
 
+The script also produces a `lowres` version. The `lowres` version contains two
+years of data only (the first and the last), it is at 1/6th of the resolution,
+and single-point precision.
+
 License: Creative Commons Attribution 4.0 International License. (CC-BY-4.0)

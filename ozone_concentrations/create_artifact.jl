@@ -35,7 +35,7 @@ function create_ozone(infile_paths, outfile_path; small = false)
     defDim(ncout, "lon", Int(ceil(length(ncin["lon"]) // THINNING_FACTOR)))
     defDim(ncout, "lat", Int(ceil(length(ncin["lat"]) // THINNING_FACTOR)))
     defDim(ncout, "z", Int(ceil(length(ncin["plev"]) // THINNING_FACTOR)))
-    defDim(ncout, "time", MAX_TIME)
+    defDim(ncout, "time", small ? 2MAX_TIME : MAX_TIME)
 
     lon = defVar(ncout, "lon", FT, ("lon",), attrib = ncin["lon"].attrib)
     lon[:] = Array(ncin["lon"])[begin:THINNING_FACTOR:end]
@@ -50,7 +50,12 @@ function create_ozone(infile_paths, outfile_path; small = false)
     z.attrib["units"] = "meters"
 
     time_ = defVar(ncout, "time", FT, ("time",), attrib = ncin["time"].attrib)
-    time_[:] = Array(ncin["time"])[begin:MAX_TIME]
+    if small
+        # First and last year
+        time_[:] = vcat(Array(ncin["time"])[begin:MAX_TIME], Array(ncin["time"])[(end-MAX_TIME+1):end])
+    else
+        time_[:] = Array(ncin["time"])[begin:MAX_TIME]
+    end
 
     defVar(
         ncout,
@@ -59,7 +64,12 @@ function create_ozone(infile_paths, outfile_path; small = false)
         ("lon", "lat", "z", "time"),
         attrib = ncin["vmro3"].attrib,
     )
-    ncout["vmro3"][:,:,:,:] = ncin["vmro3"][begin:THINNING_FACTOR:end,begin:THINNING_FACTOR:end,begin:THINNING_FACTOR:end,begin:MAX_TIME]
+    if small
+        ncout["vmro3"][:,:,:,begin:MAX_TIME] = ncin["vmro3"][begin:THINNING_FACTOR:end,begin:THINNING_FACTOR:end,begin:THINNING_FACTOR:end,begin:MAX_TIME]
+        ncout["vmro3"][:,:,:,(end-MAX_TIME+1):end] = ncin["vmro3"][begin:THINNING_FACTOR:end,begin:THINNING_FACTOR:end,begin:THINNING_FACTOR:end,(end-MAX_TIME+1):end]
+    else
+        ncout["vmro3"][:,:,:,:] = ncin["vmro3"][begin:THINNING_FACTOR:end,begin:THINNING_FACTOR:end,begin:THINNING_FACTOR:end,begin:MAX_TIME]
+    end
 
     close(ncin)
     close(ncout)

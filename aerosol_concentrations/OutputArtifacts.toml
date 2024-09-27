@@ -2,8 +2,8 @@
 git-tree-sha1 = "a4bf66aab365d42abe428129457327d5244ed6b0"
 
 [aerosol_concentrations_lowres]
-git-tree-sha1 = "515764516ba0078990c7bf9caef1fe7ad7e40dc9"
+git-tree-sha1 = "261cdd1ee725c99ba80812557543ce967528ed9e"
 
     [[aerosol_concentrations_lowres.download]]
-    sha256 = "aad6b07c89c53fa11ff9b85d66b79c57f649c08d9ad5e5198b8521a86fb30210"
+    sha256 = "985c354cf884c7b2a850aae1285f89664f581aa6d40582ac2eeaf0387d64415e"
     url = "https://caltech.box.com/shared/static/0ef34ii505atm8jlsx4jd2ist19p7w6b.gz"

@@ -23,9 +23,9 @@ middle of the month as opposed to its last day.
 The output is a NetCDF file that contains concentrations (in kg/kg, dry mass)
 for a set of aerosols defined on a lon-lat-z-time grid.
 
-The script also produces a `lowres` version. The `lowres` version contains fewer
-aerosol, one year of data only, it is at 1/6th of the resolution, and
-single-point precision.
+The script also produces a `lowres` version. The `lowres` version contains two
+years of data (the first and the last of the input), it is at 1/6th of the
+resolution, and single-point precision.
 
 
 License: Creative Commons Attribution 4.0 International
