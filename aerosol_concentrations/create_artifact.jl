@@ -56,9 +56,8 @@ function create_aerosol(infile_paths, outfile_path, target_z; small = false)
     if small
         THINNING_FACTOR = 6
         FT = Float32
-        target_z = target_z[begin:THINNING_FACTOR:end]
-        aerosol_names = ("SO4", "SSLT01", "CB1")
-        infile_paths = (first(infile_paths),) # Keep only one year
+        target_z = vcat(target_z[begin:THINNING_FACTOR:end], [target_z[end]])
+        infile_paths = (first(infile_paths), last(infile_paths)) # Keep only first and last year
     end
 
     ncin = NCDataset(first(infile_paths))

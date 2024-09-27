@@ -7,8 +7,9 @@ The input file is defined in pressure coordinates. We convert this into altitude
 using $P = P^*exp(-z / H)$ with scale height $H$. We assume $P^* = 1e5$ (Pa) and $H = 7000$ (m). The output 
 is a NetCDF file that contains volume mixing ratio (in mol/mol) of ozone defined on a lon-lat-z-time grid.
 
-The script also produces a `lowres` version. The `lowres` version contains one
-year of data only, it is at 1/6th of the resolution, and single-point precision.
+The script also produces a `lowres` version. The `lowres` version contains two
+years of data only (the first and the last of the input), it is at 1/6th of the
+resolution, and single-point precision.
 
 
 License: Creative Commons Attribution-ShareAlike 4.0 International
