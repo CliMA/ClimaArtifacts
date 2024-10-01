@@ -38,6 +38,7 @@ taulvis_values = pft_physiology_dataset.variables['taulvis'][:]
 tausnir_values = pft_physiology_dataset.variables['tausnir'][:]
 tausvis_values = pft_physiology_dataset.variables['tausvis'][:]
 vcmx25_values = pft_physiology_dataset.variables['vcmx25'][:]
+xl_values = pft_physiology_dataset.variables['xl'][:]
 
 # Create arrays to store the mapped values for each grid point
 medlynslope_map = np.zeros_like(dominant_pft, dtype=np.float32)
@@ -50,6 +51,7 @@ taulvis_map = np.zeros_like(dominant_pft, dtype=np.float32)
 tausnir_map = np.zeros_like(dominant_pft, dtype=np.float32)
 tausvis_map = np.zeros_like(dominant_pft, dtype=np.float32)
 vcmx25_map = np.zeros_like(dominant_pft, dtype=np.float32)
+xl_map = np.zeros_like(dominant_pft, dtype=np.float32)
 
 # Map the parameter values to the grid points based on the dominant PFT
 for i in range(dominant_pft.shape[0]):
@@ -67,6 +69,7 @@ for i in range(dominant_pft.shape[0]):
             tausnir_map[i, j] = tausnir_values[pft_index]
             tausvis_map[i, j] = tausvis_values[pft_index]
             vcmx25_map[i, j] = vcmx25_values[pft_index]
+            xl_map[i, j] = xl_values[pft_index]
 
 # Create a new NetCDF file with the mapped variables
 with nc.Dataset(output_file, 'w', format='NETCDF4') as output_dataset:
@@ -89,6 +92,7 @@ with nc.Dataset(output_file, 'w', format='NETCDF4') as output_dataset:
     tausnir_var = output_dataset.createVariable('tausnir', 'f4', ('lat', 'lon',), fill_value=np.nan)
     tausvis_var = output_dataset.createVariable('tausvis', 'f4', ('lat', 'lon',), fill_value=np.nan)
     vcmx25_var = output_dataset.createVariable('vcmx25', 'f4', ('lat', 'lon',), fill_value=np.nan)
+    xl_var = output_dataset.createVariable('xl', 'f4', ('lat', 'lon',), fill_value=np.nan)
 
     # Assign data to variables
     latitudes[:] = np.mean(lat, axis=1)  # Assuming LATIXY and LONGXY are 2D arrays
@@ -105,6 +109,7 @@ with nc.Dataset(output_file, 'w', format='NETCDF4') as output_dataset:
     tausnir_var[:, :] = tausnir_map
     tausvis_var[:, :] = tausvis_map
     vcmx25_var[:, :] = vcmx25_map
+    xl_var[:, :] = xl_map
 
     # Assign attributes
     latitudes.units = 'degrees_north'
@@ -133,5 +138,7 @@ with nc.Dataset(output_file, 'w', format='NETCDF4') as output_dataset:
     tausvis_var.long_name = 'Stem transmittance: visible'
     vcmx25_var.units = 'umol CO2/m**2/s'
     vcmx25_var.long_name = 'Maximum rate of carboxylation at 25 degrees Celsius'
+    xl_var.units = '[-1 to 1]'
+    xl_var.long_name = 'Leaf/stem orientation index'
 
 print(f"NetCDF file '{output_file}' created successfully.")

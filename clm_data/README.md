@@ -109,6 +109,7 @@ value of 0.0 if C4 is dominant.
     in a grid cell that use C3 photosynthesis.
   - `rooting_depth(lat, lon)` parameter for root_distribution (m)
     - Describes the depth where ~2/3 of the roots are above
+  - `xl(lat, lon)` Leaf/stem orientation index
 
 ## Scripts
 
