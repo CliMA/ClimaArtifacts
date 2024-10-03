@@ -27,3 +27,6 @@ HDF5 format
 - Ocean bathymetry (on 256 `h_elem` cubed-sphere)
 - TODO: Binary sea-ice masks
 - TODO: Binary inland lake masks
+
+Data Source: 
+NOAA National Centers for Environmental Information. 2022: ETOPO 2022 15 Arc-Second Global Relief Model. NOAA National Centers for Environmental Information. DOI: 10.25921/fd45-gt74. Accessed [2 Oct 2024].
