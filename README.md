@@ -42,6 +42,7 @@ S. Gupta et al 2022, 2024](https://github.com/CliMA/ClimaArtifacts/tree/main/soi
 - [Large-scale forcing from HadGEM2-A at cfSites for driving single column models in ClimaAtmos.jl](https://github.com/CliMA/ClimaArtifacts/tree/main/cfsite_gcm_forcing)
 - [Measured sea ice concentration and sea surface
   temperature](https://github.com/CliMA/ClimaArtifacts/tree/main/historical_sst_sic)
+- [Large-scale forcing from HadGEM2-A at cfSites for driving single column models in ClimaAtmos.jl](https://github.com/CliMA/ClimaArtifacts/tree/main/cesm2_albedo)
 
 # The ultimate guide to ClimaArtifacts
 
@@ -206,7 +207,7 @@ To create a new artifact in `ClimaArtifacts`:
 If you are creating multiple artifacts from the same file, consider adding
 `append = true` to ensure that the `OutputArtifacts.toml` has all the
 information.
-   
+
 If your artifact is tied to your particular module, you may elect to add it to
 your repository instead. To do so, follow the same steps above with the
 exception that you have to create a new `artifacts` folder (if one does not
