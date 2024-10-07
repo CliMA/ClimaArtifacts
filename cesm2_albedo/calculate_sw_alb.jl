@@ -31,6 +31,7 @@ for (attrib_name,attrib_value) in rsus_file["rsus"].attrib
 end
 
 time_bnds_attrib = []
+# skip the calendar and units attributes
 no_copy_time_bnds = ["calendar", "units"]
 for (attrib_name,attrib_value) in rsus_file["time_bnds"].attrib
     if !(attrib_name in no_copy_time_bnds)
@@ -39,6 +40,7 @@ for (attrib_name,attrib_value) in rsus_file["time_bnds"].attrib
 end
 
 time_attrib = []
+# skip the calendar, title and type attributes
 no_copy_time = ["calendar", "title", "type"]
 for (attrib_name,attrib_value) in rsus_file["time"].attrib
     if !(attrib_name in no_copy_time)
@@ -61,8 +63,9 @@ for (attrib_name,attrib_value) in rsus_file["lat_bnds"].attrib
     end
 end
 
-lon_lat_attrib_no_copy = ["title", "type", "valid_max", "valid_min"]
 lon_attrib = []
+# skip the title, type, valid_max and valid_min attributes
+lon_lat_attrib_no_copy = ["title", "type", "valid_max", "valid_min"]
 for (attrib_name,attrib_value) in rsus_file["lon"].attrib
     if !(attrib_name in lon_lat_attrib_no_copy)
         push!(lon_attrib, attrib_name => attrib_value)
@@ -83,16 +86,11 @@ sw_alb = ((x, y) -> y != 0.0 ? x/y : 1.0f0).(rsus, rsds)
 
 # create the variables
 defVar(sw_alb_file, "lat", rsus_file["lat"],  dimnames(rsus_file["lat"]); attrib = lat_attrib)
-lat_bnds = defVar(sw_alb_file, "lat_bnds", Float64, ("bnds", "lat"); attrib = lat_bnds_attrib)
+defVar(sw_alb_file, "lat_bnds", Float64.(rsus_file["lat_bnds"]), ("bnds", "lat"); attrib = lat_bnds_attrib)
 defVar(sw_alb_file, "lon", rsus_file["lon"],  dimnames(rsus_file["lon"]); attrib = lon_attrib)
-lon_bnds = defVar(sw_alb_file, "lon_bnds", Float64, ("bnds", "lon"); attrib = lon_bnds_attrib)
+defVar(sw_alb_file, "lon_bnds", Float64.(rsus_file["lon_bnds"]), ("bnds", "lon"); attrib = lon_bnds_attrib)
 defVar(sw_alb_file, "sw_alb", sw_alb, dimnames(rsus_file["rsus"]); fillvalue=1.0f0, attrib = sw_attrib)
 defVar(sw_alb_file, "time", rsus_file["time"],  dimnames(rsus_file["time"]); attrib = time_attrib)
-time_bnds = defVar(sw_alb_file, "time_bnds", Float64, ("bnds", "time"); attrib = time_bnds_attrib)
-
-# set variable values
-lon_bnds[:, :] = rsus_file["lon_bnds"]
-lat_bnds[:, :] = rsus_file["lat_bnds"]
-time_bnds[:, :] = rsus_file["time_bnds"]
+time_bnds = defVar(sw_alb_file, "time_bnds", rsus_file["time_bnds"], ("bnds", "time"); attrib = time_bnds_attrib)
 
 close(sw_alb_file)
