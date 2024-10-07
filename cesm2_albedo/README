@@ -16,17 +16,17 @@ Run `julia --project create_artifact.jl`
 
 ### 1. `rsds_Amon_CESM2_historical_r1i1p1f1_gn_185001-201412.nc`
 
-This netCDF file contains Surface Upwelling Shortwave Radiation in the variable `rsus`.
-This variables is defined on the longitude, latitude, and time dimensions. `rsus` is taken as
-the montly average, with the first data point at 15/01/1850 12:00 and the las at 15/12/2014 12:00.
+This netCDF file contains Surface Downwelling Shortwave Radiation in the variable `rsds`.
+This variable is defined on the longitude, latitude, and time dimensions. `rsds` is taken as
+the montly average, with the first data point at 15/01/1850 12:00 and the last at 15/12/2014 12:00.
 This data file can be downloaded from [LLNL](https://aims3.llnl.gov/thredds/fileServer/css03_data/CMIP6/CMIP/NCAR/CESM2/historical/r1i1p1f1/Amon/rsds/gn/v20190308/rsds_Amon_CESM2_historical_r1i1p1f1_gn_185001-201412.nc
 )
 
 ### 2. `rsus_Amon_CESM2_historical_r1i1p1f1_gn_185001-201412.nc`
 
-This netCDF file contains Surface Downwelling Shortwave Radiation in the variable `rsds`.
-This variables is defined on the longitude, latitude, and time dimensions. `rsds` is taken as
-the montly average, with the first data point at 15/01/1850 12:00 and the las at 15/12/2014 12:00.
+This netCDF file contains Surface Upwelling Shortwave Radiation in the variable `rsus`.
+This variable is defined on the longitude, latitude, and time dimensions. `rsus` is taken as
+the monthly average, with the first data point at 15/01/1850 12:00 and the last at 15/12/2014 12:00.
 This data file can be downloaded from [LLNL](https://aims3.llnl.gov/thredds/fileServer/css03_data/CMIP6/CMIP/NCAR/CESM2/historical/r1i1p1f1/Amon/rsus/gn/v20190308/rsus_Amon_CESM2_historical_r1i1p1f1_gn_185001-201412.nc
 )
 
@@ -35,8 +35,8 @@ This data file can be downloaded from [LLNL](https://aims3.llnl.gov/thredds/file
 ### 1. `sw_albedo_Amon_CESM2_historical_r1i1p1f1_gn_185001-201412_v2_no-nans.nc`
 
 This netCDF file contains shortwave albedo in the variable `sw_alb`. The variable is defined
-on the longitude, latitude, and time dimensions. `sw_alb` is taken as the montly average,
-with the first data point at 15/01/1850 12:00 and the las at 15/12/2014 12:00. `sw_alb` is
+on the longitude, latitude, and time dimensions. `sw_alb` is taken as the monthly average,
+with the first data point at 15/01/1850 12:00 and the last at 15/12/2014 12:00. `sw_alb` is
 calculated by dividing Surface Upwelling Shortwave Radiation by Surface Downwelling Shortwave Radiation.
 At any point, if Surface Downwelling Shortwave Radiation is zero, `sw_alb` is set to 1.0.
 `sw_alb` is stored as a Float32.
@@ -46,7 +46,7 @@ At any point, if Surface Downwelling Shortwave Radiation is zero, `sw_alb` is se
 This netCDF file contains average shortwave albedo in the summer for each hemisphere.
 The variable is defined on the longitude and latitude. In the northern hemisphere the average
 is taken of shortwave albedo during May, June, and July. In the southern hemisphere the average
-is taken of shortwave albedo during December and January.
+is taken of shortwave albedo during November, December, and January.
 At any point, if data is missing, `sw_alb` is set to 1.0.
 `sw_alb` is stored as a Float32.
 
@@ -63,10 +63,10 @@ dividing `rsus` by `rsds`, and assigning a value of 1.0 when `rsds` is zero.
 
 This script processes `sw_albedo_Amon_CESM2_historical_r1i1p1f1_gn_185001-201412_v2_no-nans.nc`
 to create `bareground_albedo.nc` This is done by averaging the input `sw_alb` during the
-summer months for each hemisphere. To do this, first mean albedo is calulated globally
-for the northern hemisphere summer months. Then, mean albedo is calulated globally
-for the southern hemisphere summer months. Then, these two mean albedo's are merged, with the
-northern hemisphere set to the average during the northen hemisphere summer months and the
+summer months for each hemisphere. To do this, first mean albedo is calculated globally
+for the northern hemisphere summer months. Then, mean albedo is calculated globally
+for the southern hemisphere summer months. Then, these two mean albedos are merged, with the
+northern hemisphere set to the average during the northern hemisphere summer months and the
 southern hemisphere set to the average during the southern hemisphere summer months
 
 ## References

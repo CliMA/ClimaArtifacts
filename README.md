@@ -42,7 +42,7 @@ S. Gupta et al 2022, 2024](https://github.com/CliMA/ClimaArtifacts/tree/main/soi
 - [Large-scale forcing from HadGEM2-A at cfSites for driving single column models in ClimaAtmos.jl](https://github.com/CliMA/ClimaArtifacts/tree/main/cfsite_gcm_forcing)
 - [Measured sea ice concentration and sea surface
   temperature](https://github.com/CliMA/ClimaArtifacts/tree/main/historical_sst_sic)
-- [Large-scale forcing from HadGEM2-A at cfSites for driving single column models in ClimaAtmos.jl](https://github.com/CliMA/ClimaArtifacts/tree/main/cesm2_albedo)
+- [Global shortwave albedo from CLM model output for coupled and standalone land models](https://github.com/CliMA/ClimaArtifacts/tree/main/cesm2_albedo)
 
 # The ultimate guide to ClimaArtifacts
 
