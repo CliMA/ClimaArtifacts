@@ -1,6 +1,8 @@
-[earth_orography]
-git-tree-sha1 = "4b825dc642cb6eb9a060e54bf8d69288fbee4904"
+[earth_orography_30arcseconds]
+git-tree-sha1 = "03dd08fcbf363ed055a176dd7adefb60ff1c3493"
+[earth_orography_60arcseconds]
+git-tree-sha1 = "fe19d8dbe7a18ff39588e1f718014b0479d9c0f7"
 
-    [[earth_orography.download]]
-    sha256 = "533478a67c97f6d0e05549129db750f961c8fcb26b00cd14e4746c44a1af0c92"
-    url = "https://caltech.box.com/shared/static/x9uijilyrtxo93w9irjx7xlgo53vz9hs.gz"
+    [[earth_orography_60arcseconds.download]]
+    sha256 = "eca66c0701d1c2b9e271742314915ffbf4a0fae92709df611c323f38e019966e"
+    url = "https://caltech.box.com/shared/static/4asrxcgl6xsgenfcug9p0wkkyhtqilgk.gz"
