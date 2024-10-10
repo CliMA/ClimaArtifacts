@@ -18,14 +18,7 @@ println(FILE_URL)
 println(FILE_PATH)
 if !isfile(FILE_PATH)
     @info "$FILE_PATH not found, downloading it (might take a while)"
-    # The server has poor certificates, so we have to disable verification
     downloader = Downloads.Downloader()
-    downloader.easy_hook =
-        (easy, info) -> Downloads.Curl.setopt(
-            easy,
-            Downloads.Curl.CURLOPT_SSL_VERIFYPEER,
-            false,
-        )
     println(FILE_URL)
     println(FILE_PATH)
     downloaded_file = Downloads.download(FILE_URL; downloader)
