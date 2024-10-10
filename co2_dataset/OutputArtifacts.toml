@@ -1,0 +1,6 @@
+[co2_dataset]
+git-tree-sha1 = "cb78a8679830c437bcd00eec4135b879ad31aeb7"
+
+    [[co2_dataset.download]]
+    sha256 = "27e880dbf24f35b62cd5c4e9984bdf82a0745a5c9ca5533251cf6daab83d560c"
+    url = "https://caltech.box.com/shared/static/2zm23zww9yj5pi5pp2vageuwnpucbifg.gz"
