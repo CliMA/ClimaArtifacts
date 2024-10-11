@@ -12,13 +12,21 @@ To recreate the artifact:
 
 Run `julia --project create_artifact.jl`
 
-## Data File: `co2_mm_mlo.txt`
+## Data Files
 
-This .txt file contains montly mean CO2 data from Mauna Loa.
+### `co2_mm_mlo.txt`
+
+This .txt file contains monthly mean CO2 data from Mauna Loa.
 The file is updated each month with the latest data. The details of
 the data sources can be found inside the file, along with details on missing
-data handling. The file contains monthly average CO2 and de-seasonalized average
-CO2 from March 1958 to the present. It can be downloaded, along with a .csv version, from the NOAA [here](https://gml.noaa.gov/ccgg/trends/data.html)
+data handling. The file contains monthly average CO2 as ppm and de-seasonalized average
+CO2 as ppm from March 1958 to the present. It can be downloaded, along with a .csv version, from the NOAA [here](https://gml.noaa.gov/ccgg/trends/data.html)
+
+### `co2_daily_mlo.txt`
+
+This .txt file contains daily mean CO2 data as ppm from Mauna Loa.
+The file is updated each consistently with the latest data. The details of
+the data sources can be found inside the file. The file contains daily average CO2  May 19 1974 to the present. It can be downloaded, along with a .csv version, from the NOAA [here](https://gml.noaa.gov/ccgg/trends/data.html)
 
 ## References
 
