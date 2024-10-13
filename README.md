@@ -45,6 +45,7 @@ S. Gupta et al 2022, 2024](https://github.com/CliMA/ClimaArtifacts/tree/main/soi
 - [Global shortwave albedo from CLM model output for coupled and standalone land models](https://github.com/CliMA/ClimaArtifacts/tree/main/cesm2_albedo)
 - [Earth orography at 30 and 60 arc-second resolutions](https:////github.com/CliMA/ClimaArtifacts/tree/main/earth_orography)
 - [Monthly Mean CO2 from Mauna Loa](https://github.com/CliMA/ClimaArtifacts/tree/main/co2_dataset)
+- [Foliage clumping index, derived from MODIS data for 2006](https:////github.com/CliMA/ClimaArtifacts/tree/main/modis_clumping_index)
 
 # The ultimate guide to ClimaArtifacts
 
@@ -244,7 +245,7 @@ just uploaded.
 
 Go to [Caltech Box](https://caltech.app.box.com/). Navigate to your favorite
 folder and upload your data. Once the data is uploaded, you have to make it
-sherable. Click on the sharing icon on the right, the following screen will pop
+shareable. Click on the sharing icon on the right, the following screen will pop
 up:
 
 ![screenshot1](./screenshots/screenshot1.png)
