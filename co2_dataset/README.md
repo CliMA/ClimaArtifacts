@@ -22,11 +22,30 @@ the data sources can be found inside the file, along with details on missing
 data handling. The file contains monthly average CO2 as ppm and de-seasonalized average
 CO2 as ppm from March 1958 to the present. It can be downloaded, along with a .csv version, from the NOAA [here](https://gml.noaa.gov/ccgg/trends/data.html)
 
+#### Monthly Data Columns in order
+
+- Year
+- Month
+- Decimal Date
+- Monthly Average CO2 (ppm)
+- De-Seasonalized Monthly Average CO2 (ppm)
+- Number of Days Measured
+- Standard Deviation of Daily CO2 data
+- Uncertainty of Monthly Mean
+
 ### `co2_daily_mlo.txt`
 
 This .txt file contains daily mean CO2 data as ppm from Mauna Loa.
 The file is updated each consistently with the latest data. The details of
 the data sources can be found inside the file. The file contains daily average CO2  May 19 1974 to the present. It can be downloaded, along with a .csv version, from the NOAA [here](https://gml.noaa.gov/ccgg/trends/data.html)
+
+#### Daily Data Columns in order
+
+- Year
+- Month
+- Day
+- Decimal Date
+- CO2 molfrac (ppm)
 
 ## References
 
