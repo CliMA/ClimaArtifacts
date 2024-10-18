@@ -1,7 +1,7 @@
 # Surface Data for CLM: Plant Functional Types
 
 ## Overview
-This artifact contains scripts that process several Community Land Model (CLM) data files and maps vegetation properties based on Plant Functional Types (PFTs).
+This artifact contains scripts that process several Community Land Model (CLM) data files and maps vegetation properties based on Plant Functional Types (PFTs) and soil albedos based on soil color.
 Below is a detailed description of each file and its purpose.
 
 <!-- This repository contains the `surfdata_0.9x1.25_16pfts__CMIP6_simyr2000_c170616.nc` file used in the Community Land Model (CLM) for historical climate modeling. The dataset is tailored for simulations that emphasize natural vegetation dynamics without the inclusion of cultivated crops (CFTs). -->
@@ -18,7 +18,7 @@ To recreate the artifact:
 ## Input Files
 
 ### 1. `surfdata_0.9x1.25_16pfts__CMIP6_simyr2000_c170616.nc`
-The netCDF file includes comprehensive environmental data with a focus on vegetation represented through 15 different Plant Functional Types (PFTs). These PFTs play a crucial role in modeling biophysical processes and ecosystem functions within CLM simulations.
+The netCDF file includes comprehensive environmental data with a focus on vegetation represented through 15 different Plant Functional Types (PFTs). These PFTs play a crucial role in modeling biophysical processes and ecosystem functions within CLM simulations. It also contains soil color data, which is used to calculate soil alebdo
 
 - **Plant Functional Types**:
   - `not_vegetated`
@@ -44,6 +44,9 @@ The netCDF file includes comprehensive environmental data with a focus on vegeta
     - `PCT_NAT_PFT`: Indicates the percentage composition of each PFT (15) within natural vegetation land units, providing a granular look at vegetation distribution.
 
 These PFT variables are pivotal for simulating how natural ecosystems respond to historical climatic conditions and can be used to project changes in vegetation patterns due to climatic shifts.
+
+- **Variables Related to Albedo**:
+    - `SOIL_COLOR`: This variable gives the color class of soil across the land units. There are 20 soil classes.
 
 - **Data Download**: The dataset can be downloaded from the official input data repository for the Community Climate System Model:
 [CCSM Input Data Repository](https://svn-ccsm-inputdata.cgd.ucar.edu/trunk/inputdata/lnd/clm2/surfdata_map/)
@@ -111,6 +114,14 @@ value of 0.0 if C4 is dominant.
     - Describes the depth where ~2/3 of the roots are above
   - `xl(lat, lon)` Leaf/stem orientation index
 
+### 3. `soil_properties_map.nc`
+Contains the mapped soil albedos for each grid cell.
+- **Contents**:
+  - `PAR_albedo_dry(lat, lon)`: The dry PAR albedo for the soil color at each grid cell (0 to 1)
+  - `NIR_albedo_dry(lat, lon)`: The dry NIR albedo for the soil color at each grid cell (0 to 1)
+  - `PAR_albedo_wet(lat, lon)`: The saturated PAR albedo for the soil color at each grid cell (0 to 1)
+  - `NIR_albedo_wet(lat, lon)`: The saturated NIR albedo for the soil color at each grid cell (0 to 1)
+
 ## Scripts
 
 ### 1. `dominant_pft.py`
@@ -131,9 +142,18 @@ value of 0.0 if C4 is dominant.
   - Finds the rooting beta parameter for the dominant pft, and then calculates and maps the `rooting_depth` parameter
   - Outputs the mapped parameters to `vegetation_properties_map.nc`.
 
+### 3. `soil_variables.py`
+- **Description**: Script for mapping soil properties based on the soil color.
+- **Functionality**:
+  - Finds the soil color for each grid cell using `surfdata_0.9x1.25_16pfts__CMIP6_simyr2000_c170616.nc`.
+  - Maps soil color at each grid cell to dry PAR albedo, dry NIR albedo, wet PAR alebdo, and wet NIR albedo
+
 ## References
 For additional context on the development and capabilities of the Community Land Model, refer to the following publication:
 - Lawrence, D. M., Fisher, R. A., Koven, C. D., Oleson, K. W., Swenson, S. C., Bonan, G., et al. (2019). The Community Land Model Version 5: Description of New Features, Benchmarking, and Impact of Forcing Uncertainty. *Journal of Advances in Modeling Earth Systems*, 11(12), 4245–4287. [DOI:10.1029/2018MS001583](https://doi.org/10.1029/2018MS001583)
+
+For additional context on soil albedo and soil color schemes, refer to the following publication:
+- Braghiere, R. K., Wang, Y., Gagné-Landmann, A., Brodrick, P. G., Bloom, A. A., Norton, A. J., Ma, S., Levine, P., Longo, M., Deck, K., Gentine, P., Worden, J. R., Frankenberg, C., & Schneider, T. (2023). The Importance of Hyperspectral Soil Albedo Information for Improving Earth System Model Projections. AGU Advances, 4(4), e2023AV000910. https://doi.org/10.1029/2023AV000910
 
 ## License
 This dataset is distributed under the Creative Commons Attribution 4.0 International License, permitting use, distribution, and reproduction in any medium, provided the original work is properly cited.
