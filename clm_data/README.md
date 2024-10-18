@@ -152,5 +152,8 @@ Contains the mapped soil albedos for each grid cell.
 For additional context on the development and capabilities of the Community Land Model, refer to the following publication:
 - Lawrence, D. M., Fisher, R. A., Koven, C. D., Oleson, K. W., Swenson, S. C., Bonan, G., et al. (2019). The Community Land Model Version 5: Description of New Features, Benchmarking, and Impact of Forcing Uncertainty. *Journal of Advances in Modeling Earth Systems*, 11(12), 4245–4287. [DOI:10.1029/2018MS001583](https://doi.org/10.1029/2018MS001583)
 
+For additional context on soil albedo and soil color schemes, refer to the following publication:
+- Braghiere, R. K., Wang, Y., Gagné-Landmann, A., Brodrick, P. G., Bloom, A. A., Norton, A. J., Ma, S., Levine, P., Longo, M., Deck, K., Gentine, P., Worden, J. R., Frankenberg, C., & Schneider, T. (2023). The Importance of Hyperspectral Soil Albedo Information for Improving Earth System Model Projections. AGU Advances, 4(4), e2023AV000910. https://doi.org/10.1029/2023AV000910
+
 ## License
 This dataset is distributed under the Creative Commons Attribution 4.0 International License, permitting use, distribution, and reproduction in any medium, provided the original work is properly cited.
