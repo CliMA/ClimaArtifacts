@@ -12,7 +12,7 @@ const FILE_PATHS = [
     "pft-physiology.c110225.nc",
     "clm5_params.c171117.nc"
     ]
-const OUTPUT_FILES = ["dominant_PFT_map.nc", "vegetation_properties_map.nc"]
+const OUTPUT_FILES = ["dominant_PFT_map.nc", "vegetation_properties_map.nc", "soil_properties_map.nc"]
 
 output_dir = basename(@__DIR__) * "_artifact"
 if isdir(output_dir)
@@ -43,6 +43,7 @@ end
 
 run(`python dominant_pft.py`)
 run(`python pft_variables.py`)
+run(`python soil_variables.py`)
 
 for output_file in OUTPUT_FILES
     output_path = joinpath(output_dir, basename(output_file))
