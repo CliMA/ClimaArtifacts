@@ -44,6 +44,7 @@ S. Gupta et al 2022, 2024](https://github.com/CliMA/ClimaArtifacts/tree/main/soi
   temperature](https://github.com/CliMA/ClimaArtifacts/tree/main/historical_sst_sic)
 - [Global shortwave albedo from CLM model output for coupled and standalone land models](https://github.com/CliMA/ClimaArtifacts/tree/main/cesm2_albedo)
 - [Earth orography at 30 and 60 arc-second resolutions](https:////github.com/CliMA/ClimaArtifacts/tree/main/earth_orography)
+- [Earth bedrock depth at 30 and 60 arc-second resolutions](https:////github.com/CliMA/ClimaArtifacts/tree/main/bedrock_depth)
 - [Monthly Mean CO2 from Mauna Loa](https://github.com/CliMA/ClimaArtifacts/tree/main/co2_dataset)
 - [Foliage clumping index, derived from MODIS data for 2006](https:////github.com/CliMA/ClimaArtifacts/tree/main/modis_clumping_index)
 
