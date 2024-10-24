@@ -1,6 +1,6 @@
 [era5_cloud]
-git-tree-sha1 = "4601128b8f4013adfac134f3b62a7c1ad7dae9de"
+git-tree-sha1 = "10742e0a2e343d13bb04df379e300a83402d4106"
 
     [[era5_cloud.download]]
-    sha256 = "31bc9c4e1e18cb2eb6f025e8bb800db8548cd5454b2b47cd69814d4ab34cce35"
+    sha256 = "bb51e2f2d315b487e05a8d38944d4ad937ee4a40c43b68541220c5d54425e24a"
     url = "https://caltech.box.com/shared/static/b6ur4ap4vo04j09vdulem96z9fxqlgyn.gz"

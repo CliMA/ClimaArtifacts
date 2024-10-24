@@ -32,7 +32,8 @@ function create_cloud(infile_path, outfile_path)
     lat_attribs = Dict(ncin["latitude"].attrib)
     lat_attribs["_FillValue"] = NaN32
     lat = defVar(ncout, "lat", FT, ("lat",), attrib = lat_attribs, deflatelevel = 9)
-    lat[:] = Array(ncin["latitude"])[begin:THINNING_FACTOR:end]
+    # ERA5 latitude coordinate is from 90 to -90, here we reverse it so that we can use ClimaUtilitiles.
+    lat[:] = reverse(Array(ncin["latitude"])[begin:THINNING_FACTOR:end])
 
     z = defVar(ncout, "z", FT, ("z",), deflatelevel = 9)
     plevin = ncin["pressure_level"] .* HPA_TO_PA
@@ -55,7 +56,7 @@ function create_cloud(infile_path, outfile_path)
             deflatelevel = 9,
         )
 
-        ncout[name][:,:,:,:] = ncin[name][begin:THINNING_FACTOR:end,begin:THINNING_FACTOR:end,:,:]
+        ncout[name][:,:,:,:] = reverse(ncin[name][begin:THINNING_FACTOR:end,begin:THINNING_FACTOR:end,:,:], dims=2)
     end
 
     close(ncin)
