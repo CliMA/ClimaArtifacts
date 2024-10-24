@@ -31,6 +31,7 @@ artifacts.
 
 - [Aerosol concentrations (monthly mean, decadal averaged from 1970 to 2030)](https://github.com/CliMA/ClimaArtifacts/tree/main/aerosol_concentrations)
 - [Ozone concentrations (monthly mean, from 1950 to 2014)](https://github.com/CliMA/ClimaArtifacts/tree/main/ozone_concentrations)
+- [Cloud properties (monthly mean, 2010)]((https://github.com/CliMA/ClimaArtifacts/tree/main/era5_cloud))
 - [CLM surface data for the year 2000](https://github.com/CliMA/ClimaArtifacts/tree/main/clm_data)
 - [Soil parameters needed for Richards equation; global at 1km resolution from
 S. Gupta et al 2022, 2024](https://github.com/CliMA/ClimaArtifacts/tree/main/soil_params_Gupta2020_2022)
