@@ -2,12 +2,10 @@ using Downloads
 
 using ClimaArtifactsHelper
 
-# This file is in a zip file on caltech data archive: 
-# https://data.caltech.edu/records/z24s9-nqc90/files/Climate_Model_RMSE_Analysis.zip?download=1
-const FILE_URL = "https://caltech.box.com/shared/static/k1or5d0d9xdvyfiytl1os7z341monkzn.nc"
-const FILE_PATH = "gpcp.precip.mon.mean.197901-202305.nc"
+const FILE_URL = "https://downloads.psl.noaa.gov/Datasets/gpcp/precip.mon.mean.nc"
+const FILE_PATH = "precip.mon.mean.nc"
 
-output_dir = "precipitation_obs_artifact"
+output_dir = "precipitation_obs_artifact_v2"
 if isdir(output_dir)
     @warn "$output_dir already exists. Content will end up in the artifact and may be overwritten."
     @warn "Abort this calculation, unless you know what you are doing."
