@@ -5,7 +5,7 @@ using ClimaArtifactsHelper
 const FILE_URL = "https://downloads.psl.noaa.gov/Datasets/gpcp/precip.mon.mean.nc"
 const FILE_PATH = "precip.mon.mean.nc"
 
-output_dir = "precipitation_obs_artifact_v2"
+output_dir = "precipitation_obs_artifact"
 if isdir(output_dir)
     @warn "$output_dir already exists. Content will end up in the artifact and may be overwritten."
     @warn "Abort this calculation, unless you know what you are doing."

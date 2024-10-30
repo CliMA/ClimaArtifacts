@@ -20,7 +20,7 @@ Run `julia --project create_artifact.jl`
 ### Spatial Coverage
 
 - 88.75N - 88.75S, 1.25E - 358.75E,
-- 2.5 degree latitude x 2.5 degree longitude global grid (144x72)
+- 2.5 degree latitude x 2.5 degree longitude global grid
 
 ### Caveats
 

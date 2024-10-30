@@ -2,5 +2,5 @@
 git-tree-sha1 = "5f0075f042bc83b580d2c4f725f851d8e0b9c20a"
 
     [[precipitation_obs.download]]
-    sha256 = "22d0ff92a6fe4c5c9b26af89b98a6c175497e8dd028bb15eb4c4ae6e9712287b"
-    url = "https://caltech.box.com/shared/static/j1x56khvit9sutq8lapdqxngpwd465l4.gz"
+    sha256 = "1aea361ee1c2636bd5c4cc343202dab814d246a7e0356a9caac9fd9c7cf3821c"
+    url = "https://caltech.box.com/shared/static/j63uak557kw7tlzb3dgwifoaeczekzm4.gz"
