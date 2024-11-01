@@ -1,0 +1,6 @@
+[surface_temperatures]
+git-tree-sha1 = "9f08e432cb54e9a5a445dcdaeba6c42d02333dfc"
+
+    [[surface_temperatures.download]]
+    sha256 = "864117ee0beb2d5b48dde84aa3f0f76add1ad0dcf7529706d320d147a0b01fb9"
+    url = "https://caltech.box.com/shared/static/6ko8k20dt0krqc6nyye7lfh9re2ymtz3.gz"
