@@ -50,6 +50,7 @@ S. Gupta et al 2022, 2024](https://github.com/CliMA/ClimaArtifacts/tree/main/soi
 - [Foliage clumping index, derived from MODIS data for 2006](https:////github.com/CliMA/ClimaArtifacts/tree/main/modis_clumping_index)
 - [Subset of ILAMB datasets](https:////github.com/CliMA/ClimaArtifacts/tree/main/ilamb_data)
 - [Bonan 2019 Richards equation data](https:////github.com/CliMA/ClimaArtifacts/tree/main/bonan_richards_eqn)
+- [TwoStream model implementation test data](https:////github.com/CliMA/ClimaArtifacts/tree/main/twostr_test)
 
 # The ultimate guide to ClimaArtifacts
 
@@ -240,7 +241,7 @@ about your new artifact and where it is used.
 To test that your artifact works, create a new folder, e.g., `/tmp/mynewfolder`,
 create an `Artifacts.toml` file in it, the content of which has to be the
 `OutputArtifacts.toml` file created by the `create_artifact_guided` function.
-Then, call `julia --project -e 'using Artifacts; prinln(artifact"AAAAAA")'` from
+Then, call `julia --project -e 'using Artifacts; println(artifact"AAAAAA")'` from
 that folder, where `AAAAAA` is the name of your artifact. It should print
 `/groups/esm/ClimaArtifacts/artifacts/AAAAAA`, where `AAAAAA` is the folder you
 just uploaded.
