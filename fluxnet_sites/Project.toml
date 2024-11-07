@@ -1,0 +1,5 @@
+[deps]
+ClimaArtifactsHelper = "6ffa2572-8378-4377-82eb-ea11db28b255"
+Dates = "ade2ca70-3891-5945-98fb-dc099432e06a"
+DelimitedFiles = "8bb1440f-4735-579b-a4ab-409b98df4dab"
+Formatting = "59287772-0a20-5a39-b81b-1366585eb4c0"
