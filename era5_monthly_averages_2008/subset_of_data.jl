@@ -49,7 +49,6 @@ function create_new_ds_from_time_indx(
                 Float32.(reverse(var[:, :, time_indx], dims = 2)),
                 dimnames(var);
                 attrib = attrib,
-                # attrib = copy(var.attrib),
                 deflatelevel = 9,
             )
         end

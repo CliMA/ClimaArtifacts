@@ -1,4 +1,4 @@
-# ERA5 monthly averages
+# ERA5 monthly averages 2008
 
 This artifact processes data coming from [ERA5 monthly averaged reanalysis](https://cds.climate.copernicus.eu/datasets/reanalysis-era5-single-levels-monthly-means?tab=download) and contains
 monthly averaged surface fluxes and runoff rates.
@@ -41,7 +41,7 @@ There processing of the downloaded dataset results in two output datasets:
 
 Both of the output datasets contain the same variables and spatial coverage, but the variables are defined on different time dimensions.
 
-## Spatial Coverage
+### Spatial Coverage
 
 - 1 degree latitude x 1 degree longitude grid
 - -90N to 90N and 0E to 359E
@@ -49,29 +49,29 @@ Both of the output datasets contain the same variables and spatial coverage, but
 
 The shared variables, which are all stored as Float32s and defined on the latitude, longitude, and time dimensions, are:
 
-## `mslhf`
+### `mslhf`
 
 This is the mean surface latent heat flux in units of W m**-2. No processing is done to this variable other than flipping the latitude dimension.
 
-## `msshf`
+### `msshf`
 
 This is the mean surface sensible heat flux in units of W m**-2. No processing is done to this variable other than flipping the latitude dimension.
 
-## `mssror`
+### `mssror`
 
 This is the mean sub-surface runoff rate in units of kg m**-2 s**-1. No processing is done to this variable other than flipping the latitude dimension.
 
-## `msror`
+### `msror`
 
 This is the mean surface runoff rate in units of kg m**-2 s**-1. No processing is done to this variable other than flipping the latitude dimension.
 
-## `msuwlwrf`
+### `msuwlwrf`
 
 This is the mean surface upward long-wave radiation flux in units of W m**-2.
 This variable is created during processing by taking the difference of
 mean surface downward long-wave radiation flux and mean surface net long-wave radiation flux, and then flipping the latitude dimension.
 
-## `msuwswrf`
+### `msuwswrf`
 
 This is the mean surface upward short-wave radiation flux in units of W m**-2.
 This variable is created during processing by taking the difference of
@@ -84,7 +84,7 @@ The two output files have different temporal coverage.
 ### `era5_monthly_surface_fluxes_200801-200812.nc`
 
 This file contains Monthly averaged reanalysis, which is produced by averaging all daily data for each month. This results in 12 points on the
-time dimension, where each point in the 15th of the month that the point represents. For example, the 6th index of `time` is 2008-06-15T00:00:00,
+time dimension, where each point is the 15th of the month that the point represents. For example, the 6th index of `time` is 2008-06-15T00:00:00,
 which represents the whole month of June in 2008.
 
 ### `era5_monthly_surface_fluxes_hourly_200801-200812.nc`
@@ -94,7 +94,7 @@ This file contains Monthly averages by hour of day, which constitutes the averag
 
 ## Citation
 
-Hersbach, H., Bell, B., Berrisford, P., Biavati, G., Horányi, A., Muñoz Sabater, J., Nicolas, J., Peubey, C., Radu, R., Rozum, I., Schepers, D., Simmons, A., Soci, C., Dee, D., Thépaut, J-N. (2023): ERA5 monthly averaged data on single levels from 1940 to present. Copernicus Climate Change Service (C3S) Climate Data Store (CDS), DOI: 10.24381/cds.f17050d7 (Accessed on DD-MMM-YYYY)
+Hersbach, H., Bell, B., Berrisford, P., Biavati, G., Horányi, A., Muñoz Sabater, J., Nicolas, J., Peubey, C., Radu, R., Rozum, I., Schepers, D., Simmons, A., Soci, C., Dee, D., Thépaut, J-N. (2023): ERA5 monthly averaged data on single levels from 1940 to present. Copernicus Climate Change Service (C3S) Climate Data Store (CDS), DOI: 10.24381/cds.f17050d7 (Accessed on 11-11-2024)
 
 ## License
 
