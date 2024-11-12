@@ -30,7 +30,7 @@ if !isfile(DOWNLOAD_FILE_NAME)
         println("Enter your CDS Personal Access Token:")
         cds_PAT = readline()
         println("Downloading data with CDS API using PAT: $cds_PAT")
-        run(`python download_data.py $cds_PAT`)
+        run(`python download_data.py -k $cds_PAT`)
     end
 end
 
