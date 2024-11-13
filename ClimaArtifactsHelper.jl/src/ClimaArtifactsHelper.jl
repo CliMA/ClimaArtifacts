@@ -204,8 +204,12 @@ function create_artifact_guided_one_file(
         downloaded_file = download(file_url)
         Base.mv(downloaded_file, file_path)
     end
-
-    Base.cp(file_path, joinpath(output_dir, basename(file_path)))
+    # There are issues with large files in Base.cp https://github.com/JuliaLang/julia/issues/56537
+    if Sys.iswindows()
+        Base.cp(file_path, joinpath(output_dir, basename(file_path)))
+    else
+        run(`cp $file_path $(joinpath(output_dir, basename(file_path)))`)
+    end
 
     create_artifact_guided(output_dir; artifact_name, append)
 end
