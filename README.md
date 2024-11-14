@@ -54,6 +54,7 @@ S. Gupta et al 2022, 2024](https://github.com/CliMA/ClimaArtifacts/tree/main/soi
 - [Berkeley Earth Global Gridded Temperature Data](https:////github.com/CliMA/ClimaArtifacts/tree/main/surface_temperatures)
 - [Selected FLUXNET tower data](https:////github.com/CliMA/ClimaArtifacts/tree/main/fluxnet_sites)
 - [ERA5 Monthly Averages 2008](https:////github.com/CliMA/ClimaArtifacts/tree/main/era5_surface_fluxes_2008)
+- [Initial conditions for summer DYAMOND simulations](https:////github.com/CliMA/ClimaArtifacts/tree/main/atmos_dyamond_summer)
 
 # The ultimate guide to ClimaArtifacts
 
