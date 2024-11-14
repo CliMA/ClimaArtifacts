@@ -55,6 +55,7 @@ S. Gupta et al 2022, 2024](https://github.com/CliMA/ClimaArtifacts/tree/main/soi
 - [Selected FLUXNET tower data](https:////github.com/CliMA/ClimaArtifacts/tree/main/fluxnet_sites)
 - [ERA5 Monthly Averages 2008](https:////github.com/CliMA/ClimaArtifacts/tree/main/era5_surface_fluxes_2008)
 - [Initial conditions for summer DYAMOND simulations](https:////github.com/CliMA/ClimaArtifacts/tree/main/atmos_dyamond_summer)
+- [ERA5 Land Forcing Data 2008](https:////github.com/CliMA/ClimaArtifacts/tree/main/era5_land_forcing_data2008)
 
 # The ultimate guide to ClimaArtifacts
 
