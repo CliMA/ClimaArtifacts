@@ -136,7 +136,7 @@ function create_artifact_guided(artifact_dir; artifact_name, append = false)
     open_mode = append ? "a" : "w"
 
     # This is where we save the string we create
-    !append || (isfile(output_artifacts) && @warn "Found $output_artifacts. It will be overwritten")
+    append || (isfile(output_artifacts) && @warn "Found $output_artifacts. It will be overwritten")
 
     if foldersize(artifact_dir) > LARGE_FILESIZE
         # Artifacts that are too large. In this case, we have to manually create an hash and
