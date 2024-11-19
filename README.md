@@ -68,6 +68,8 @@ S. Gupta et al 2022, 2024](https://github.com/CliMA/ClimaArtifacts/tree/main/soi
 - [RMSE for CMIP models](https://github.com/CliMA/ClimaArtifacts/tree/main/cmip_model_rmse)
 - [Earth orography at 30 and 60 arc-second resolutions](https:////github.com/CliMA/ClimaArtifacts/tree/main/earth_orography)
 - [Monthly Mean CO2 from Mauna Loa](https://github.com/CliMA/ClimaArtifacts/tree/main/co2_dataset)
+- [Land-sea mask](https://github.com/CliMA/ClimaArtifacts/tree/main/landsea_mask)
+
 
 # The ultimate guide to ClimaArtifacts
 

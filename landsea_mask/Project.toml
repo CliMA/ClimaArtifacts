@@ -1,0 +1,7 @@
+[deps]
+ClimaArtifactsHelper = "6ffa2572-8378-4377-82eb-ea11db28b255"
+Downloads = "f43a241f-c20a-4ad4-852c-f6b1247861c6"
+ImageMorphology = "787d08f9-d448-5407-9aad-5290dd7ab264"
+NCDatasets = "85f8d34a-cbdd-5861-8df4-14fed0d494ab"
+OrderedCollections = "bac558e1-5e72-5ebc-8fee-abe8a469f55d"
+StatsBase = "2913bbd2-ae8a-5f71-8c99-4fb6c76f3a91"
