@@ -7,13 +7,60 @@ using Pkg.Artifacts
 import SHA: sha1
 import Downloads: download
 
-export create_artifact_guided, create_artifact_guided_one_file
+export create_artifact_guided,
+    create_artifact_guided_one_file,
+    download_rate_callback
 
 const MB = 1024 * 1024
+const GB = 1024 * MB
 
 # Mark files larger than this as "undownloadable". This will prevent them from
 # being mirrored by the Julia servers
 const LARGE_FILESIZE = 500MB
+
+"""
+    download_size_string(bytes)
+
+Return a human-readable string for the given number of bytes.
+"""
+function download_size_string(bytes)
+    if bytes >= GB
+        size = round(bytes/GB, digits=2)
+        unit = "GB"
+    else
+        size = div(bytes, MB)
+        unit = "MB"
+    end
+    return "$size $unit"
+end
+
+"""
+    download_rate_callback()
+
+Create a callback that prints the download rate to the terminal. The returned function is
+designed to be used as a callback for Downloads.jl.
+"""
+function download_rate_callback()
+    last_time::Float64 = time()
+    last_now::Int = 0
+    return (total, now) -> begin
+        now_time = time()
+        if now_time - last_time > 1
+            download_rate = round(Int, (now - last_now) / (now_time - last_time))
+            if total == 0
+                print("Downloaded $(download_size_string(now)) ")
+            else
+                print(
+                    "Downloaded $(download_size_string(now)) out of $(download_size_string(total)): "
+                )
+                print("$(div(now * 100, total))% complete ")
+            end
+            print("at download rate of: $(download_size_string(download_rate))/s\r")
+            last_time = now_time
+            last_now = now
+        end
+    end
+end
 
 """
     foldersize(dir = ".")
@@ -201,7 +248,7 @@ function create_artifact_guided_one_file(
     if !isfile(file_path)
         isnothing(file_url) && error("File not found but file url not provided")
         @info "$file_path not found, downloading it (might take a while)"
-        downloaded_file = download(file_url)
+        downloaded_file = download(file_url; progress = download_rate_callback())
         Base.mv(downloaded_file, file_path)
     end
     # There are issues with large files in Base.cp https://github.com/JuliaLang/julia/issues/56537
