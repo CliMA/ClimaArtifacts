@@ -231,6 +231,15 @@ To create a new artifact in `ClimaArtifacts`:
 5. The `create_artifact_guided` starts a guided process that gives you the
    string to put in your `Artifacts.toml` files.
 
+If you are using `Downloads.jl`, you can use `download_rate_callback` to display
+the download rate and progress. An example of its usage is:
+
+```julia
+using Downloads
+using ClimaArtifactsHelper
+Downloads.download("https://www.foo.bar/baz.png"; progress = download_rate_callback())
+```
+
 If you are creating multiple artifacts from the same file, consider adding
 `append = true` to ensure that the `OutputArtifacts.toml` has all the
 information.
