@@ -29,40 +29,48 @@ artifacts.
 
 ## Artifacts available
 
+### Atmosphere
+
 - [Aerosol concentrations (monthly mean, decadal averaged from 1970 to 2030)](https://github.com/CliMA/ClimaArtifacts/tree/main/aerosol_concentrations)
 - [Ozone concentrations (monthly mean, from 1950 to 2014)](https://github.com/CliMA/ClimaArtifacts/tree/main/ozone_concentrations)
 - [Cloud properties (monthly mean, 2010)]((https://github.com/CliMA/ClimaArtifacts/tree/main/era5_cloud))
+- [Temperature average and restart file for ClimaAtmos Held-Suarez perfect model calibration](https://github.com/CliMA/ClimaArtifacts/tree/main/atmos_held_suarez_obs)
+- [Large-scale forcing from HadGEM2-A at cfSites for driving single column models in ClimaAtmos.jl](https://github.com/CliMA/ClimaArtifacts/tree/main/cfsite_gcm_forcing)
+- [Initial conditions for summer DYAMOND simulations](https:////github.com/CliMA/ClimaArtifacts/tree/main/atmos_dyamond_summer)
+
+### Land
+
 - [CLM surface data for the year 2000](https://github.com/CliMA/ClimaArtifacts/tree/main/clm_data)
 - [Soil parameters needed for Richards equation; global at 1km resolution from
 S. Gupta et al 2022, 2024](https://github.com/CliMA/ClimaArtifacts/tree/main/soil_params_Gupta2020_2022)
-- [GPCP precipitation data](https://github.com/CliMA/ClimaArtifacts/tree/main/precipitation_obs)
-- [CERES radiative fluxes data](https://github.com/CliMA/ClimaArtifacts/tree/main/radiation_obs)
-- [RMSE for CMIP models](https://github.com/CliMA/ClimaArtifacts/tree/main/cmip_model_rmse)
-- [Temperature average and restart file for ClimaAtmos Held-Suarez perfect model calibration](https://github.com/CliMA/ClimaArtifacts/tree/main/atmos_held_suarez_obs)
-- [ESM-SnowMIP data](https://github.com/CliMA/ClimaArtifacts/tree/main/snowmip)
-- [Large-scale forcing from HadGEM2-A at cfSites for driving single column models in ClimaAtmos.jl](https://github.com/CliMA/ClimaArtifacts/tree/main/cfsite_gcm_forcing)
-- [Measured sea ice concentration and sea surface
-  temperature](https://github.com/CliMA/ClimaArtifacts/tree/main/historical_sst_sic)
-- [Global shortwave albedo from CLM model output for coupled and standalone land models](https://github.com/CliMA/ClimaArtifacts/tree/main/cesm2_albedo)
-- [Earth orography at 30 and 60 arc-second resolutions](https:////github.com/CliMA/ClimaArtifacts/tree/main/earth_orography)
-- [Earth bedrock depth at 30 and 60 arc-second resolutions](https:////github.com/CliMA/ClimaArtifacts/tree/main/bedrock_depth)
-- [Monthly Mean CO2 from Mauna Loa](https://github.com/CliMA/ClimaArtifacts/tree/main/co2_dataset)
 - [Foliage clumping index, derived from MODIS data for 2006](https:////github.com/CliMA/ClimaArtifacts/tree/main/modis_clumping_index)
 - [Subset of ILAMB datasets](https:////github.com/CliMA/ClimaArtifacts/tree/main/ilamb_data)
 - [Bonan 2019 Richards equation data](https:////github.com/CliMA/ClimaArtifacts/tree/main/bonan_richards_eqn)
 - [TwoStream model implementation test data](https:////github.com/CliMA/ClimaArtifacts/tree/main/twostr_test)
 - [Berkeley Earth Global Gridded Temperature Data](https:////github.com/CliMA/ClimaArtifacts/tree/main/surface_temperatures)
 - [Selected FLUXNET tower data](https:////github.com/CliMA/ClimaArtifacts/tree/main/fluxnet_sites)
+- [ESM-SnowMIP data](https://github.com/CliMA/ClimaArtifacts/tree/main/snowmip)
 - [ERA5 Monthly Averages 2008](https:////github.com/CliMA/ClimaArtifacts/tree/main/era5_surface_fluxes_2008)
-- [Initial conditions for summer DYAMOND simulations](https:////github.com/CliMA/ClimaArtifacts/tree/main/atmos_dyamond_summer)
+- [Global shortwave albedo from CLM model output for coupled and standalone land models](https://github.com/CliMA/ClimaArtifacts/tree/main/cesm2_albedo)
+- [Earth bedrock depth at 30 and 60 arc-second resolutions](https:////github.com/CliMA/ClimaArtifacts/tree/main/bedrock_depth)
 - [ERA5 Land Forcing Data 2008](https:////github.com/CliMA/ClimaArtifacts/tree/main/era5_land_forcing_data2008)
 - [ERA5 Monthly Averages on Pressure Levels 1979-2024](https:////github.com/CliMA/ClimaArtifacts/tree/main/era5_monthly_averages_pressure_levels_1979_2024)
 - [TOPMODEL topographic index statistics](https:////github.com/CliMA/ClimaArtifacts/tree/main/topmodel)
 - [ERA5 Monthly Averages on Single Levels 1979-2024](https:////github.com/CliMA/ClimaArtifacts/tree/main/era5_monthly_averages_single_level_1979_2024)
 
+### Coupler/shared
+
+- [Measured sea ice concentration and sea surface
+  temperature](https://github.com/CliMA/ClimaArtifacts/tree/main/historical_sst_sic)
+- [GPCP precipitation data](https://github.com/CliMA/ClimaArtifacts/tree/main/precipitation_obs)
+- [CERES radiative fluxes data](https://github.com/CliMA/ClimaArtifacts/tree/main/radiation_obs)
+- [RMSE for CMIP models](https://github.com/CliMA/ClimaArtifacts/tree/main/cmip_model_rmse)
+- [Earth orography at 30 and 60 arc-second resolutions](https:////github.com/CliMA/ClimaArtifacts/tree/main/earth_orography)
+- [Monthly Mean CO2 from Mauna Loa](https://github.com/CliMA/ClimaArtifacts/tree/main/co2_dataset)
+
 # The ultimate guide to ClimaArtifacts
 
-Last update: 26 September 2024
+Last update: 21 November 2024
 
 #### What is an artifact?
 
@@ -253,6 +261,30 @@ Then, call `julia --project -e 'using Artifacts; println(artifact"AAAAAA")'` fro
 that folder, where `AAAAAA` is the name of your artifact. It should print
 `/groups/esm/ClimaArtifacts/artifacts/AAAAAA`, where `AAAAAA` is the folder you
 just uploaded.
+
+#### What is a _undownloadable_ artifact? Why do we need them?
+
+`ClimaArtifacts` treats small and big files differently. 
+
+Small files are uploaded to network-accessible location. When a package using
+these artifacts is registered, these files are also mirror by the Julia storage
+servers. Users automatically obtain the artifact upon package instantiation (if
+not lazy) or when first used (if lazy). When the artifact is obtained, its
+integrity is also verified by computing a cryptographic hash and check it
+against a known value. 
+
+Many of the above-described features that small files easy to use and
+worry-free, become a problem for large files:
+1. Mirroring large files on the Julia servers is not an acceptable use of shared
+   resources;
+2. Automatically download large files greatly increases the instantiation time;
+3. Computing cryptographic hashes for large files can take a long time.
+
+In addition to this, we do not want to hide the location of the large files and
+we want to let users pick the location. This is because home directories might
+have limited storage space, and more generally users might want to decide where
+to save large files. This is especially on clusters, where homes are small and
+groups might decide to save the input files in folders shared across users.
 
 #### How to upload on the Caltech Box?
 
