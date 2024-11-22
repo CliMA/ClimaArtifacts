@@ -62,9 +62,9 @@ To recreate this artifact:
   and longitude.
 
 ## Files
-- `era5_2008_0.9x1.25.nc` (~10.37GB)
-- `era5_2008_0.9x1.25_lowres.nc` (~192.82MB)
-- `era5_2008_0.9x1.25_lai.nc` (~3.56MB)
+- `era5_2008_0.9x1.25.nc` (~21.32GB)
+- `era5_2008_0.9x1.25_lowres.nc` (~346.87MB)
+- `era5_2008_0.9x1.25_lai.nc` (~25.87MB)
 
 ## Attribution
 Hersbach, H. et al., (2018) was downloaded from the Copernicus Climate Change Service (2023). Our dataset contains modified Copernicus Climate Change Service information [2023]. Neither the European Commission nor ECMWF is responsible for any use that may be made of the Copernicus information or data it contains.

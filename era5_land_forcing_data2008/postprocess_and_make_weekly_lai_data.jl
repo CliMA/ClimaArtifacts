@@ -41,7 +41,7 @@ function postprocess_and_make_weekly_lai_data(ncin, fileout)
         Int32,
         ("time",),
         attrib = ncin["valid_time"].attrib,
-        deflatelevel = 9,
+        deflatelevel = 0,
     )
 
     time_[:] = Array(ncin["valid_time"])[times]
@@ -52,7 +52,7 @@ function postprocess_and_make_weekly_lai_data(ncin, fileout)
         Float32,
         ("lon",),
         attrib = delete!(copy(ncin["longitude"].attrib), "_FillValue"),
-        deflatelevel = 9,
+        deflatelevel = 0,
     )
     lon[:] = Array(ncin["longitude"])
 
@@ -63,7 +63,7 @@ function postprocess_and_make_weekly_lai_data(ncin, fileout)
         ("lat",),
         attrib = copy(ncin["latitude"].attrib) |>
                  x -> delete!(x, "_FillValue") |> x -> delete!(x, "stored_direction"),
-        deflatelevel = 9,
+        deflatelevel = 0,
     )
 
     # Reverse latitude dimension so that the elements are in increasing order
@@ -88,7 +88,7 @@ function postprocess_and_make_weekly_lai_data(ncin, fileout)
             Float32,
             ("lon", "lat", "time"),
             attrib = attribs,
-            deflatelevel = 9,
+            deflatelevel = 0,
         )
         ncout[varname][:, :, :] = reverse(ncin[varname][:, :, times], dims = 2)
     end

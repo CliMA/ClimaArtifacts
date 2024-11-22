@@ -39,7 +39,7 @@ function thin_and_postprocess_artifact(ncin, fileout; THINNING_FACTOR = 8)
         Int32,
         ("time",),
         attrib = ncin["valid_time"].attrib,
-        deflatelevel = 9,
+        deflatelevel = 0,
     )
 
     time_[:] = Array(ncin["valid_time"])
@@ -50,7 +50,7 @@ function thin_and_postprocess_artifact(ncin, fileout; THINNING_FACTOR = 8)
         Float32,
         ("lon",),
         attrib = delete!(copy(ncin["longitude"].attrib), "_FillValue"),
-        deflatelevel = 9,
+        deflatelevel = 0,
     )
     lon[:] = Array(ncin["longitude"])[begin:THINNING_FACTOR:end]
 
@@ -61,7 +61,7 @@ function thin_and_postprocess_artifact(ncin, fileout; THINNING_FACTOR = 8)
         ("lat",),
         attrib = copy(ncin["latitude"].attrib) |>
                  x -> delete!(x, "_FillValue") |> x -> delete!(x, "stored_direction"),
-        deflatelevel = 9,
+        deflatelevel = 0,
     )
 
     # Reverse latitude dimension so that the elements are in increasing order
@@ -96,7 +96,7 @@ function thin_and_postprocess_artifact(ncin, fileout; THINNING_FACTOR = 8)
             Float32,
             ("lon", "lat", "time"),
             attrib = attribs,
-            deflatelevel = 9,
+            deflatelevel = 0,
         )
         ncout[varname][:, :, :] = reverse(
             ncin[varname][begin:THINNING_FACTOR:end, begin:THINNING_FACTOR:end, :],
