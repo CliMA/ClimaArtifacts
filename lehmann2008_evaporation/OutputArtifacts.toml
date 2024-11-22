@@ -1,0 +1,6 @@
+[lehmann2008_evaporation]
+git-tree-sha1 = "49386718eda19d2fa00ae6981d83948c6664057a"
+
+    [[lehmann2008_evaporation.download]]
+    sha256 = "e9603add174709a8eb7f70487bdc0f519843c03d83cb40cf07acd428f0d9d881"
+    url = "https://caltech.box.com/shared/static/khhop0nvuumrtzdakemaab8hsq8emh8e.gz"

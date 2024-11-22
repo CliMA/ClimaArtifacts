@@ -57,6 +57,7 @@ S. Gupta et al 2022, 2024](https://github.com/CliMA/ClimaArtifacts/tree/main/soi
 - [ERA5 Monthly Averages on Pressure Levels 1979-2024](https:////github.com/CliMA/ClimaArtifacts/tree/main/era5_monthly_averages_pressure_levels_1979_2024)
 - [TOPMODEL topographic index statistics](https:////github.com/CliMA/ClimaArtifacts/tree/main/topmodel)
 - [ERA5 Monthly Averages on Single Levels 1979-2024](https:////github.com/CliMA/ClimaArtifacts/tree/main/era5_monthly_averages_single_level_1979_2024)
+- [Lehmann et al. 2008 Fig. 8 evaporation data](https:////github.com/CliMA/ClimaArtifacts/tree/main/lehmann2008_evaporation)
 
 ### Coupler/shared
 
@@ -264,14 +265,14 @@ just uploaded.
 
 #### What is a _undownloadable_ artifact? Why do we need them?
 
-`ClimaArtifacts` treats small and big files differently. 
+`ClimaArtifacts` treats small and big files differently.
 
 Small files are uploaded to network-accessible location. When a package using
 these artifacts is registered, these files are also mirror by the Julia storage
 servers. Users automatically obtain the artifact upon package instantiation (if
 not lazy) or when first used (if lazy). When the artifact is obtained, its
 integrity is also verified by computing a cryptographic hash and check it
-against a known value. 
+against a known value.
 
 Many of the above-described features that small files easy to use and
 worry-free, become a problem for large files:
