@@ -22,7 +22,7 @@ for (path, url) in
     (SIC_FILE_PATH => SIC_FILE_URL, SST_FILE_PATH => SST_FILE_URL)
     if !isfile(path)
         @info "$path not found, downloading it (might take a while)"
-        downloaded_file = Downloads.download(url)
+        downloaded_file = Downloads.download(url; progress = download_rate_callback())
         Base.mv(downloaded_file, path)
     end
     Base.cp(path, joinpath(output_dir, basename(path)))

@@ -16,7 +16,7 @@ file_url = "https://hs.pangaea.de/Projects/ESM-SnowMIP/ESM-SnowMIP_all.zip"
 file_path = "ESM-SnowMIP_all.zip"
 if !isfile(file_path)
     @info "$file_path not found, downloading it (might take a while)"
-    file = Downloads.download(file_url)
+    file = Downloads.download(file_url; progress = download_rate_callback())
     Base.mv(file, file_path)
     mycommand = `unzip $file_path -d $outputdir`
     run(mycommand)

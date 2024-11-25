@@ -15,7 +15,7 @@ end
 
 if !isfile(FILE_PATH)
     @info "$FILE_PATH not found, downloading it (might take a while)"
-    precipitation_obs_file = Downloads.download(FILE_URL)
+    precipitation_obs_file = Downloads.download(FILE_URL; progress = download_rate_callback())
     Base.mv(precipitation_obs_file, FILE_PATH)
     Base.cp(FILE_PATH, joinpath(output_dir, basename(FILE_PATH)))
 end
