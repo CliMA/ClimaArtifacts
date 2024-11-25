@@ -87,7 +87,7 @@ end
 foreach(zip(FILE_PATHs, FILE_URLs)) do (path, url)
     if !isfile(path)
     @info "$path not found, downloading it (might take a while)"
-        ozone_file = Downloads.download(url)
+        ozone_file = Downloads.download(url; progress = download_rate_callback())
         Base.mv(ozone_file, path)
     end
 end

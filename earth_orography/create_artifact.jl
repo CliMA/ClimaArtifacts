@@ -29,7 +29,7 @@ downloader.easy_hook =
     )
 if !isfile(path)
     @info "$path not found, downloading it (might take a while)"
-    downloaded_file = Downloads.download(url)
+    downloaded_file = Downloads.download(url; progress = download_rate_callback())
     Base.mv(downloaded_file, path)
 end
 Base.cp(path, joinpath(output_dir_30arcsec, basename(path)))
@@ -54,7 +54,7 @@ downloader.easy_hook =
     )
 if !isfile(path)
     @info "$path not found, downloading it (might take a while)"
-    downloaded_file = Downloads.download(url)
+    downloaded_file = Downloads.download(url; progress = download_rate_callback())
     Base.mv(downloaded_file, path)
 end
 Base.cp(path, joinpath(output_dir_60arcsec, basename(path)))

@@ -21,7 +21,7 @@ end
 
 if !isfile(FILE_PATH_30ARCSEC)
     @info "$FILE_PATH_30ARCSEC not found, downloading it (might take a while)"
-    downloaded_file = Downloads.download(FILE_URL_30ARCSEC)
+    downloaded_file = Downloads.download(FILE_URL_30ARCSEC; progress = download_rate_callback())
     Base.mv(downloaded_file, FILE_PATH_30ARCSEC)
 end
 

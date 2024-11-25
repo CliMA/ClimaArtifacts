@@ -7,17 +7,6 @@ const FILE_URL = "https://berkeley-earth-temperature.s3.us-west-1.amazonaws.com/
 
 const FILE_NAME = "Land_and_Ocean_LatLong1.nc"
 
-function download_progress(total::Integer, now::Integer)
-    if total == 0
-        print("Downloaded $(round(now/10^9, digits=2)) GB \r")
-    else
-        print(
-            "Downloaded $(round(now/10^9, digits=2)) out of $(round(total/10^9, digits=2)) GB: $(div(now * 100, total))% \r",
-        )
-    end
-end
-
-
 output_dir = basename(@__DIR__) * "_artifact"
 if isdir(output_dir)
     @warn "$output_dir already exists. Content will end up in the artifact and may be overwritten."
@@ -28,14 +17,9 @@ end
 
 if !isfile(FILE_NAME)
     @info "$FILE_NAME not found, downloading it (might take a while)"
-    # The server has poor certificates, so we have to disable verification
-    downloader = Downloads.Downloader()
-    downloader.easy_hook =
-        (easy, info) ->
-            Downloads.Curl.setopt(easy, Downloads.Curl.CURLOPT_SSL_VERIFYPEER, false)
     println(FILE_URL)
     println(FILE_NAME)
-    downloaded_file = Downloads.download(FILE_URL; downloader, progress = download_progress)
+    downloaded_file = Downloads.download(FILE_URL; progress = download_rate_callback())
     Base.mv(downloaded_file, FILE_NAME)
 end
 

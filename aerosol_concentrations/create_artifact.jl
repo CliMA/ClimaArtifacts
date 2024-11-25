@@ -165,7 +165,7 @@ end
 foreach(zip(FILE_PATHs, FILE_URLs)) do (path, url)
     if !isfile(path)
         @info "$path not found, downloading it (might take a while)"
-        aerosol_file = Downloads.download(url)
+        aerosol_file = Downloads.download(url; progress = download_rate_callback())
         Base.mv(aerosol_file, path)
     end
 end
@@ -187,7 +187,7 @@ end
 foreach(zip(FILE_PATHs, FILE_URLs)) do (path, url)
     if !isfile(path)
         @info "$path not found, downloading it (might take a while)"
-        aerosol_file = Downloads.download(url)
+        aerosol_file = Downloads.download(url; progress = download_rate_callback())
         Base.mv(aerosol_file, path)
     end
 end

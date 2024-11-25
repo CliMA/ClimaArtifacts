@@ -36,7 +36,7 @@ for (file_path, file_url) in zip(FILE_PATHS, FILE_URLS)
             )
         println(file_url)
         println(file_path)
-        downloaded_file = Downloads.download(file_url; downloader)
+        downloaded_file = Downloads.download(file_url; downloader, progress = download_rate_callback())
         Base.mv(downloaded_file, file_path)
     end
 end
