@@ -9,14 +9,19 @@ const FILE_URL_30ARCSEC = "https://www.ngdc.noaa.gov/thredds/fileServer/global/E
 const FILE_PATH_30ARCSEC = "ETOPO_2022_v1_30s_N90W180_surface.nc"
 
 output_dir_30arcsec = "landsea_mask_30arcsec" * "_artifact"
+output_dir_60arcsec = "landsea_mask_60arcsec" * "_artifact"
+output_dir_1deg = "landsea_mask_1deg" * "_artifact"
 
 const SEA_LEVEL = 0 # meters
 
-if isdir(output_dir_30arcsec)
-    @warn "$output_dir_30arcsec already exists. Content will end up in the artifact and may be overwritten."
-    @warn "Abort this calculation, unless you know what you are doing."
-else
-    mkdir(output_dir_30arcsec)
+outdirs = (output_dir_30arcsec, output_dir_60arcsec, output_dir_1deg)
+for outdir in outdirs
+    if isdir(outdir)
+        @warn "$outdir already exists. Content will end up in the artifact and may be overwritten."
+        @warn "Abort this calculation, unless you know what you are doing."
+    else
+        mkdir(outdir)
+    end
 end
 
 if !isfile(FILE_PATH_30ARCSEC)
@@ -79,16 +84,17 @@ function remove_major_basins(
     return land[(half_nlat + 1):(half_nlat + nlat), :]
 end
 
-outfile_path = joinpath(output_dir_30arcsec, "landsea_mask.nc")
+outfile_path_30arcsecs = joinpath(output_dir_30arcsec, "landsea_mask.nc")
+outfile_path_60arcsecs = joinpath(output_dir_60arcsec, "landsea_mask.nc")
+outfile_path_1deg = joinpath(output_dir_1deg, "landsea_mask.nc")
 
-NCDataset(FILE_PATH_30ARCSEC) do ncin
+function save_ncfile(ncin, landsea_array, outfile_path; THINNING_FACTOR = 1)
     global_attrib = OrderedDict(ncin.attrib)
     global_attrib["description"] = "0 for ocean, 1 for land"
     global_attrib["history"] = "Created by CliMA (see landsea_mask folder in ClimaArtifacts)"
-
     NCDataset(outfile_path, "c", attrib = global_attrib) do ncout
-        defDim(ncout, "lon", length(ncin["lon"]))
-        defDim(ncout, "lat", length(ncin["lat"]))
+        defDim(ncout, "lon", Int(ceil(length(ncin["lon"]) // THINNING_FACTOR)))
+        defDim(ncout, "lat", Int(ceil(length(ncin["lat"]) // THINNING_FACTOR)))
 
         lon_attribs = Dict(ncin["lon"].attrib)
         lon = defVar(
@@ -99,7 +105,7 @@ NCDataset(FILE_PATH_30ARCSEC) do ncin
             attrib = lon_attribs,
             deflatelevel = 9
         )
-        lon[:] = Array(ncin["lon"])
+        lon[:] = Array(ncin["lon"])[begin:THINNING_FACTOR:end]
 
         lat_attribs = Dict(ncin["lat"].attrib)
         lat = defVar(
@@ -110,19 +116,33 @@ NCDataset(FILE_PATH_30ARCSEC) do ncin
             attrib = lat_attribs,
             deflatelevel = 9
         )
-        lat[:] = Array(ncin["lat"])
+        lat[:] = Array(ncin["lat"])[begin:THINNING_FACTOR:end]
 
         landsea =
             defVar(ncout, "landsea", Int8, ("lon", "lat"), deflatelevel = 9)
-        landsea[:] = remove_major_basins(Array(ncin["z"]), sea_level = SEA_LEVEL)
-
-        @infiltrate
+        landsea[:] = landsea_array[begin:THINNING_FACTOR:end, begin:THINNING_FACTOR:end]
     end
+end
+
+NCDataset(FILE_PATH_30ARCSEC) do ncin
+    landsea_array = remove_major_basins(Array(ncin["z"]), sea_level = SEA_LEVEL)
+    save_ncfile(ncin, landsea_array, outfile_path_30arcsecs; THINNING_FACTOR = 1)
+    save_ncfile(ncin, landsea_array, outfile_path_60arcsecs; THINNING_FACTOR = 2)
+    save_ncfile(ncin, landsea_array, outfile_path_1deg; THINNING_FACTOR = 120)
 end
 
 create_artifact_guided(
     output_dir_30arcsec;
     artifact_name = basename(@__DIR__) * "_30arcseconds",
+)
+create_artifact_guided(
+    output_dir_60arcsec;
+    artifact_name = basename(@__DIR__) * "_60arcseconds",
+    append = true,
+)
+create_artifact_guided(
+    output_dir_1deg;
+    artifact_name = basename(@__DIR__) * "_1deg",
     append = true,
 )
 
