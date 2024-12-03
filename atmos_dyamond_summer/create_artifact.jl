@@ -2,6 +2,9 @@ using ClimaArtifactsHelper
 using Interpolations
 using NCDatasets
 using DataStructures
+using ClimaParams
+import Thermodynamics as TD
+
 
 const FILE_URL = "https://swift.dkrz.de/v1/dkrz_ab6243f85fe24767bb1508712d1eb504/SAPPHIRE/DYAMOND/ifs_oper_T1279_2016080100.nc"
 const FILE_PATH = "ifs_oper_T1279_2016080100.nc"
@@ -14,30 +17,13 @@ const H_EARTH = FT(7000.0)
 const P0 = FT(1e5)
 const z_min, z_max = FT(0), FT(80E3)
 
+const params = TD.Parameters.ThermodynamicsParameters(FT)
+const grav = params.grav
+
+include("helper.jl")
+
 Plvl(z) = P0 * exp(-z / H_EARTH)
 Plvl_inv(P) = -H_EARTH * log(P / P0)
-
-compute_P(hyam, hybm, surfacepress) = hyam + hybm * surfacepress
-
-function interpz_3d(target_z, z3d, var3d)
-    nx, ny, nz = size(z3d)
-    target_var3d = similar(var3d, nx, ny, length(target_z))
-    @inbounds begin
-        for yi in 1:ny, xi in 1:nx
-            source_z = view(z3d, xi, yi, :)
-            itp = extrapolate(
-                interpolate(
-                    (source_z,),
-                    (view(var3d, xi, yi, :)),
-                    Gridded(Linear()),
-                ),
-                Flat(),
-            )
-            target_var3d[xi, yi, :] .= itp.(target_z)
-        end
-    end
-    return target_var3d
-end
 
 function create_initial_conditions(infile, outfile; skip = 1)
     ncin = NCDataset(infile, "r")
@@ -50,22 +36,37 @@ function create_initial_conditions(infile, outfile; skip = 1)
     # increasing pressure (decreasing elevation). This is being reordered
     # to stay consistent with our code which orders vertical levels in the 
     # direction of increasing elevation
-    zidx = ncin.dim["lev"]:-1:1
+    zidx_center = reverse(1:ncin.dim["lev"])
+    zidx_face = reverse(1:ncin.dim["lev"]+1)
 
     nlon = length(lonidx)
     nlat = length(latidx)
-    source_nz = length(zidx)
+    source_nz_center = length(zidx_center)
 
     @inbounds begin
-        # get source z
-        sp = repeat(exp.(ncin["lnsp"][lonidx, latidx, 1, 1]), 1, 1, source_nz) # surface pressure
-        hyam = repeat(reshape(ncin["hyam"][zidx], 1, 1, source_nz), nlon, nlat, 1)
-        hybm = repeat(reshape(ncin["hybm"][zidx], 1, 1, source_nz), nlon, nlat, 1)
+        # get source z surface
+        z_surface = ncin["z"][lonidx, latidx, 1, 1] ./ grav
+        # get source air Temperature
+        source_t_center = ncin["t"][lonidx, latidx, zidx_center, 1]
+        # get source q_tot (specific humidity)
+        source_q_tot_center = ncin["q"][lonidx, latidx, zidx_center, 1]
+        #source_qp_center = TD.PhasePartition.(source_q_tot_center)
+        # surface pressure
+        surface_pressure = exp.(ncin["lnsp"][lonidx, latidx, 1, 1])
+        # get source pressure at center
+        hyam = ncin["hyam"][zidx_center]
+        hybm = ncin["hybm"][zidx_center]
+        source_p_center = compute_source_pressure(surface_pressure, hyam, hybm)
+        # get source pressure at faces
+        hyai = ncin["hyai"][zidx_face]
+        hybi = ncin["hybi"][zidx_face]
+        source_p_face = compute_source_pressure(surface_pressure, hyai, hybi)
+        # compute z at faces
+        source_z_face = compute_z_face(source_p_center, source_p_face, source_t_center, source_q_tot_center, z_surface)
+        # compute z at centers
+        source_z_center = compute_z_center(source_z_face)
 
-        P = FT.(compute_P.(hyam, hybm, sp))
-        source_z = Plvl_inv.(P)
-
-        nz = source_nz #length(zidx)
+        nz = size(source_z_center, 3)
 
         # create a target z grid with nz points
         target_z = FT.(Plvl_inv.(range(Plvl(z_min), Plvl(z_max), nz)))
@@ -98,44 +99,43 @@ function create_initial_conditions(infile, outfile; skip = 1)
             "units" => "Pa",
             ),
         )
-        p[:, :, :] = P
-
+        p[:, :, :] = interpz_3d(target_z, source_z_face, source_p_face)
 
         # u (eastward_wind)
         u = defVar(ncout, "u", FT, ("lon", "lat", "z",), attrib = ncin["u"].attrib)
-        u[:, :, :] = interpz_3d(target_z, source_z, ncin["u"][lonidx, latidx, zidx, 1])
+        u[:, :, :] = interpz_3d(target_z, source_z_center, ncin["u"][lonidx, latidx, zidx_center, 1])
 
         # v (northward_wind)
         v = defVar(ncout, "v", FT, ("lon", "lat", "z",), attrib = ncin["v"].attrib)
-        v[:, :, :] = interpz_3d(target_z, source_z, ncin["v"][lonidx, latidx, zidx, 1])
+        v[:, :, :] = interpz_3d(target_z, source_z_center, ncin["v"][lonidx, latidx, zidx_center, 1])
     
         # w (vertical velocity)
         w = defVar(ncout, "w", FT, ("lon", "lat", "z",), attrib = ncin["w"].attrib)
-        w[:, :, :] = interpz_3d(target_z, source_z, ncin["w"][lonidx, latidx, zidx, 1])
+        w[:, :, :] = interpz_3d(target_z, source_z_center, ncin["w"][lonidx, latidx, zidx_center, 1])
     
         # t (air_temperature)
         t = defVar(ncout, "t", FT, ("lon", "lat", "z",), attrib = ncin["t"].attrib)
-        t[:, :, :] = interpz_3d(target_z, source_z, ncin["t"][lonidx, latidx, zidx, 1])
+        t[:, :, :] = interpz_3d(target_z, source_z_center, ncin["t"][lonidx, latidx, zidx_center, 1])
     
         # q (specific_humidity)
         q = defVar(ncout, "q", FT, ("lon", "lat", "z",), attrib = ncin["q"].attrib)
-        q[:, :, :] = max.(interpz_3d(target_z, source_z, ncin["q"][lonidx, latidx, zidx, 1]), FT(0))
+        q[:, :, :] = max.(interpz_3d(target_z, source_z_center, ncin["q"][lonidx, latidx, zidx_center, 1]), FT(0))
 
         # clwc (Specific cloud liquid water content)
         clwc = defVar(ncout, "clwc", FT, ("lon", "lat", "z",), attrib = ncin["clwc"].attrib)
-        clwc[:, :, :] = max.(interpz_3d(target_z, source_z, ncin["clwc"][lonidx, latidx, zidx, 1]), FT(0))
+        clwc[:, :, :] = max.(interpz_3d(target_z, source_z_center, ncin["clwc"][lonidx, latidx, zidx_center, 1]), FT(0))
 
         # ciwc (Specific cloud ice water content)
         ciwc = defVar(ncout, "ciwc", FT, ("lon", "lat", "z",), attrib = ncin["ciwc"].attrib)
-        ciwc[:, :, :] = max.(interpz_3d(target_z, source_z, ncin["ciwc"][lonidx, latidx, zidx, 1]), FT(0))
+        ciwc[:, :, :] = max.(interpz_3d(target_z, source_z_center, ncin["ciwc"][lonidx, latidx, zidx_center, 1]), FT(0))
 
         # crwc (Specific rain water content)
         crwc = defVar(ncout, "crwc", FT, ("lon", "lat", "z",), attrib = ncin["crwc"].attrib)
-        crwc[:, :, :] = max.(interpz_3d(target_z, source_z, ncin["crwc"][lonidx, latidx, zidx, 1]), FT(0))
+        crwc[:, :, :] = max.(interpz_3d(target_z, source_z_center, ncin["crwc"][lonidx, latidx, zidx_center, 1]), FT(0))
 
         # cswc (Specific snow water content)
         cswc = defVar(ncout, "cswc", FT, ("lon", "lat", "z",), attrib = ncin["cswc"].attrib)
-        cswc[:, :, :] = max.(interpz_3d(target_z, source_z, ncin["cswc"][lonidx, latidx, zidx, 1]), FT(0))
+        cswc[:, :, :] = max.(interpz_3d(target_z, source_z_center, ncin["cswc"][lonidx, latidx, zidx_center, 1]), FT(0))
 
         # tsn (temperature_in_surface_snow)
         tsn = defVar(ncout, "tsn", FT, ("lon", "lat",), attrib = ncin["tsn"].attrib)
