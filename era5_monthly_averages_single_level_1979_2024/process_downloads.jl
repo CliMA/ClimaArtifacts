@@ -54,7 +54,7 @@ function create_monthly_ds_surface(input_ds, output_path)
                 Float32.(reverse(var[:, :, :], dims = 2)),
                 (dimnames(var)[1:2]..., "time");
                 attrib = attrib,
-                deflatelevel = 9,
+                deflatelevel = 1,
             )
         end
     end
@@ -79,7 +79,7 @@ function create_monthly_ds_surface(input_ds, output_path)
             "units" => "W m**-2",
             "long_name" => "Mean surface upward long-wave radiation flux",
         ),
-        deflatelevel = 9,
+        deflatelevel = 1,
     )
     defVar(
         output_ds,
@@ -95,7 +95,7 @@ function create_monthly_ds_surface(input_ds, output_path)
             "units" => "W m**-2",
             "long_name" => "Mean surface upward short-wave radiation flux",
         ),
-        deflatelevel = 9,
+        deflatelevel = 1,
     )
 
     defVar(
@@ -172,7 +172,7 @@ function create_monthly_ds_atmos(input_ds, output_path)
         Float32.(reverse(var[:, :, :], dims = 2)),
         (dimnames(var)[1:2]..., "time");
         attrib = attrib,
-        deflatelevel = 9,
+        deflatelevel = 0,
     )
 
 
@@ -247,7 +247,7 @@ function process_hourly_data_surface(input_ds, output_path)
         end
     end
     ignored_attribs = ["_FillValue", "missing_value", "add_offset", "scale_factor"]
-    deflatelevel = 9
+    deflatelevel = 0
     for (varname, var) in input_ds
         if !(
             varname in [
@@ -369,7 +369,7 @@ function process_hourly_data_atmos(input_ds, output_path)
         end
     end
     ignored_attribs = ["_FillValue", "missing_value", "add_offset", "scale_factor"]
-    deflatelevel = 9
+    deflatelevel = 0
     var = input_ds["tcw"]
     attrib = copy(var.attrib)
     for attrib_name in ignored_attribs

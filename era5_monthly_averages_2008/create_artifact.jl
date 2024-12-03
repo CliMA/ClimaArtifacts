@@ -2,10 +2,10 @@ using Downloads
 using ClimaArtifactsHelper
 include("subset_of_data.jl")
 
-const DOWNLOAD_FILE_NAME = "era5_monthly_averages_200801-200812.nc"
+const DOWNLOAD_FILE_NAME = "era5_surface_fluxes_monthly_200801-200812.nc"
 
-const OUTPUT_FILE_HOURLY_NAME = "era5_monthly_averages_hourly_200801-200812.nc"
-const OUTPUT_FILE_NAME = "era5_monthly_averages_200801-200812.nc"
+const OUTPUT_FILE_HOURLY_NAME = "era5_monthly_surface_fluxes_hourly_200801-200812.nc"
+const OUTPUT_FILE_NAME = "era5_monthly_surface_fluxes_200801-200812.nc"
 
 # create two artifacts in two folders
 output_dir = basename(@__DIR__) * "_artifact"

@@ -49,7 +49,7 @@ function create_new_ds_from_time_indx(
                 Float32.(reverse(var[:, :, time_indx], dims = 2)),
                 dimnames(var);
                 attrib = attrib,
-                deflatelevel = 9,
+                deflatelevel = 1,
             )
         end
     end
@@ -69,7 +69,7 @@ function create_new_ds_from_time_indx(
             "units" => "W m**-2",
             "long_name" => "Mean surface upward long-wave radiation flux",
         ),
-        deflatelevel = 9,
+        deflatelevel = 1,
     )
     defVar(
         output_ds,
@@ -86,7 +86,7 @@ function create_new_ds_from_time_indx(
             "units" => "W m**-2",
             "long_name" => "Mean surface upward short-wave radiation flux",
         ),
-        deflatelevel = 9,
+        deflatelevel = 1,
     )
     # convert time to standard
     new_times = map(input_ds["time"][time_indx]) do t
