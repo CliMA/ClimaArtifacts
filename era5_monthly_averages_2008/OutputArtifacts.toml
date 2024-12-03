@@ -1,12 +1,12 @@
 [era5_monthly_averages_2008]
-git-tree-sha1 = "c34bbd18a9fd59fd0cd48d1737705255805ab233"
+git-tree-sha1 = "a7576792b10e011c3675c1a55be88de62d91a5cb"
 
     [[era5_monthly_averages_2008.download]]
-    sha256 = "2e6a6e877122bd5a81842f8e753fd6774c29a2dc846cdd97da73e3141a38c3e2"
+    sha256 = "140950072c62d7b2f3543e13418fb1e2e9fe432f6b24fd09c52961ffc9259a84"
     url = "https://caltech.box.com/shared/static/lra5npgeygoi0xb376hi4blik44550u0.gz"
 [era5_monthly_averages_2008_hourly]
-git-tree-sha1 = "8c35843700d5517c66168d9405b351ddf3c3f79d"
+git-tree-sha1 = "b3e43da9a4d245eb80d02e0d65c9305eb9a9fc2a"
 
     [[era5_monthly_averages_2008_hourly.download]]
-    sha256 = "456d9524c018da96b3560461b016edad23adea2a8e9a4e597131777d56e2e215"
+    sha256 = "ce9a673937341b37178a49882a79e911a9ceac278bc6395fc78284951ec7705e"
     url = "https://caltech.box.com/shared/static/32625532ecl6ft3bzuu66pzwyj4dxqvn.gz"

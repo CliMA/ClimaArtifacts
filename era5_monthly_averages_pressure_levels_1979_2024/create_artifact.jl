@@ -54,7 +54,7 @@ ignored_attribs =
     ["_FillValue", "missing_value", "add_offset", "scale_factor", "coordinates"]
 
 
-deflatelevel = 9 # max compression (lossless)
+deflatelevel = 0
 for (varname, var) in input_ds
     if !(varname in ["longitude", "latitude", "date", "pressure_level", "number", "expver"])
         attrib = copy(var.attrib)
