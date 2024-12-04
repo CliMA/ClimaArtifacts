@@ -57,8 +57,8 @@ end
 # - ν_ss_i = volume of soil solid relative to soil solids (incudes fine and coarse soil components)
 
 # Particle density
-ρp_min = 2.7*1e3 
-ρp_soc = 1.3*1e3 
+ρp_min = Float32(2.7*1e3)
+ρp_soc = Float32(1.3*1e3)
 ρp_cf = ρp_min
 
 # Fine earth 
