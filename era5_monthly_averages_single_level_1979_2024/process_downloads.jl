@@ -9,7 +9,11 @@ to share the same dimensions.
 """
 function merge_zipped_download(input_path)
     output_name = splitext(input_path)[1]
-    run(`unzip -o $input_path -d $output_name`)
+    isdir(output_name) && rm(output_name, recursive=true)
+    if Sys.iswindows()
+        @warn "Attempting to extract zipped data. If this fails, please install Tar for windows"
+    end
+    run(`tar -xf $input_path`)
     split_file_names = readdir(output_name)
     split_file_names = filter(x -> splitext(x)[2] == ".nc", split_file_names)
     merge_ds_path = joinpath(output_name, split_file_names[1])
