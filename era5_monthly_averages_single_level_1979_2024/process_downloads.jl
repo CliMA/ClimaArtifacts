@@ -14,11 +14,15 @@ function merge_zipped_download(input_path)
         @warn "Attempting to extract zipped data. If this fails, please install Tar for windows"
     end
     run(`tar -xf $input_path`)
+    # list of all files in extracted folder
     split_file_names = readdir(output_name)
-    split_file_names = filter(x -> splitext(x)[2] == ".nc", split_file_names)
+    # filter to only NetCDF files
+    split_file_names = filter(x -> endswith(x, ".nc"), split_file_names)
+    # here we pick one of the NetCDF files to merge the other into
     merge_ds_path = joinpath(output_name, split_file_names[1])
     ds = NCDataset(merge_ds_path, "a")
     ds_varnames = [varname for (varname, _) in ds]
+    # merge all other NetCDF files into the selected NetCDF
     for file_name in split_file_names[2:end]
         ds2 = NCDataset(joinpath(output_name, file_name), "r")
         for (varname, var) in ds2
