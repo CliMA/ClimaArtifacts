@@ -87,6 +87,10 @@ These following variables are in:
 
 The following variables are stored as Float32s and are defined on the latitude, longitude, and time dimensions:
 
+### `mer`
+
+This is the mean evaporation rate in units of kg m**-2 s**-1. No processing is done to this variable other than flipping the latitude dimension.
+
 ### `mslhf`
 
 This is the mean surface latent heat flux in units of W m**-2. No processing is done to this variable other than flipping the latitude dimension and removing residual GRIB attributes.

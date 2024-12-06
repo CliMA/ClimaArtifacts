@@ -2,6 +2,42 @@ using NCDatasets
 using Dates
 
 """
+    merge_zipped_download(input_path)
+
+Merges NetCDF files that were downloaded in a zipped format. The zipped datasets are expected
+to share the same dimensions.
+"""
+function merge_zipped_download(input_path)
+    output_name = splitext(input_path)[1]
+    run(`unzip -o $input_path -d $output_name`)
+    split_file_names = readdir(output_name)
+    split_file_names = filter(x -> splitext(x)[2] == ".nc", split_file_names)
+    merge_ds_path = joinpath(output_name, split_file_names[1])
+    ds = NCDataset(merge_ds_path, "a")
+    ds_varnames = [varname for (varname, _) in ds]
+    for file_name in split_file_names[2:end]
+        ds2 = NCDataset(joinpath(output_name, file_name), "r")
+        for (varname, var) in ds2
+            if !(varname in ds_varnames)
+                ds_varnames = push!(ds_varnames, varname)
+                defVar(
+                    ds,
+                    varname,
+                    Array(var),
+                    dimnames(var);
+                    attrib = var.attrib,
+                )
+            end
+        end
+        close(ds2)
+    end
+    close(ds)
+    output_path = output_name * ".nc"
+    Base.cp(joinpath(output_name, split_file_names[1]), output_path; force=true)
+    return output_path
+end
+
+"""
     create_monthly_ds_surface(input_ds, output_path)
 
 Processes the `input_ds` dataset to convert the time dimension to DateTimes,
@@ -20,7 +56,7 @@ function create_monthly_ds_surface(input_ds, output_path)
     end
     defDim(output_ds, "longitude", input_ds.dim["longitude"])
     defDim(output_ds, "latitude", input_ds.dim["latitude"])
-    defDim(output_ds, "time", input_ds.dim["date"])
+    defDim(output_ds, "time", input_ds.dim["valid_time"])
     ignored_attribs =
         ["_FillValue", "missing_value", "add_offset", "scale_factor", "coordinates"]
     for (varname, var) in input_ds
@@ -28,7 +64,7 @@ function create_monthly_ds_surface(input_ds, output_path)
             varname in [
                 "latitude",
                 "longitude",
-                "date",
+                "valid_time",
                 "msdwlwrf",
                 "msdwswrf",
                 "msnlwrf",
@@ -117,9 +153,8 @@ function create_monthly_ds_surface(input_ds, output_path)
     # If data is requested as netcdf, and not netcdf_legacy, the data includes a date dimension
     # instead of time, where each date is an integer in the format yyyymmdd. Here we convert it to
     # a DateTime object, and set the day to the 15th of the month.
-    new_times = map(input_ds["date"][:]) do t
-        d = DateTime(string(t), "yyyymmdd")
-        d + (Day(15) - Day(d))
+    new_times = map(input_ds["valid_time"][:]) do t
+        t + (Day(15) - Day(t))
     end
 
     # check that there are no duplicates and that it is sorted
@@ -152,7 +187,7 @@ function create_monthly_ds_atmos(input_ds, output_path)
     end
     defDim(output_ds, "longitude", input_ds.dim["longitude"])
     defDim(output_ds, "latitude", input_ds.dim["latitude"])
-    defDim(output_ds, "time", input_ds.dim["date"])
+    defDim(output_ds, "time", input_ds.dim["valid_time"])
     ignored_attribs =
         ["_FillValue", "missing_value", "add_offset", "scale_factor", "coordinates"]
     var = input_ds["tcw"]
@@ -202,9 +237,8 @@ function create_monthly_ds_atmos(input_ds, output_path)
     # If data is requested as netcdf, and not netcdf_legacy, the data includes a date dimension
     # instead of time, where each date is an integer in the format yyyymmdd. Here we convert it to
     # a DateTime object, and set the day to the 15th of the month.
-    new_times = map(input_ds["date"][:]) do t
-        d = DateTime(string(t), "yyyymmdd")
-        d + (Day(15) - Day(d))
+    new_times = map(input_ds["valid_time"][:]) do t
+        t + (Day(15) - Day(t))
     end
 
     # check that there are no duplicates and that it is sorted

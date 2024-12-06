@@ -9,7 +9,7 @@ include("process_downloads.jl")
 # Set data_dir to the location of the data, or where you want to store it
 const DATA_DIR = ""
 const DOWNLOAD_FILE_NAME =
-    joinpath(DATA_DIR, "era5_monthly_averages_single_level_197901-202410.nc")
+    joinpath(DATA_DIR, "era5_monthly_averages_single_level_197901-202410.zip")
 const DOWNLOAD_FILES_HOURLY_DIR = joinpath(DATA_DIR, "hourly_data_parts/")
 
 const OUTPUT_FILE_NAME_SURFACE = "era5_monthly_averages_surface_single_level_197901-202410.nc"
@@ -53,7 +53,7 @@ if !isfile(DOWNLOAD_FILE_NAME)
 end
 
 @info "Processing data for the monthly averages"
-input_ds = NCDataset(DOWNLOAD_FILE_NAME, "r")
+input_ds = NCDataset(merge_zipped_download(DOWNLOAD_FILE_NAME), "r")
 output_path = joinpath(OUTPUT_DIR_SURFACE, OUTPUT_FILE_NAME_SURFACE)
 create_monthly_ds_surface(input_ds, output_path)
 output_path = joinpath(OUTPUT_DIR_ATMOS, OUTPUT_FILE_NAME_ATMOS)
