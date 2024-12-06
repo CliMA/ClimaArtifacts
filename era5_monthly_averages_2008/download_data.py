@@ -14,6 +14,7 @@ request = {
         "monthly_averaged_reanalysis_by_hour_of_day"
     ],
     "variable": [
+        "mean_evaporation_rate",
         "mean_surface_downward_long_wave_radiation_flux",
         "mean_surface_downward_short_wave_radiation_flux",
         "mean_surface_latent_heat_flux",

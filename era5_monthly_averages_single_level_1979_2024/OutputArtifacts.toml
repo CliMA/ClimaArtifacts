@@ -1,14 +1,14 @@
 [era5_monthly_averages_surface_single_level_1979_2024]
-git-tree-sha1 = "590889f1df879b693bda0c50ed425b86b54c1831"
+git-tree-sha1 = "6cddb07eeee2dd46dc5a19e9b2f706302ddba2c9"
 
     [[era5_monthly_averages_surface_single_level_1979_2024.download]]
-    sha256 = "2e0870587f6740c7a0da2030b2880df77f33fa15bcd19f2ca2a8190eae3d62ee"
+    sha256 = "46b422722d98c89c6bc0b8641bff259db1caee253f45389ddf9eb9c2d31ed605"
     url = "https://caltech.box.com/shared/static/jbgtyt6oq9lxvk8il5zzck6k581q7f3k.gz"
 [era5_monthly_averages_atmos_single_level_1979_2024]
-git-tree-sha1 = "bbcf216993ee6a433247099d9bfe06d6b4dcd377"
+git-tree-sha1 = "a3169bc6de42f7e3f4ca685654ae240dfbf560e3"
 
     [[era5_monthly_averages_atmos_single_level_1979_2024.download]]
-    sha256 = "fe022a8a5bfe7e65f208f561008c9f24e6a45f18a13243143db62411d37cc809"
+    sha256 = "abf70d77ba59f5f8b5b48600ed6a8be9b819ec18fac086c0abc9c886211320c8"
     url = "https://caltech.box.com/shared/static/8mo7azrz0gukdtmo2oi0dtvdt1v3t3tv.gz"
 [era5_monthly_averages_surface_single_level_1979_2024_hourly]
 git-tree-sha1 = "6f44bae3ff1d9734b0c5a1d7417ebd52ff5aca53"

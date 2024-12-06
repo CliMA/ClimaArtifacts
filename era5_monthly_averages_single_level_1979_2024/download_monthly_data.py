@@ -39,6 +39,7 @@ request = {
     "download_format": "unarchived",
     "grid"  : [1.0, 1.0],
     "variable": [
+        "mean_evaporation_rate",
         "mean_surface_downward_long_wave_radiation_flux",
         "mean_surface_downward_short_wave_radiation_flux",
         "mean_surface_latent_heat_flux",
@@ -57,7 +58,7 @@ else:
     client = cdsapi.Client(url=URL, key=args.key)
 
 if args.target is None or args.target == "":
-    target = "era5_surface_fluxes_monthly_197901-202412.nc"
+    target = "era5_surface_fluxes_monthly_197901-202412.zip"
 else:
     target = args.target
 
