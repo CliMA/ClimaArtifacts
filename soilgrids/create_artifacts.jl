@@ -136,6 +136,10 @@ attrib_ν_ss_cf = (;
                    varunits = "m^3/m^3",
                    varname = "nu_ss_cf",
                   )
+
+# We still need to handle missing data, which appears as NaN
+replace_nan_with_zero(x) = isnan(x) ? typeof(x)(0) : x
+
 # Full data at high resolution
 outfilepath = joinpath(outputdir, "soil_solid_vol_fractions_soilgrids.nc")
 ds = NCDataset(outfilepath, "c")
@@ -162,10 +166,8 @@ for (vardata, attrib) in [(ν_ss_soc, attrib_ν_ss_soc), (ν_ss_sand, attrib_ν_
     var.attrib["units"] = varunits
     var.attrib["longname"]= vartitle
     var.attrib["varname"] = varname
-    var[:, :, :] = vardata
+    var[:, :, :] = replace_nan_with_zero.(vardata)
 end
-
-
 close(ds)
 
 
@@ -197,7 +199,7 @@ for (vardata, attrib) in [(ν_ss_soc, attrib_ν_ss_soc), (ν_ss_sand, attrib_ν_
     var.attrib["units"] = varunits
     var.attrib["longname"]= vartitle
     var.attrib["varname"] = varname
-    var[:, :, :] = vardata[lon_indices, lat_indices, :]
+    var[:, :, :] = replace_nan_with_zero.(vardata[lon_indices, lat_indices, :])
 end
 close(ds)
 
