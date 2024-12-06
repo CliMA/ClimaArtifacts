@@ -63,5 +63,4 @@ function create_combined_data!(data, files, attrib, transform, outfilepath)
     data[typeof.(data) .== Missing] .= Float32(0)
     data .= transform(data)
     write_nc_out(data, lat, lon, z, attrib, outfilepath)
-    Base.mv(outfilepath, joinpath(outputdir, outfilepath))
 end

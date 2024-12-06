@@ -7,13 +7,16 @@ if length(ARGS) < 1
 else
     filedir = ARGS[1]
 end
-
+tmpdir = "soilgrids_tmp"
 outputdir = "soilgrids"
-if isdir(outputdir)
-    @warn "$outputdir already exists. Content will end up in the artifact and may be overwritten."
-    @warn "Abort this calculation, unless you know what you are doing."
-else
-    mkdir(outputdir)
+outputdir_lowres = "soilgrids_lowres"
+for dir in [tmpdir, outputdir, outputdir_lowres]
+    if isdir(dir)
+        @warn "$dir already exists. Content will end up in the artifact and may be overwritten."
+	    @warn "Abort this calculation, unless you know what you are doing."
+    else
+	mkdir(dir)
+    end
 end
 
 include("utils.jl")
@@ -31,7 +34,7 @@ for i in 1:nvars
     attrib = attribs[i]
     transform = transforms[i]
     files = ["$(var)_$(ln)_mean_5000.nc" for ln in level_names]
-    outfilepath = "$(var)_soilgrids_combined.nc"
+    outfilepath = joinpath(tmpdir, "$(var)_soilgrids_combined.nc")
     create_combined_data!(data, files, attrib, transform, outfilepath)
 end
 
@@ -61,21 +64,21 @@ end
 ρp_soc = Float32(1.3*1e3)
 ρp_cf = ρp_min
 
-# Fine earth 
-soc = NCDataset(joinpath(outputdir, "soc_soilgrids_combined.nc"));
+# Fine earth
+soc = NCDataset(joinpath(tmpdir, "soc_soilgrids_combined.nc"));
 q_soc = soc["q_soc"][:,:,:];
-silt = NCDataset(joinpath(outputdir, "silt_soilgrids_combined.nc"));
+silt = NCDataset(joinpath(tmpdir, "silt_soilgrids_combined.nc"));
 q_silt = silt["f_silt"][:,:,:] .* (1 .- q_soc);
-clay = NCDataset(joinpath(outputdir, "clay_soilgrids_combined.nc"));
+clay = NCDataset(joinpath(tmpdir, "clay_soilgrids_combined.nc"));
 q_clay = clay["f_clay"][:,:,:].* (1 .- q_soc);
-sand = NCDataset(joinpath(outputdir, "sand_soilgrids_combined.nc"));
+sand = NCDataset(joinpath(tmpdir, "sand_soilgrids_combined.nc"));
 q_sand = sand["f_sand"][:,:,:].* (1 .- q_soc);
 
-fe_density = NCDataset(joinpath(outputdir, "bdod_soilgrids_combined.nc"));
+fe_density = NCDataset(joinpath(tmpdir, "bdod_soilgrids_combined.nc"));
 ρ_bulk_fe = fe_density["bdod"][:,:,:]; # Mass of fine earth/ Volume of fine earth including pores
 
 # Whole soil 
-cf = NCDataset(joinpath(outputdir, "cfvo_soilgrids_combined.nc"));
+cf = NCDataset(joinpath(tmpdir, "cfvo_soilgrids_combined.nc"));
 θ_cf = cf["cfvo"][:,:,:]; # volume of gravel/volume of whole soil
 
 function compute_θ_i(q_i, ρp_i, q_soc, q_silt, q_clay, q_sand, ρ_bulk_fe, θ_cf)
@@ -133,6 +136,7 @@ attrib_ν_ss_cf = (;
                    varunits = "m^3/m^3",
                    varname = "nu_ss_cf",
                   )
+# Full data at high resolution
 outfilepath = joinpath(outputdir, "soil_solid_vol_fractions_soilgrids.nc")
 ds = NCDataset(outfilepath, "c")
 # Define and set values for dimensions (lon, lat, z)
@@ -160,7 +164,42 @@ for (vardata, attrib) in [(ν_ss_soc, attrib_ν_ss_soc), (ν_ss_sand, attrib_ν_
     var.attrib["varname"] = varname
     var[:, :, :] = vardata
 end
+
+
 close(ds)
 
 
-create_artifact_guided(outputdir; artifact_name = basename(@__DIR__))
+# Full data at ~1 degree resolution
+outfilepath = joinpath(outputdir_lowres, "soil_solid_vol_fractions_soilgrids_lowres.nc")
+ds = NCDataset(outfilepath, "c")
+# Define and set values for dimensions (lon, lat, z)
+lon_indices = range(stop = length(lon), start = 1, step = 22)
+lat_indices = range(stop = length(lat), start = 1, step = 17)
+defDim(ds, "lon", length(lon_indices))
+defDim(ds, "lat", length(lat_indices))
+defDim(ds, "z", nlayers)
+la = defVar(ds, "lat", Float32, ("lat",))
+lo = defVar(ds, "lon", Float32, ("lon",))
+zv = defVar(ds, "z", Float32, ("z",))
+la.attrib["units"] = "degrees_north"
+la.attrib["standard_name"] = "latitude"
+lo.attrib["standard_name"] = "longitude"
+lo.attrib["units"] = "degrees_east"
+zv.attrib["standard_name"] = "depth"
+zv.attrib["units"] = "m"
+la[:] = lat[lat_indices]
+lo[:] = lon[lon_indices]
+zv[:] = z
+# Define our variables
+for (vardata, attrib) in [(ν_ss_soc, attrib_ν_ss_soc), (ν_ss_sand, attrib_ν_ss_sand), (ν_ss_cf, attrib_ν_ss_cf), ]
+    (vartitle, varunits, varname) = attrib
+    var = defVar(ds, varname, Float32, ("lon", "lat", "z"))
+    var.attrib["units"] = varunits
+    var.attrib["longname"]= vartitle
+    var.attrib["varname"] = varname
+    var[:, :, :] = vardata[lon_indices, lat_indices, :]
+end
+close(ds)
+
+
+create_artifact_guided(outputdir_lowres; artifact_name = basename(@__DIR__)* "_lowres", append = true)
