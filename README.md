@@ -62,6 +62,7 @@ S. Gupta et al 2022, 2024](https://github.com/CliMA/ClimaArtifacts/tree/main/soi
 - [Lehmann et al. 2008 Fig. 8 evaporation data](https:////github.com/CliMA/ClimaArtifacts/tree/main/lehmann2008_evaporation)
 - [Forty years of ERA5 forcing data for ClimaLand](https:////github.com/CliMA/ClimaArtifacts/tree/main/forty_yrs_era5_land_forcing_data)
 - [Topo Drag, created with the GDFL model](https:////github.com/CliMA/ClimaArtifacts/tree/main/topo_drag)
+- [Water conservation test data for RichardsModel](https:////github.com/CliMA/ClimaArtifacts/tree/main/water_conservation_test)
 
 ### Coupler/shared
 
