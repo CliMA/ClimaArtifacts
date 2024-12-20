@@ -2,8 +2,8 @@
 git-tree-sha1 = "235a16e02c24a28b20244c0f2e7f149cc783166f"
 
 [ozone_concentrations_lowres]
-git-tree-sha1 = "6693f8451b447543952b3d557d733c7e5c670ed3"
+git-tree-sha1 = "3ebef28ddfbaf44d830e6a0ee042b70290ba98e4"
 
     [[ozone_concentrations_lowres.download]]
-    sha256 = "908384b32e90c733c2173654afbb974d238a9a516ad8965039077c6ddb29b5f0"
-    url = "https://caltech.box.com/shared/static/6c16wt7i1htxq6tadpt1ng2uftjgdtpr.gz"
+    sha256 = "24a3bea627b0a08c917f5b0005d9b06d5d8d4c936ab87f10a15022b1f24c7094"
+    url = "https://caltech.box.com/shared/static/bgdiyfkhcwows94hw6vy0rwonr0u21qz.gz"

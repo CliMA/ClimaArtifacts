@@ -1,7 +1,8 @@
-# Ozone data, monthly means, from 1950 to 2014
+# Ozone data, monthly means, from 1850 to 2049
 
-This artifact repackages data coming from [CMIP6 forcing datasets](https://www.wdc-climate.de/ui/cmip6?input=input4MIPs.CMIP6.CMIP.UReading.UReading-CCMI-1-0) and
-contains volume mixing ratio of ozone.
+This artifact repackages data coming from [CMIP6 forcing datasets](https://www.wdc-climate.de/ui/cmip6?input=input4MIPs.CMIP6.CMIP.UReading.UReading-CCMI-1-0) 
+and contains volume mixing ratio of ozone. It combines the historical data from 1850 to 2014, and future projections with the 
+Shared Socioeconomic Pathway (SSP) 585 scenario.
 
 The input file is defined in pressure coordinates. We convert this into altitude over mean-sea level
 using $P = P^*exp(-z / H)$ with scale height $H$. We assume $P^* = 1e5$ (Pa) and $H = 7000$ (m). The output 
