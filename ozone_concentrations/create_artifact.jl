@@ -7,10 +7,12 @@ using ClimaArtifactsHelper
 FILE_URLs = [
     "https://caltech.box.com/shared/static/hj2yucye0u3l8e4x8o1d0w35ijj5amh6.nc",
     "https://caltech.box.com/shared/static/h3c8rlpctxpq3uh1r01zhips426lgi0e.nc",
+    "https://caltech.box.com/shared/static/d72v4i6gy9m5ygel9tn95gjv74tpchx7.nc",
             ]
 FILE_PATHs = [
     "vmro3_input4MIPs_ozone_CMIP_UReading-CCMI-1-0_gn_195001-199912.nc",
     "vmro3_input4MIPs_ozone_CMIP_UReading-CCMI-1-0_gn_200001-201412.nc",
+    "vmro3_input4MIPs_ozone_ScenarioMIP_UReading-CCMI-ssp585-1-0_gn_201501-204912.nc",
              ]
 
 const H_EARTH = 7000.0
