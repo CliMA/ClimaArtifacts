@@ -5,30 +5,37 @@ using NCDatasets
 using ClimaArtifactsHelper
 
 FILE_URLs = [
-    "https://caltech.box.com/shared/static/hj2yucye0u3l8e4x8o1d0w35ijj5amh6.nc",
-    "https://caltech.box.com/shared/static/h3c8rlpctxpq3uh1r01zhips426lgi0e.nc",
+    "http://aims3.llnl.gov/thredds/fileServer/user_pub_work/input4MIPs/CMIP6/CMIP/UReading/UReading-CCMI-1-0/atmos/mon/vmro3/gn/v20160711/vmro3_input4MIPs_ozone_CMIP_UReading-CCMI-1-0_gn_185001-189912.nc",
+    "http://aims3.llnl.gov/thredds/fileServer/user_pub_work/input4MIPs/CMIP6/CMIP/UReading/UReading-CCMI-1-0/atmos/mon/vmro3/gn/v20160711/vmro3_input4MIPs_ozone_CMIP_UReading-CCMI-1-0_gn_190001-194912.nc",
+    "http://aims3.llnl.gov/thredds/fileServer/user_pub_work/input4MIPs/CMIP6/CMIP/UReading/UReading-CCMI-1-0/atmos/mon/vmro3/gn/v20160711/vmro3_input4MIPs_ozone_CMIP_UReading-CCMI-1-0_gn_195001-199912.nc",
+    "http://aims3.llnl.gov/thredds/fileServer/user_pub_work/input4MIPs/CMIP6/CMIP/UReading/UReading-CCMI-1-0/atmos/mon/vmro3/gn/v20160711/vmro3_input4MIPs_ozone_CMIP_UReading-CCMI-1-0_gn_200001-201412.nc",
+    "http://aims3.llnl.gov/thredds/fileServer/user_pub_work/input4MIPs/CMIP6/ScenarioMIP/UReading/UReading-CCMI-ssp585-1-0/atmos/mon/vmro3/gn/v20181101/vmro3_input4MIPs_ozone_ScenarioMIP_UReading-CCMI-ssp585-1-0_gn_201501-204912.nc",
             ]
 FILE_PATHs = [
+    "vmro3_input4MIPs_ozone_CMIP_UReading-CCMI-1-0_gn_185001-189912.nc",
+    "vmro3_input4MIPs_ozone_CMIP_UReading-CCMI-1-0_gn_190001-194912.nc",
     "vmro3_input4MIPs_ozone_CMIP_UReading-CCMI-1-0_gn_195001-199912.nc",
     "vmro3_input4MIPs_ozone_CMIP_UReading-CCMI-1-0_gn_200001-201412.nc",
+    "vmro3_input4MIPs_ozone_ScenarioMIP_UReading-CCMI-ssp585-1-0_gn_201501-204912.nc",
              ]
 
 const H_EARTH = 7000.0
 const P0 = 1e5
 const HPA_TO_PA = 100.0
 
+FT = Float32
+
 Plvl_inv(P) = -H_EARTH * log(P / P0)
 
-function create_ozone(infile_paths, outfile_path; small = false)
+function create_ozone(FT, infile_paths, outfile_path; small = false)
     ncin = NCDataset(infile_paths, aggdim = "time")
     ncout = NCDataset(outfile_path, "c")
 
     THINNING_FACTOR = 1
     MAX_TIME = length(ncin["time"])
-    FT = Float32
 
     if small
-        THINNING_FACTOR = 6
+        THINNING_FACTOR = 8
         MAX_TIME = 12
     end
 
@@ -50,11 +57,15 @@ function create_ozone(infile_paths, outfile_path; small = false)
     z.attrib["units"] = "meters"
 
     time_ = defVar(ncout, "time", FT, ("time",), attrib = ncin["time"].attrib)
+    # The ozone files have different calendars for the time variable, here we convert it to DateTime
     if small
         # First and last year
-        time_[:] = vcat(Array(ncin["time"])[begin:MAX_TIME], Array(ncin["time"])[(end-MAX_TIME+1):end])
+        time_[:] = vcat(
+            reinterpret.(Ref(Dates.DateTime), Array(ncin["time"])[begin:MAX_TIME]), 
+            reinterpret.(Ref(Dates.DateTime), Array(ncin["time"])[(end-MAX_TIME+1):end]),
+        )
     else
-        time_[:] = Array(ncin["time"])[begin:MAX_TIME]
+        time_[:] = reinterpret.(Ref(Dates.DateTime), Array(ncin["time"])[begin:MAX_TIME])
     end
 
     defVar(
@@ -92,7 +103,17 @@ foreach(zip(FILE_PATHs, FILE_URLs)) do (path, url)
     end
 end
 
-create_ozone(FILE_PATHs, joinpath(output_dir, "ozone_concentrations.nc"))
+# The ozone files have different variable names for the bounds, e.g. "plev_bounds" vs "bounds_plev",
+# This causes issues when opening the files with NCDatasets aggdim, so we add some variables if they are missing
+for file_path in FILE_PATHs
+    ncin = NCDataset(file_path, "a")
+    for var in ("plev", "lat", "lon")
+        haskey(ncin, "bounds_$var") || defVar(ncin, "bounds_$var", FT, (var, "bnds"))
+    end
+    close(ncin)
+end
+
+create_ozone(FT, FILE_PATHs, joinpath(output_dir, "ozone_concentrations.nc"))
 
 @info "Data file generated!"
 create_artifact_guided(output_dir; artifact_name = basename(@__DIR__))
@@ -107,6 +128,7 @@ else
 end
 
 create_ozone(
+    FT,
     FILE_PATHs,
     joinpath(output_dir_lowres, "ozone_concentrations_lowres.nc"),
     small = true,
