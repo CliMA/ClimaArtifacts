@@ -1,0 +1,6 @@
+[modis_lai]
+git-tree-sha1 = "93024dceae576c3bf4e80af0efef47f5cd89a769"
+
+    [[modis_lai.download]]
+    sha256 = "a2cd3c9ea258f72b5ae0512b59886756f5ec8a374c2bea0306292db8f9529f6b"
+    url = "https://caltech.box.com/shared/static/99ktg026kciezykyegsawd1gjwj1du74.gz"

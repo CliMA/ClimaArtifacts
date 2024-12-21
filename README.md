@@ -45,6 +45,7 @@ artifacts.
 - [Soil parameters needed for Richards equation; global at 1km resolution from
 S. Gupta et al 2022, 2024](https://github.com/CliMA/ClimaArtifacts/tree/main/soil_params_Gupta2020_2022)
 - [Foliage clumping index, derived from MODIS data for 2006](https:////github.com/CliMA/ClimaArtifacts/tree/main/modis_clumping_index)
+- [Leaf area index, derived from MODIS data for 2008](https:////github.com/CliMA/ClimaArtifacts/tree/main/modis_lai)
 - [Subset of ILAMB datasets](https:////github.com/CliMA/ClimaArtifacts/tree/main/ilamb_data)
 - [Bonan 2019 Richards equation data](https:////github.com/CliMA/ClimaArtifacts/tree/main/bonan_richards_eqn)
 - [TwoStream model implementation test data](https:////github.com/CliMA/ClimaArtifacts/tree/main/twostr_test)

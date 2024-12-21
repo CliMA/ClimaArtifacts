@@ -1,0 +1,4 @@
+[deps]
+ClimaArtifactsHelper = "6ffa2572-8378-4377-82eb-ea11db28b255"
+GriddingMachine = "f20cf718-bf4d-4727-bc8f-485b1f283ac6"
+NCDatasets = "85f8d34a-cbdd-5861-8df4-14fed0d494ab"
