@@ -52,7 +52,6 @@ S. Gupta et al 2022, 2024](https://github.com/CliMA/ClimaArtifacts/tree/main/soi
 - [Selected FLUXNET tower data](https:////github.com/CliMA/ClimaArtifacts/tree/main/fluxnet_sites)
 - [ESM-SnowMIP data](https://github.com/CliMA/ClimaArtifacts/tree/main/snowmip)
 - [ERA5 Monthly Averages 2008](https:////github.com/CliMA/ClimaArtifacts/tree/main/era5_surface_fluxes_2008)
-- [Global shortwave albedo from CLM model output for coupled and standalone land models](https://github.com/CliMA/ClimaArtifacts/tree/main/cesm2_albedo)
 - [Earth bedrock depth at 30 and 60 arc-second resolutions](https:////github.com/CliMA/ClimaArtifacts/tree/main/bedrock_depth)
 - [ERA5 Land Forcing Data 2008](https:////github.com/CliMA/ClimaArtifacts/tree/main/era5_land_forcing_data2008)
 - [ERA5 Monthly Averages on Pressure Levels 1979-2024](https:////github.com/CliMA/ClimaArtifacts/tree/main/era5_monthly_averages_pressure_levels_1979_2024)
@@ -71,6 +70,7 @@ S. Gupta et al 2022, 2024](https://github.com/CliMA/ClimaArtifacts/tree/main/soi
 - [Earth orography at 30 and 60 arc-second resolutions](https:////github.com/CliMA/ClimaArtifacts/tree/main/earth_orography)
 - [Monthly Mean CO2 from Mauna Loa](https://github.com/CliMA/ClimaArtifacts/tree/main/co2_dataset)
 - [Land-sea mask](https://github.com/CliMA/ClimaArtifacts/tree/main/landsea_mask)
+- [Global shortwave albedo](https://github.com/CliMA/ClimaArtifacts/tree/main/sw_albedo)
 
 
 # The ultimate guide to ClimaArtifacts

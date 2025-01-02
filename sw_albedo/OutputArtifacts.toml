@@ -1,0 +1,6 @@
+[sw_albedo]
+git-tree-sha1 = "136f1db3ed969614fb589c5250545a3ed1e8aaab"
+
+    [[sw_albedo.download]]
+    sha256 = "777371543cc3285c0779e7ecd925fe782b5b45e0ed27f82260827ac8ebe6a700"
+    url = "https://caltech.box.com/shared/static/of1admpndmikoumtgk5j3yvt92v71awk.gz"
