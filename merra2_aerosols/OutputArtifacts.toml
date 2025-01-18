@@ -1,0 +1,8 @@
+[merra2_aerosols]
+git-tree-sha1 = "6018165de4d718628fafc86a01721a155faa4cb0"
+[merra2_aerosols_lowres]
+git-tree-sha1 = "1efc90e4955112c3ac9c3c522d6232b770c0f53b"
+
+    [[merra2_aerosols_lowres.download]]
+    sha256 = "ce7df957f950c13db6dcdec4dd09b33631606a98f47eba22d1c29ff0c913be53"
+    url = "https://caltech.box.com/shared/static/c152v3f03l0w745qv7d8td9eguz9glsy.gz"
