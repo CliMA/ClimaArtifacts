@@ -44,16 +44,19 @@ function combine_rate_and_inst(output_filepath, rate_filepath, inst_filepath)
     ncexpver[:] = Array(nc_rate["expver"])
 
     # Save all rate variables
-    rate_var_names = ["msr", "msdrswrf", "msdwlwrf", "msdwswrf", "mtpr"]
-    for var_name in rate_var_names
+    # When downloading the data, the names of the variables are now those in curr_rate_var_names
+    # We rename the variables to maintain compatibility with the ClimaLand simulations
+    curr_rate_var_names = ["avg_tsrwe", "avg_sdirswrf", "avg_sdlwrf", "avg_sdswrf", "avg_tprate"]
+    desired_rate_var_names = ["msr", "msdrswrf", "msdwlwrf", "msdwswrf", "mtpr"]
+    for (curr_var_name, desired_var_name) in zip(curr_rate_var_names, desired_rate_var_names)
         defVar(
             ds,
-            var_name,
+            desired_var_name,
             Float32,
             ("longitude", "latitude", "valid_time"),
-            attrib = nc_rate[var_name].attrib,
+            attrib = nc_rate[curr_var_name].attrib,
         )
-        ds[var_name][:, :, :] = nc_rate[var_name][:, :, :]
+        ds[desired_var_name][:, :, :] = nc_rate[curr_var_name][:, :, :]
     end
 
     # Save all inst variables

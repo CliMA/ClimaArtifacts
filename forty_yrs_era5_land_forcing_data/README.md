@@ -20,6 +20,11 @@ In `era5_YEAR_1.0x1.0.nc`, the fields are
 - Mean surface downward short wave radiation flux (lon, lat, time; "msdwswrf")
 - Mean total precipitation rate (lon, lat, time; "mtpr")
 
+Note that the last five fields ("msr", "msdrswrf", "msdwlwrf", "msdwswrf", "mtpr") are now
+renamed to "avg_tsrwe", "avg_sdirswrf", "avg_sdlwrf", "avg_sdswrf", and "avg_tprate" when
+postprocessing the data. These fields are renamed to what they were before to maintain
+backward compatibility.
+
 The file `era5_YEAR_1.0x1.0_lai.nc` holds one year of weekly data for `lai_hv` and `lai_lv`.
 - Latitude ("lat") (from -90.0 to 90.0 degrees at a resolution of 1.0)
 - Longitude ("lon") (from 0.0 to 359.00 degrees at a resolution of 1.0)
@@ -42,19 +47,12 @@ To recreate this artifact:
 6. Create an account on https://cds.climate.copernicus.eu/.
 7. Find your Personal Access Token at https://cds.climate.copernicus.eu/profile.
 8a. Using your virtual environment, run the script (e.g. `python
-    get_era5_land_forcing_data.py YOUR_API_KEY YEAR_START YEAR_END MODE`) with
-    your API key from step 2 and your desired starting and ending years. Note that
-    YEAR_END is not included when download data. For instance, to download ERA5
-    data for the years 1979 to 2024 with all the variables, run
-    `python get_era5_land_forcing_data.py YOUR_API_KEY 1979 2025 all`. Alternatively,
-    run
-    `python get_era5_land_forcing_data.py YOUR_API_KEY 1979 2025 split`
-    to get the datasets split by instantaneous and rate variables. Downloading all the
-    variables in one file is faster than downloading the instantaneous and rate variables
-    in different files. However, when downloading all the variables in a single file, there
-    are cases where the variables are missing. One way to resolve this is to download
-    the rate and instantaneous variables separately. See the next step for checking if any
-    file is corrupted or missing.
+    get_era5_land_forcing_data.py YOUR_API_KEY YEAR_START YEAR_END RES`) with your API key
+    from step 2, your desired starting and ending years, and the desired resolution for the
+    longitude and latitude. Note that YEAR_END is not included when download data. For
+    instance, to download ERA5 data for the years 1979 to 2024 with a resolution of 1.0
+    degree, run `python get_era5_land_forcing_data.py YOUR_API_KEY 1979 2025 1.0`. See the
+    next step for checking if any file is corrupted or missing.
 8b. Check for corrupted and missing files using `julia
     find_corrupted_and_missing_nc_files.jl YEAR_START YEAR_END LAST_MONTH`. Note that
     YEAR_END is included. For instance, to check corrupted files for the years 1979 to 2024
@@ -65,13 +63,13 @@ To recreate this artifact:
       2. It cannot be open using NCDatasets
       3. Duplicated points in time dimension
       4. Time dimension is not sorted
-    After deleting the corrupted files, run the same command in step 8a. If the variables
-    are not downloaded properly, then try using `split` rather than `all`. Repeat step 8
+    After deleting the corrupted files, run the same command in step 8a. Repeat step 8
     until all files are verified to be correct by
     `julia find_corrupted_and_missing_nc_files.jl YEAR_START YEAR_END LAST_MONTH`. The issue
     of corruption of the dataset is due to the Copernicus backend. The frequency of errors
     differ depending on what dataset and combination of variables are being downloaded.
-9. Run `julia --project=. create_artifact.jl` to create the artifact.
+9. Run `julia --project=. create_artifact.jl RES` to create the artifact, where `RES` is the
+   resolution used in step 8a.
 
 ## Post-processing
 - Updating history for global attributes.
@@ -80,8 +78,10 @@ To recreate this artifact:
 - For all variables beside time, longitude, and latitude, every attribute is removed except
   `standard_name`, `long_name`, `units`, `_FillValue`, and `missing_value`.
 - Reverse latitude dimension so that the latitudes are in increasing order.
-- All variables are stored as Float32 except for the time dimension which is
-  stored as Int32 (these are converted to dates when loading them in Julia).
+- All variables are stored as Float32 except for the time dimension which is stored as Int32
+  (these are converted to dates when loading them in Julia).
+- Renaming the fields "avg_tsrwe", "avg_sdirswrf", "avg_sdlwrf", "avg_sdswrf", and
+  "avg_tprate" to "msr", "msdrswrf", "msdwlwrf", "msdwswrf", and "mtpr" respectively.
 
 To be compatiable with the ClimaLand simulation, the postprocessing of reversing the
 latitude dimension is necessary. Furthermore, datasets downloaded separately, such as with
@@ -105,10 +105,9 @@ completed requests. There is no workaround for this, as the CDS API does not sup
 deleting requests (see this [issue](https://github.com/ecmwf/cdsapi/issues/123)). To ensure
 a request is always being processed, one can manually delete completed requests.
 
-In some cases, datasets can be corrupted in the sense that the datasets are missing
-variables. Thus, this script also support downloading rate and instanteous variables in the
-command line arguments. Furthermore, the script `find_corrupted_and_missing_nc_files.jl` for
-finding corrupted files.
+In some cases, data can be corrupted in the sense that the datasets are missing
+variables. The script `find_corrupted_and_missing_nc_files.jl` can be used to determine
+whether a file is corrupted or not.
 
 ## Attribution
 Hersbach, H. et al., (2018) was downloaded from the Copernicus Climate Change Service (2023). Our dataset contains modified Copernicus Climate Change Service information [2023]. Neither the European Commission nor ECMWF is responsible for any use that may be made of the Copernicus information or data it contains.

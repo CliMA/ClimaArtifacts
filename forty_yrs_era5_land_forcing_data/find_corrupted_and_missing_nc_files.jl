@@ -72,7 +72,7 @@ function find_corrupted_and_missing_nc_files(first_year, last_year, last_month)
                 end
             else
                 # Data should contain only rate variables
-                if !issubset(["msr", "msdrswrf", "msdwlwrf", "msdwswrf", "mtpr"], attribs)
+                if !issubset(["avg_tsrwe", "avg_sdirswrf", "avg_sdlwrf", "avg_sdswrf", "avg_tprate"], attribs)
                     println("$file is corrupted; does not contain all the variables")
                     close(ds)
                     continue
