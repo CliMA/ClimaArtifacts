@@ -17,11 +17,11 @@ short_name_dict = Dict(
 function create_cloud(variables, outfile_path; small=false)
 
     ncout = NCDataset(outfile_path, "c")
-    infile_path = map(a -> "era5_cloud_hourly_"*variables[1]*"_2010"*lpad(string(a),2,"0")*".nc", collect(1:12))
-    length(infile_path) != 12 && error(
+    infile_paths = map(m -> "era5_cloud_hourly_$(variables[1])_2010$(m).nc", lpad.(1:12, 2, "0"))
+    length(infile_paths) != 12 && error(
         "Did not find twelve .nc files for variable $(variables[1]). Rerun Python script or check that all files are downloaded in this directory.",
     )
-    ncin = NCDataset(infile_path, aggdim = "valid_time")
+    ncin = NCDataset(infile_paths, aggdim = "valid_time")
     
     FT = Float32
     THINNING_FACTOR = small ? 6 : 1
@@ -62,12 +62,11 @@ function create_cloud(variables, outfile_path; small=false)
         ["standard_name", "long_name", "units", "_FillValue", "GRIB_missingValue"]
     attrib_renames = ["standard_name", "long_name", "units", "_FillValue", "missing_value"]
     for variable in variables
-        infile_path = map(a -> "era5_cloud_hourly_"*variable*"_2010"*lpad(string(a),2,"0")*".nc", collect(1:12))
-        length(infile_path) != 12 && error(
+        infile_paths = map(m -> "era5_cloud_hourly_$(variable)_2010$(m).nc", lpad.(1:12, 2, "0"))
+        length(infile_paths) != 12 && error(
             "Did not find twelve .nc files for variable $(variable). Rerun Python script or check that all files are downloaded in this directory.",
         )
-        @info length(infile_path)
-        ncin = NCDataset(infile_path, aggdim = "valid_time")
+        ncin = NCDataset(infile_paths, aggdim = "valid_time")
         name = short_name_dict[variable]
         attribs = Dict([
             attrib_rename => ncin[name].attrib[attrib_name] for

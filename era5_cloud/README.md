@@ -11,11 +11,11 @@ and specific humidity (kg/kg) defined on a lon-lat-z-time grid.
 ## Usage
 To recreate the artifact:
 1. Set up the CDI APS personal access token following the [instruction](https://cds.climate.copernicus.eu/how-to-api#install-the-cds-api-token)
-1. Create a python virtual environment
-2. Activate the new virtual env
-3. In the same terminal run `pip install -r requirements.txt`
-3. In the same terminal run `python download_era5.py`
-4. In the same terminal run `julia --project create_artifact.jl`
+2. Create a python virtual environment
+3. Activate the new virtual env
+4. In the same terminal run `pip install -r requirements.txt`
+5. In the same terminal run `python download_era5.py`
+6. In the same terminal run `julia --project create_artifact.jl`
 
 ## Requirements
 - Python >= 3
