@@ -1,6 +1,8 @@
 """
-   postprocess_artifact(ncin, fileout)
-
+   thin_and_postprocess_artifact(
+       ncin,
+       fileout,
+   )
 Take a `ncin` ,a .nc file loaded using NCDatasets, and write a postprocessed thinned-down
 version to `fileout`.
 
@@ -17,12 +19,12 @@ Postprocessing includes:
 - All variables are stored as Float32 except for the time dimension which is stored as Int32
   (these are converted to dates when loading them in Julia).
 """
-function postprocess_artifact(ncin, fileout)
+function thin_and_postprocess_artifact(ncin, fileout)
     global_attrib = OrderedDict(ncin.attrib)
     curr_history = global_attrib["history"]
     new_history =
         curr_history *
-        "; Modified by CliMA for use in ClimaLand models (see forty_yrs_era5_land_forcing_data folder in ClimaArtifacts for full changes)"
+        "; Modified by CliMA for use in ClimaLand models (see era5_land_forcing_data2008 folder in ClimaArtifacts for full changes)"
     global_attrib["history"] = new_history
     ncout = NCDataset(fileout, "c", attrib = global_attrib)
 

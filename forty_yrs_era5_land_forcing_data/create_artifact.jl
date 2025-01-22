@@ -5,6 +5,7 @@ import OrderedCollections: OrderedDict
 include("postprocess_artifact.jl")
 include("postprocess_and_make_weekly_lai_data.jl")
 include("combine_rate_and_inst.jl")
+include("thin_and_postprocess_artifact.jl")
 
 # Get all directories that start with "era_5"
 era_5_dirs = []
@@ -33,11 +34,15 @@ else
     mkdir(output_dir_lai)
 end
 
-completed_years = filter(x -> endswith(x, "_1.0x1.0.nc"), readdir(output_dir)) |> length
+if length(ARGS) != 1
+    return error("Usage: julia --project=. create_artifact.jl res where res is the resolution of the data downloaded")
+end
+res = ARGS[1]
+completed_years = filter(x -> endswith(x, "_$(res)x$(res).nc"), readdir(output_dir)) |> length
 remaining_years = length(era_5_dirs) - completed_years
 free_space_in_GB = diskstat().available / (1024^3) # convert from bytes to GB
-# One year of non-LAI data is approximately 22G
-required_space_in_GB = 22 * remaining_years
+# One year of non-LAI data with a resolution of 1.0 by 1.0 is approximately 22G
+required_space_in_GB = 22 * (1 / (parse(Float64, res))^2) * remaining_years
 
 if free_space_in_GB < required_space_in_GB
     print("Insufficient space, free space: $free_space_in_GB GB and required space: $required_space_in_GB GB")
@@ -71,7 +76,7 @@ for dir in era_5_dirs
     # files
     mfds = NCDataset(nc_paths, aggdim = "valid_time")
 
-    fileout = joinpath(output_dir, "era5_$(year)_1.0x1.0.nc")
+    fileout = joinpath(output_dir, "era5_$(year)_$(res)x$(res).nc")
     if isfile(fileout)
         println("$fileout already exists; skipping the creation of this file")
     else
@@ -79,7 +84,7 @@ for dir in era_5_dirs
         thin_and_postprocess_artifact(mfds, fileout)
     end
 
-    fileout_lai = joinpath(output_dir_lai, "era5_$(year)_1.0x1.0_lai.nc")
+    fileout_lai = joinpath(output_dir_lai, "era5_$(year)_$(res)x$(res)_lai.nc")
     if isfile(fileout_lai)
         println("$fileout_lai already exists; skipping the creation of this file")
     else

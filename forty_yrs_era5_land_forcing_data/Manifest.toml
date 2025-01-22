@@ -1,6 +1,6 @@
 # This file is machine-generated - editing it directly is not advised
 
-julia_version = "1.11.1"
+julia_version = "1.11.3"
 manifest_format = "2.0"
 project_hash = "2f6cd22eb0855fe19451904a00cf004898ee4881"
 
@@ -47,7 +47,7 @@ version = "0.1.3"
 
 [[deps.ClimaArtifactsHelper]]
 deps = ["ArtifactUtils", "Downloads", "Pkg", "REPL", "SHA"]
-path = "/home/kphan2/.julia/dev/ClimaArtifacts/ClimaArtifactsHelper.jl"
+path = "../ClimaArtifactsHelper.jl"
 uuid = "6ffa2572-8378-4377-82eb-ea11db28b255"
 version = "0.0.1"
 
