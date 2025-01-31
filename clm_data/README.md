@@ -17,8 +17,10 @@ To recreate the artifact:
 
 ## Input Files
 
-### 1. `surfdata_0.9x1.25_16pfts__CMIP6_simyr2000_c170616.nc`
-The netCDF file includes comprehensive environmental data with a focus on vegetation represented through 15 different Plant Functional Types (PFTs). These PFTs play a crucial role in modeling biophysical processes and ecosystem functions within CLM simulations. It also contains soil color data, which is used to calculate soil alebdo
+### 1. `surfdata_0.9x1.25_16pfts__CMIP6_simyr2000_c170616.nc` and `surfdata_0.125x0.125_16pfts_simyr2000_c151014.nc`
+These netCDF files includes comprehensive environmental data with a focus on vegetation represented through different Plant Functional Types (PFTs). These PFTs play a crucial role in modeling biophysical processes and ecosystem functions within CLM simulations. It also contains soil color data, which is used to calculate soil alebdo. `surfdata_0.9x1.25_16pfts__CMIP6_simyr2000_c170616.nc` is on a 0.8x1.25 degree grid and is used to create the
+clm_data artifact, while `surfdata_0.125x0.125_16pfts_simyr2000_c151014.nc` is on a 0.125x0.125 degree
+grid and is used to create the clm_data_highres artifact. Both input files contain tge following PFTs:
 
 - **Plant Functional Types**:
   - `not_vegetated`
@@ -37,7 +39,9 @@ The netCDF file includes comprehensive environmental data with a focus on vegeta
   - `c3_non-arctic_grass`
   - `c4_grass`
 
-  For information about each PFT and its parameters see the [CLM5 Docs](https://www2.cesm.ucar.edu/models/cesm2/land/CLM50_Tech_Note.pdf)
+The `surfdata_0.125x0.125_16pfts_simyr2000_c151014.nc` also contains two additional PFTs:
+`c3_crop` and `c3_irrigated`.
+For information about each PFT and its parameters see the [CLM5 Docs](https://www2.cesm.ucar.edu/models/cesm2/land/CLM50_Tech_Note.pdf)
 
 - **Variables Related to PFTs**:
     - `PCT_NATVEG`: This variable gives the percentage of natural vegetation cover across the land units, essential for assessing non-agricultural land cover.
@@ -55,9 +59,7 @@ These PFT variables are pivotal for simulating how natural ecosystems respond to
 Contains physiological parameters for each of the 21 PFTs in a previous version of CLM, when maximum rate of carboxylation did not depend on nitrogen content.
 
 - **Plant Functional Types**:
-In addition to the PFTs in `surfdata_0.9x1.25_16pfts__CMIP6_simyr2000_c170616.nc`, this file also includes:
-  - `c3_crop`
-  - `c3_irrigated`
+In addition to the PFTs in the surface data inputs, this file also includes:
   - `corn`
   - `spring_wheat`
   - `winter_wheat`
@@ -125,13 +127,16 @@ Contains the mapped soil albedos for each grid cell.
 ## Scripts
 
 ### 1. `dominant_pft.py`
-- **Description**: Script to determine the dominant PFT for each grid cell.
-- **Purpose**: Processes the surface data to create the `dominant_PFT_map.nc` file.
+- **Description**: Script to determine the dominant PFT for each grid cell. The `-d` flag
+runs the script on the high resolution inout file.
+- **Purpose**: Processes the surface data to create the `dominant_PFT_map.nc` files.
 
 ### 2. `pft_variables.py`
 - **Description**: Main script for mapping vegetation properties based on the dominant PFT.
+The `-d` flag runs the script on the high resolution inout file.
 - **Functionality**:
-  - Calculates the dominant PFT for each grid cell using `surfdata_0.9x1.25_16pfts__CMIP6_simyr2000_c170616.nc` .
+  - Calculates the dominant PFT for each grid cell using `surfdata_0.9x1.25_16pfts__CMIP6_simyr2000_c170616.nc` or
+  `surfdata_0.125x0.125_16pfts_simyr2000_c151014.nc`.
   - Reads physiological parameters from `pft-physiology.c110225.nc`.
   - Maps these parameters to the global grid based on the dominant PFT.
   - Reads parameters from `clm5_params.c171117.nc` and maps them based on the dominant PFT/
@@ -143,9 +148,11 @@ Contains the mapped soil albedos for each grid cell.
   - Outputs the mapped parameters to `vegetation_properties_map.nc`.
 
 ### 3. `soil_variables.py`
-- **Description**: Script for mapping soil properties based on the soil color.
+- **Description**: Script for mapping soil properties based on the soil color. The `-d` flag
+runs the script on the high resolution inout file.
 - **Functionality**:
-  - Finds the soil color for each grid cell using `surfdata_0.9x1.25_16pfts__CMIP6_simyr2000_c170616.nc`.
+  - Finds the soil color for each grid cell using `surfdata_0.9x1.25_16pfts__CMIP6_simyr2000_c170616.nc` or
+  `surfdata_0.125x0.125_16pfts_simyr2000_c151014.nc`.
   - Maps soil color at each grid cell to dry PAR albedo, dry NIR albedo, wet PAR alebdo, and wet NIR albedo
 
 ## References
