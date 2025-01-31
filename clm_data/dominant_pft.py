@@ -1,11 +1,12 @@
 import numpy as np
 from netCDF4 import Dataset
+import argparse
 
-def main():
-    # Define the path to the input NetCDF file
-    input_filename = "surfdata_0.9x1.25_16pfts__CMIP6_simyr2000_c170616.nc"
-    # Define the path to the output NetCDF file
-    output_filename = "dominant_PFT_map.nc"
+parser = argparse.ArgumentParser(description='Use cdsapi to download era5 mean monthly surface fluxes')
+parser.add_argument('-d', '--detailed', help="use high res input data", action='store_true')
+args = parser.parse_args()
+
+def main(input_filename, output_filename):
 
     # Open the input NetCDF file
     ds = Dataset(input_filename, "r")
@@ -73,4 +74,9 @@ def main():
     print("NetCDF file with dominant PFT per gridcell has been created:", output_filename)
 
 if __name__ == "__main__":
-    main()
+    if args.detailed:
+        input_filename = "surfdata_0.125x0.125_16pfts_simyr2000_c151014.nc"
+    else:
+        input_filename = "surfdata_0.9x1.25_16pfts__CMIP6_simyr2000_c170616.nc"
+    output_filename = "dominant_PFT_map.nc"
+    main(input_filename, output_filename)

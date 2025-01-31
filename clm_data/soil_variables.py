@@ -1,7 +1,16 @@
 import netCDF4 as nc
 import numpy as np
+import argparse
 
-surface_file =  'surfdata_0.9x1.25_16pfts__CMIP6_simyr2000_c170616.nc'
+parser = argparse.ArgumentParser(description='Use cdsapi to download era5 mean monthly surface fluxes')
+parser.add_argument('-d', '--detailed', help="use high res input data", action='store_true')
+args = parser.parse_args()
+
+if args.detailed:
+    surface_file =  "surfdata_0.125x0.125_16pfts_simyr2000_c151014.nc"
+else:
+    surface_file =  'surfdata_0.9x1.25_16pfts__CMIP6_simyr2000_c170616.nc'
+
 output_file = 'soil_properties_map.nc'
 # Table taken from CLM5.0 Tech Note Table 3.3 Dry and saturated soil albedos
 # COLUMNS: Dry vis, Dry nir, Saturated vis, Saturated nir

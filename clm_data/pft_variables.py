@@ -1,11 +1,19 @@
 import netCDF4 as nc
 import numpy as np
+import argparse
 
+parser = argparse.ArgumentParser(description='Use cdsapi to download era5 mean monthly surface fluxes')
+parser.add_argument('-d', '--detailed', help="use high res input data", action='store_true')
+args = parser.parse_args()
 # Paths to input files
-dominant_pft_file = 'dominant_PFT_map.nc'
 clm_params_file = 'clm5_params.c171117.nc'
 pft_physiology_file = 'pft-physiology.c110225.nc'
-surface_file =  'surfdata_0.9x1.25_16pfts__CMIP6_simyr2000_c170616.nc'
+if args.detailed:
+    surface_file =  'surfdata_0.125x0.125_16pfts_simyr2000_c151014.nc'
+else:
+    surface_file =  'surfdata_0.9x1.25_16pfts__CMIP6_simyr2000_c170616.nc'
+
+dominant_pft_file = 'dominant_PFT_map.nc'
 output_file = 'vegetation_properties_map.nc'
 
 # Read the dominant PFT data

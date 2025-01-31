@@ -4,3 +4,9 @@ git-tree-sha1 = "3f6873a3e67722bda1fd23f7d5a05f5e2df1fe8c"
     [[clm_data.download]]
     sha256 = "830136abec15551a343b7884d657fb6a79b16a37237681a2becf65bd845aa692"
     url = "https://caltech.box.com/shared/static/6pu2f6c99g29qawvjjh3j56drkonpd3z.gz"
+[clm_data_highres]
+git-tree-sha1 = "e68ba26e07c135f66d1ad678795b4a25c929b1b6"
+
+    [[clm_data_highres.download]]
+    sha256 = "2c7e6ba3c11e1e6ef209c7437aa18fb4cf15edd11332527bf0b41495dccbed19"
+    url = "https://caltech.box.com/shared/static/kk72iah76p99yggm8knu6me8fh9eiid0.gz"
