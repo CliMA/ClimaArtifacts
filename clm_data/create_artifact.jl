@@ -17,8 +17,8 @@ const FILE_PATHS = [
 const OUTPUT_FILES =
     ["dominant_PFT_map.nc", "vegetation_properties_map.nc", "soil_properties_map.nc"]
 
-output_dir = basename(@__DIR__) * "_artifact"
-output_dir_highres = basename(@__DIR__) * "_highres_artifact"
+output_dir = basename(@__DIR__) * "_0.9x1.25_artifact"
+output_dir_highres = basename(@__DIR__) * "_0.125x0.125_artifact"
 for dir in [output_dir, output_dir_highres]
     if isdir(dir)
         @warn "$dir already exists. Content will end up in the artifact and may be overwritten."
@@ -67,10 +67,10 @@ for output_file in OUTPUT_FILES
     Base.mv(output_file, output_path; force = true)
 end
 
-create_artifact_guided(output_dir; artifact_name = basename(@__DIR__))
+create_artifact_guided(output_dir; artifact_name = basename(@__DIR__) * "_0.9x1.25")
 
 create_artifact_guided(
     output_dir_highres;
-    artifact_name = basename(@__DIR__) * "_highres",
+    artifact_name = basename(@__DIR__) * "_0.125x0.125",
     append = true,
 )
