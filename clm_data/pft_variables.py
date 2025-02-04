@@ -31,6 +31,14 @@ medlynintercept_values = clm_params_dataset.variables['medlynintercept'][:]
 # Get photosynthesis mechanisms from surface data file
 surface_dataset = nc.Dataset(surface_file, 'r')
 pft_values = surface_dataset.variables['PCT_NAT_PFT'][:]
+# the 0.125x0.125 file has all `MONTHLY_HEIGHT_TOP` values of zero everywhere, so we use the 0.9x1.25 file
+if args.detailed:
+    height_dataset = nc.Dataset('surfdata_0.9x1.25_16pfts__CMIP6_simyr2000_c170616.nc', 'r')
+    height_values = height_dataset.variables['MONTHLY_HEIGHT_TOP'][:, :, :, :]
+    height_lon = np.mean(height_dataset.variables['LONGXY'][:, :], axis=0)
+    height_lat = np.mean(height_dataset.variables['LATIXY'][:, :], axis=1)
+else:
+    height_values = surface_dataset.variables['MONTHLY_HEIGHT_TOP'][:, :, :, :]
 pft_dominant_values = np.argmax(pft_values, axis = 0)
 # pft index 14 is the only C4 pft
 c3_dominant_map = pft_dominant_values != 14
@@ -49,6 +57,7 @@ vcmx25_values = pft_physiology_dataset.variables['vcmx25'][:]
 xl_values = pft_physiology_dataset.variables['xl'][:]
 
 # Create arrays to store the mapped values for each grid point
+canopy_height_map = np.zeros(dominant_pft.shape, dtype=np.float32)
 medlynslope_map = np.zeros_like(dominant_pft, dtype=np.float32)
 medlynintercept_map = np.zeros_like(dominant_pft, dtype=np.float32)
 rholnir_map = np.zeros_like(dominant_pft, dtype=np.float32)
@@ -66,6 +75,16 @@ for i in range(dominant_pft.shape[0]):
     for j in range(dominant_pft.shape[1]):
         pft_index = dominant_pft[i, j]  # PFTs are directly indexed
         if pft_index >= 0:
+            if args.detailed:
+                # here we use the lower resolution height data to map the canopy height
+                lon_point = lon[i, j]
+                lat_point = lat[i, j]
+                canopy_height_lon_index = np.argmin(np.abs(height_lon - lon_point))
+                canopy_height_lat_index = np.argmin(np.abs(height_lat - lat_point))
+                canopy_height_map[i,j] = np.mean(height_values[:, pft_index,\
+                    canopy_height_lat_index, canopy_height_lon_index], axis = 0)
+            else:
+                canopy_height_map[i,j] = np.mean(height_values[:, pft_index, i, j])
             medlynslope_map[i, j] = medlynslope_values[pft_index]
             medlynintercept_map[i, j] = medlynintercept_values[pft_index]
             # convert beta parameter to rooting depth parameter for root probability distribution
@@ -88,6 +107,7 @@ with nc.Dataset(output_file, 'w', format='NETCDF4') as output_dataset:
     # Create variables
     latitudes = output_dataset.createVariable('lat', 'f4', ('lat',))
     longitudes = output_dataset.createVariable('lon', 'f4', ('lon',))
+    canopy_height_var = output_dataset.createVariable('z_top', 'f4', ('lat', 'lon'), fill_value=np.nan)
     c3_dominant_var = output_dataset.createVariable('c3_dominant', 'f4', ('lat', 'lon',), fill_value=np.nan)
     medlynslope_var = output_dataset.createVariable('medlynslope', 'f4', ('lat', 'lon',), fill_value=np.nan)
     medlynintercept_var = output_dataset.createVariable('medlynintercept', 'f4', ('lat', 'lon',), fill_value=np.nan)
@@ -105,6 +125,7 @@ with nc.Dataset(output_file, 'w', format='NETCDF4') as output_dataset:
     # Assign data to variables
     latitudes[:] = np.mean(lat, axis=1)  # Assuming LATIXY and LONGXY are 2D arrays
     longitudes[:] = np.mean(lon, axis=0)  # Averaging to get 1D lat/lon
+    canopy_height_var[:, :] = canopy_height_map
     c3_dominant_var[:, :]  = c3_dominant_map
     medlynslope_var[:, :] = medlynslope_map
     medlynintercept_var[:, :] = medlynintercept_map
@@ -122,6 +143,9 @@ with nc.Dataset(output_file, 'w', format='NETCDF4') as output_dataset:
     # Assign attributes
     latitudes.units = 'degrees_north'
     longitudes.units = 'degrees_east'
+    canopy_height_var.units = 'm'
+    canopy_height_var.long_name = 'Canopy top height'
+    canopy_height_var.short_name = 'z_top'
     c3_dominant_var.units = '0. = c4, 1. = c3'
     c3_dominant_var.long_name = 'c3 dominant'
     medlynslope_var.units = 'kPa^0.5'

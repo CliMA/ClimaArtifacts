@@ -19,8 +19,8 @@ To recreate the artifact:
 
 ### 1. `surfdata_0.9x1.25_16pfts__CMIP6_simyr2000_c170616.nc` and `surfdata_0.125x0.125_16pfts_simyr2000_c151014.nc`
 These netCDF files includes comprehensive environmental data with a focus on vegetation represented through different Plant Functional Types (PFTs). These PFTs play a crucial role in modeling biophysical processes and ecosystem functions within CLM simulations. It also contains soil color data, which is used to calculate soil alebdo. `surfdata_0.9x1.25_16pfts__CMIP6_simyr2000_c170616.nc` is on a 0.8x1.25 degree grid and is used to create the
-clm_data artifact, while `surfdata_0.125x0.125_16pfts_simyr2000_c151014.nc` is on a 0.125x0.125 degree
-grid and is used to create the clm_data_highres artifact. Both input files contain tge following PFTs:
+clm_data_0.9x1.25 artifact, while `surfdata_0.125x0.125_16pfts_simyr2000_c151014.nc` is on a 0.125x0.125 degree
+grid and is used to create the clm_data_0.125x0.125 artifact. Both input files contain the following PFTs:
 
 - **Plant Functional Types**:
   - `not_vegetated`
@@ -115,6 +115,9 @@ value of 0.0 if C4 is dominant.
   - `rooting_depth(lat, lon)` parameter for root_distribution (m)
     - Describes the depth where ~2/3 of the roots are above
   - `xl(lat, lon)` Leaf/stem orientation index
+  - `z_top(lat, lon)` height top (m) **NOTE**: This variable is always calculated using the
+  0.9x1.25 surface data file, because the `MONTHLY_HEIGHT_TOP` variable is
+  zero at every point in the 0.125x0.125 surface data file.
 
 ### 3. `soil_properties_map.nc`
 Contains the mapped soil albedos for each grid cell.
