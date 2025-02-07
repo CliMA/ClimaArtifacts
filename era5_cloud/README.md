@@ -1,12 +1,12 @@
 # Cloud data, hourly, 2010
 
-This artifact repackages data coming from [ERA5 reanalysis](https://cds.climate.copernicus.eu/datasets/reanalysis-era5-pressure-levels?tab=overview) 
+This artifact repackages data coming from [ERA5 reanalysis](https://cds.climate.copernicus.eu/datasets/reanalysis-era5-pressure-levels?tab=overview)
 and contains hourly cloud properties in 2010.
 
 The input file is defined in pressure coordinates. We convert this into altitude over mean-sea level
-using $P = P^*exp(-z / H)$ with scale height $H$. We assume $P^* = 1e5$ (Pa) and $H = 7000$ (m). The output 
+using $P = P^*exp(-z / H)$ with scale height $H$. We assume $P^* = 1e5$ (Pa) and $H = 7000$ (m). The output
 is a NetCDF file that contains cloud fraction, cloud liquid water content (kg/kg), cloud ice water content (kg/kg),
-and specific humidity (kg/kg) defined on a lon-lat-z-time grid.
+and specific humidity (kg/kg), and relative humidity (ratio) defined on a lon-lat-z-time grid.
 
 ## Usage
 To recreate the artifact:
