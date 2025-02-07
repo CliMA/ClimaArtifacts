@@ -12,6 +12,7 @@ short_name_dict = Dict(
     "specific_cloud_liquid_water_content" => "clwc",
     "specific_cloud_ice_water_content" => "ciwc",
     "specific_humidity" => "q",
+    "relative_humidity" => "r",
 )
 
 function create_cloud(variables, outfile_path; small=false)
@@ -72,6 +73,8 @@ function create_cloud(variables, outfile_path; small=false)
             attrib_rename => ncin[name].attrib[attrib_name] for
             (attrib_name, attrib_rename) in zip(attrib_names, attrib_renames)
         ])
+        # change relative humidity to ratio from percent
+        attribs["units"] = variable == "relative_humidity" ? "" : attribs["units"]
         defVar(
             ncout,
             name,
@@ -80,13 +83,22 @@ function create_cloud(variables, outfile_path; small=false)
             attrib = attribs,
         )
         ncout[name][:,:,:,:] = reverse(ncin[name][begin:THINNING_FACTOR:end,begin:THINNING_FACTOR:end,:,begin:THINNING_FACTOR:end], dims=2)
+        if variable == "relative_humidity"
+            ncout[name][:,:,:,:] = clamp.(ncout[name][:,:,:,:], FT(0), FT(100)) / FT(100)
+        end
         close(ncin)
     end
 
     close(ncout)
 end
 
-variables = ["fraction_of_cloud_cover", "specific_cloud_liquid_water_content", "specific_cloud_ice_water_content", "specific_humidity"]
+variables = [
+    "fraction_of_cloud_cover",
+    "specific_cloud_liquid_water_content",
+    "specific_cloud_ice_water_content",
+    "specific_humidity",
+    "relative_humidity",
+]
 
 output_dir = "era5_cloud_artifact"
 if isdir(output_dir)

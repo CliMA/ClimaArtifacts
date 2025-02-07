@@ -59,7 +59,7 @@ def download_era5(variable, month):
 
 if __name__ == "__main__":
     variables = ["fraction_of_cloud_cover", "specific_cloud_ice_water_content",
-                "specific_cloud_liquid_water_content", "specific_humidity"]
+                "specific_cloud_liquid_water_content", "specific_humidity", "relative_humidity"]
     months = list(map(lambda x: str(x).zfill(2), range(1, 13)))
     variables_all = [r[0] for r in itertools.product(variables, months)]
     months_all = [r[1] for r in itertools.product(variables, months)]
