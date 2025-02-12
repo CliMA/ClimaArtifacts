@@ -18,6 +18,8 @@ source](https://gdex.ucar.edu/dataset/158_asphilli.html):
 > anomalies from a base period were used to create a more homogeneous record.
 > Also, additional adjustments were made to the SIC data set.
 
+This dataset contains monthly data from January 1870 to June 2022.
+
 If you are using this dataset, please consider the following citation:
 
 > Shea, Dennis, Hurrell, Jim, Phillips, Adam. (2024). Merged Hadley-OI sea
