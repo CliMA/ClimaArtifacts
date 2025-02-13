@@ -1,0 +1,6 @@
+[era5_lai_covers]
+git-tree-sha1 = "dd651b30b448740bdfef8e9cb7835bcd55ddf72f"
+
+    [[era5_lai_covers.download]]
+    sha256 = "2c5bcbd0823e037c5fcd67444b2cbdd2f054906752af6e8574a2975ede7f8160"
+    url = "https://caltech.box.com/shared/static/vf5ts11u2o5yjb1jmr387audnephnftr.gz"
