@@ -7,9 +7,10 @@ elements, and
 approximately 0.2x0.2 degrees resolution in the horizontal.
 
 We obtain this data by first running the ClimaLand model, forced by
-ERA5 data from 2008, for two years continuously. The output saved
+ERA5 data from 2008, for two years continuously. The script to do this is:
+ClimaLand.jl/experiments/long_runs/snowy_land.jl. The output saved
 from this via monthly diagnostics is used as input for the
-`create_artifacts.jl` script.
+`create_artifacts.jl` script. 
 
 Assume that this monthly diagnostic data is in the directory `filedir`.
 
