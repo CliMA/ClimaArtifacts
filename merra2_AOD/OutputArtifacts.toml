@@ -1,0 +1,6 @@
+[merra2_AOD]
+git-tree-sha1 = "822978416ee6dc176b13bfcda42d7f167c2828c3"
+
+    [[merra2_AOD.download]]
+    sha256 = "30e9357f7ecf30760009d85c84c1f19d4a7f57da8ff7644246b34aefb7378573"
+    url = "https://caltech.box.com/shared/static/r05g1zd29nuwtmjyjjjoxr7apdjk6rh5.gz"
