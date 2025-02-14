@@ -40,7 +40,7 @@ artifacts.
 - [Initial conditions for summer DYAMOND simulations](https:////github.com/CliMA/ClimaArtifacts/tree/main/atmos_dyamond_summer)
 
 ### Land
-
+- [Spun up initial conditions for soil, Jan 1, 2008](https://github.com/CliMA/ClimaArtifacts/tree/main/soil_ic_2008_50m)
 - [CLM surface data for the year 2000](https://github.com/CliMA/ClimaArtifacts/tree/main/clm_data)
 - [Soil texture parameters needed for the full soil model; derived from SoilGrids](https://github.com/CliMA/ClimaArtifacts/tree/main/soilgrids)
 - [Soil parameters needed for Richards equation; global at 1km resolution from
