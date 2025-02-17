@@ -1,4 +1,4 @@
-# Leaf Area Index, derived from MODIS data for 2008
+# Leaf Area Index, derived from MODIS data for 2000-2020
 
 This artifact repackages data coming from:
 Hua Yuan, Yongjiu Dai, Zhiqiang Xiao, Duoying Ji, Wei Shangguan,Reprocessing the MODIS Leaf Area Index products for land surface and climate modelling, Remote Sensing of Environment, Volume 115, Issue 5, 2011, Pages 1171-1187, ISSN 0034-4257, https://doi.org/10.1016/j.rse.2011.01.001.
@@ -11,5 +11,7 @@ We regrid the data to 1 degree resolution, and output a netCDF file with the fol
   - `lat`  : Latitude, degrees north
   - `lon`  : Longitude, degrees east
   - `month`: Month of the year, in `DateTime` format
+
+for each year from 2000-2020
 
 License: Creative Commons Zero
