@@ -26,7 +26,7 @@ to set up a CDS API personal access token.
 3. Run the script (e.g. `python get_era5_lai_covers.py).
 4. Run `julia --project=. create_artifact.jl`.
 5. After the artifact is created, you can delete the NetCDF files used to make
-   the plots.
+   the artifact.
 
 ## Post-processing
 - Updating history for global attributes.
