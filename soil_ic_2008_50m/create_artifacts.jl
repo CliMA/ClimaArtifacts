@@ -3,7 +3,7 @@ using ClimaArtifactsHelper
 using Statistics
 
 if length(ARGS) < 1
-    @error("Please provide the local path to CLimaLand simulation diagnostics.")
+    @error("Please provide the local path to ClimaLand simulation diagnostics.")
 else
     filedir = ARGS[1]
 end
@@ -34,8 +34,15 @@ attrib_sie = (;
                    vartitle = "Soil volumetric internal energy",
                    varunits = "J/m^3",
                    varname = "sie",
-                  )
-var_attribs = [attrib_swc, attrib_si, attrib_sie]
+              )
+attrib_swe = (;
+                   vartitle = "Snow water equivalent",
+                   varunits = "m",
+                   varname = "swe",
+              )
+
+var_3d_attribs = [attrib_swc, attrib_si, attrib_sie]
+var_2d_attribs = [attrib_swe,]
 function replace_nan_with_mean!(x)
     nan_mask = isnan.(x)
     nonnan_mean = mean(x[.~nan_mask])
@@ -46,8 +53,8 @@ end
 outfilepath = joinpath(outdir, "soil_ic_2008_50m.nc")
 ds = NCDataset(outfilepath, "c")    
 
-for i in 1:length(var_attribs)
-    var_attrib = var_attribs[i]
+for i in 1:length(var_3d_attribs)
+    var_attrib = var_3d_attribs[i]
     (vartitle, varunits, varname) = var_attrib
     data = NCDataset(joinpath(filedir, "$(varname)_1M_average.nc"))
     z = data["z"][:]
@@ -80,6 +87,22 @@ for i in 1:length(var_attribs)
     replace_nan_with_mean!(field)
     var[:, :, :] = field[:,:,:]
 end
+for i in 1:length(var_2d_attribs)
+    var_attrib = var_2d_attribs[i]
+    (vartitle, varunits, varname) = var_attrib
+    data = NCDataset(joinpath(filedir, "$(varname)_1M_average.nc"))
+    lat = data["lat"][:]
+    lon = data["lon"][:]
+    var = defVar(ds, varname, Float32, ("lon", "lat"))
+    var.attrib["units"] = varunits
+    var.attrib["longname"]= vartitle
+    var.attrib["varname"] = varname
+    field = data[varname][end,:,:]; # last time element
+    close(data)
+    replace_nan_with_mean!(field)
+    var[:, :] = field[:,:]
+end
+
 close(ds)
 
 create_artifact_guided(outdir; artifact_name = basename(@__DIR__))
