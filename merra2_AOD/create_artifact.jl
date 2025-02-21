@@ -2,12 +2,19 @@ using NCDatasets
 using Dates
 using ClimaArtifactsHelper
 using Downloads
+include("utilities.jl")
 
-const OUTPUT_PATH = "MERRA2_AOD.nc"
+const OUTPUT_PATH = joinpath("highres", "MERRA2_AOD.nc")
+const OUTPUT_PATH_LOWRES = joinpath("lowres", "MERRA2_AOD.nc")
+
+THINNING_FACTOR = 3
+
 
 const SPLIT_FILES_DIR = "monthly_data"
 
-isdir(SPLIT_FILES_DIR) || mkdir(SPLIT_FILES_DIR)
+for dir in ["lowres", "highres", SPLIT_FILES_DIR]
+    isdir(dir) || mkdir(dir)
+end
 
 # dict from month to download url
 downloads_dict = Dict()
@@ -60,51 +67,31 @@ for date = Dates.Date(1980, 1):Dates.Month(1):Dates.Date(2024, 12)
 end
 
 # Merge all the files into a single file
-file_paths = [joinpath(SPLIT_FILES_DIR, "$(date).nc")
-    for date in Dates.Date(1980, 1):Dates.Month(1):Dates.Date(2024, 12)]
+file_paths = [
+    joinpath(SPLIT_FILES_DIR, "$(date).nc") for
+    date = Dates.Date(1980, 1):Dates.Month(1):Dates.Date(2024, 12)
+]
 
 @assert length(file_paths) == length(downloads_dict)
+@info "All files downloaded. Merging..."
 
 isfile(OUTPUT_PATH) && rm(OUTPUT_PATH)
+isfile(OUTPUT_PATH_LOWRES) && rm(OUTPUT_PATH_LOWRES)
+
 ds_out = NCDataset(OUTPUT_PATH, "c")
 ds_agg = NCDataset(file_paths, "r"; aggdim = "time")
-for (d, n) in ds_agg.dim
-    defDim(ds_out, d, n)
-end
-for (varname, var) in ds_agg
-    if varname in ["lat", "lon", "time"]
-        defVar(ds_out, varname, Float32, (varname,), attrib = var.attrib)
-        if varname == "time"
-            ds_out[varname][:] = var[:] .+ Dates.Day(14)
-        else
-            ds_out[varname][:] = var[:]
-        end
-    else
-        defVar(ds_out, varname, Float32, dimnames(var), attrib = var.attrib)
-        # both data vars are unitless
-        ds_out[varname].attrib["units"] = ""
-        for i = 1:ds_agg.dim["time"]
-            ds_out[varname][:, :, i] = var[:, :, i]
-        end
-    end
-end
+ds_copyto!(ds_out, ds_agg)
 close(ds_agg)
 
-for (varname, var) in ds_out
-    @assert all(.!ismissing.(var[:]))
-    if eltype(var[:]) <: Union{Missing,Number}
-        @assert all(.!isnan.(var[:]))
-        @assert all(.!isinf.(var[:]))
-        if !(varname in ["lat", "lon", "time"])
-            @assert all(0.0 .<= var[:])
-        end
-    end
-    if varname == "time"
-        @assert all(Day(28) .<= diff(var[:]) .<= Day(31))
-    end
-end
-
-@assert all(ds_out["TOTSCATAU"][:] .<= ds_out["TOTEXTTAU"][:])
-
+@info "Full resolution file created. Thinning..."
+ds_small = NCDataset(OUTPUT_PATH_LOWRES, "c")
+thin_AOD_ds!(ds_small, ds_out, THINNING_FACTOR)
 close(ds_out)
+close(ds_small)
+
 create_artifact_guided_one_file(OUTPUT_PATH; artifact_name = "merra2_AOD")
+create_artifact_guided_one_file(
+    OUTPUT_PATH_LOWRES;
+    artifact_name = "merra2_AOD_lowres",
+    append = true,
+)
