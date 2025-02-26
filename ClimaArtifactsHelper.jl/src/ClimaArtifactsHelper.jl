@@ -3,6 +3,7 @@ module ClimaArtifactsHelper
 using ArtifactUtils
 using REPL.TerminalMenus
 using Pkg.Artifacts
+using NCDatasets
 
 import SHA: sha1
 import Downloads: download
@@ -10,6 +11,7 @@ import Downloads: download
 export create_artifact_guided,
     create_artifact_guided_one_file,
     download_rate_callback
+    thin_NCDataset!,
 
 const MB = 1024 * 1024
 const GB = 1024 * MB
@@ -260,5 +262,32 @@ function create_artifact_guided_one_file(
 
     create_artifact_guided(output_dir; artifact_name, append)
 end
+
+"""
+    thin_NCDataset!(ds_out, ds_in, thinning_factor=6, dims...)
+
+Fills `ds_out` with a thinned version of `ds_in` by a factor of `thinning_factor` in the dimensions `dims`.
+If no dimensions are provided, all dimensions are thinned.
+"""
+function thin_NCDataset!(ds_out, ds_in, thinning_factor=6, dims...)
+    all(in.(dims, Ref(keys(ds_in.dim)))) || error("Not all of $dims are in the dataset")
+    for (dim_name, dim_length) in ds_in.dim
+        if dim_name in dims
+            defDim(ds_out, dim_name, Int(ceil(ds_in.dim[dim_name] // thinning_factor)))
+        else
+            defDim(ds_out, dim_name, ds_in.dim[dim_name])
+        end
+    end
+    for (varname, var) in ds_in
+        var_dims = dimnames(var)
+        input_indices = map(var_dims) do dim_name
+            dim_name in dims ? range(1, ds_in.dim[dim_name]; step = thinning_factor) : Colon()
+        end
+        defVar(ds_out, varname, var[input_indices...], dimnames(var), attrib = var.attrib)
+    end
+end
+
+thin_NCDataset!(ds_out, ds_in, thinning_factor = 6) =
+    thin_NCDataset!(ds_out, ds_in, thinning_factor, keys(ds_in.dim)...)
 
 end
