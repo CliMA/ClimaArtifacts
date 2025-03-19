@@ -45,7 +45,7 @@ function check_ds(path)
         if eltype(var[:]) <: Union{Missing,Number}
             as_expected &= all(.!isnan.(var[:]))
             as_expected &= all(.!isinf.(var[:]))
-            if !(varname in ["lat", "lon", "time"])
+            if !(varname in ["lat", "lon", "time", "z_sfc"])
                 as_expected &= all(var[:] .>= 0.0)
             end
         end
@@ -71,7 +71,7 @@ end
 Create a monthly mean dataset from daily data. The daily datasets are interpolated to the
 `target_z` levels and then averaged.
 """
-function create_monthly_mean_ds(infile_paths, outfile_path, target_z; small = false)
+function create_monthly_mean_ds(infile_paths, outfile_path, target_z, surface_z; small = false)
     isfile(outfile_path) && rm(outfile_path)
     FT = Float32
     THINNING_FACTOR = 1
@@ -110,32 +110,29 @@ function create_monthly_mean_ds(infile_paths, outfile_path, target_z; small = fa
     n_lons = ds_out.dim["lon"]
     n_times = ds_agg.dim["time"]
 
-    zins = zeros(FT, n_lons, n_lats, n_levels, n_times)
-    p_at_face = zeros(FT, n_levels + 1)
-    day_ps = zeros(FT, n_lons, n_lats)
-    day_delp = zeros(FT, n_lons, n_lats, n_levels)
+    zcenters = zeros(FT, n_lons, n_lats, n_levels, n_times)
+
     for t = 1:n_times
-        day_ps .= ds_agg["PS"][begin:THINNING_FACTOR:end, begin:THINNING_FACTOR:end, t]
-        day_delp .=
+        day_dp =
             ds_agg["DELP"][begin:THINNING_FACTOR:end, begin:THINNING_FACTOR:end, :, t]
-        for j = 1:n_lats
-            for i = 1:n_lons
-                p_at_face[1] = day_ps[i, j]
-                for lev = 1:n_levels
-                    p_at_face[lev+1] = p_at_face[lev] .- day_delp[i, j, n_levels+1-lev]
-                    if p_at_face[lev+1] < 0
-                        p_at_face[lev+1] = 0
-                    end
-                end
-                p_at_center = [mean(p_at_face[lower:lower+1]) for lower = 1:n_levels]
-                zins[i, j, :, t] = Plvl_inv.(p_at_center)
-            end
+        day_rho = ds_agg["AIRDENS"][begin:THINNING_FACTOR:end, begin:THINNING_FACTOR:end, :, t]
+        day_dz = day_dp ./ (day_rho .* 9.8)
+
+
+        zcenters[:,:,end,t] .= day_dz[:,:,end] ./ 2 .+ surface_z[begin:THINNING_FACTOR:end, begin:THINNING_FACTOR:end,]
+        for lev = n_levels-1:-1:1
+            zcenters[:,:,lev,t] .= zcenters[:,:,lev+1,t] .+ (day_dz[:,:,lev] ./ 2) .+ (day_dz[:,:,lev+1] ./ 2)
         end
     end
-    p_at_face = day_ps = day_delp = nothing
     interpolated_var = zeros(
         FT,
         (ds_out.dim["lon"], ds_out.dim["lat"], length(target_z), ds_agg.dim["time"]),
+    )
+    defVar(
+            ds_out,
+            "z_sfc",
+            surface_z[begin:THINNING_FACTOR:end, begin:THINNING_FACTOR:end],
+            ("lon", "lat"),
     )
     for (old_varname, new_varname) in aerosol_names
         old_var = ds_agg[old_varname]
@@ -158,7 +155,7 @@ function create_monthly_mean_ds(infile_paths, outfile_path, target_z; small = fa
 
                     itp = extrapolate(
                         interpolate(
-                            (zins[i, j, :, t],),
+                            (reverse(zcenters[i, j, :, t]),),
                             reverse(old_data[i, j, :]),
                             Gridded(Linear()),
                         ),
@@ -172,9 +169,9 @@ function create_monthly_mean_ds(infile_paths, outfile_path, target_z; small = fa
         new_var .= mean(interpolated_var, dims = 4)
     end
     interpolated_var = nothing
-    GC.gc()
     close(ds_agg)
     close(ds_out)
+    GC.gc()
 end
 
 """
@@ -246,6 +243,9 @@ function merge_ds(file_paths, outfile_path)
         if varname in ["lat", "lon", "z", "time"]
             defVar(ds_out, varname, Float32, (varname,), attrib = var.attrib)
             ds_out[varname][:] = Array(var)
+        elseif varname == "z_sfc"
+            defVar(ds_out, varname, Float32, ("lon", "lat"), attrib = var.attrib)
+            ds_out[varname][:, :] = var[:, :, 1]
         else
             defVar(ds_out, varname, Float32, dimnames(var), attrib = var.attrib)
             for i = 1:ds_agg.dim["time"]

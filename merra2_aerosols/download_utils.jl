@@ -26,7 +26,7 @@ downloader.easy_hook =
 
     end
 
-function download_day(url, outfile_path)
+function download_earthdata(url, outfile_path)
     try
         downloaded_file = Downloads.download(url; downloader)
         Base.mv(downloaded_file, outfile_path)

@@ -36,28 +36,24 @@ The downloaded data's vertical coordinates are in model levels, which each have 
 thickness. There are 72 levels, with level 1 being the furthest from the surface and level 72 the
 closest to the surface. During processing, the levels are converted to altitude over mean-sea level.
 
-For each daily average dataset, there is pressure at the surface data for each horizontal coordinate
-in the `PS` variable. The pressure thickness for each vertical level at each horizontal coordinate
-is in the `DELP` variable. The pressure at the lower face of the lowest level is the surface pressure,
-and the pressure at the top face of the lowest level is the difference of surface pressure and pressure
-thickness of the lowest level. The lower face of the second lowest level is equivalent to the upper
-face of the lowest level, so the pressure at the upper face of the second lowest level is the difference
-of the pressure at the upper face of the lowest level and the pressure thickness of the second level.
-This continues for all levels, resulting in the following for each level `n > 1`:
+For each daily average dataset, the pressure thickness for each vertical level at each horizontal coordinate
+is in the `DELP` variable, and the air density of each loevel is in the
+`AIRDENS` variable. The surface elevation at each horizontal is obtained from
+[M2C0NXASM](https://disc.gsfc.nasa.gov/datasets/M2C0NXASM_5.12.4/summary),
+and is constant across time.
 
-- Pressure at lower face of level `n` = pressure at upper face of level `n - 1`
-- Pressure at upper face of level `n` = pressure at upper face of level `n - 1` - pressure thickness of level `n`
+The model level dimesnion is converted to elevation of the center of the level using the hydrostatic equation
 
-At `n=1`, pressure at lower face is the surface pressure.
-If the upper face pressure thickness is negative, it is instead set to zero.
-This only happens with the highest model level.
+$\partial z = \frac{\partial p}{-g \rho}$
 
-The pressure at the center of a level
-is then calculated as the average of the pressure at the lower and upper faces. Finally, the pressure
-at the center of each level is converted to altitude over mean-sea level with the assumption of a
-hydrostatic profile. The conversion is done with the inverse of the following:
+The center of the lowest level is calculated as the surface elevation plus half the
+thickness of the level, which is computed by dividing `DELP` by `-g * AIRDENS`.
+The center of the any non-bottom level is calculated as the center of the previous level,
+plus half the thickness of the previous level, plus half the thickness of the current level. This is equivalent to calculating the center of any level as
+the sum of the top of the previous level and half the thickness of the current level.
 
-`P(z) = 1e-5 Pa * exp(-z / 7000m)`
+This continues for all levels, resulting in z coordinates for each horizontal point, time, and model level:
+
 
 Next, a target z is created, with values from 10m to 80km. The data, which now has a calculated
 altitude for each level, is interpolated to the target z using gridded linear interpolation.
@@ -115,6 +111,11 @@ There are 15 data variables, all in units of kg/kg:
 - SO4: Sulphate aerosol
 - DST01, DST02, DST03, DST04, DST05: Dust Mixing Ratio (bin 1, bin 2, bin 3, bin 4, bin 5)
 - SS001, SS002, SS003, SS004, SS005: Sea Salt Mixing Ratio (bin 1, bin 2, bin 3, bin 4, bin 5)
+
+### Additional Variable
+
+One additional variable, `z_sfc` is included. It is defined on the latitude
+and longitude dimensions, and contains the surface elevation for that location.
 
 ## Citation
 
