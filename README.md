@@ -66,6 +66,7 @@ S. Gupta et al 2022, 2024](https://github.com/CliMA/ClimaArtifacts/tree/main/soi
 - [Water conservation test data for RichardsModel](https:////github.com/CliMA/ClimaArtifacts/tree/main/water_conservation_test)
 - [ERA5 LAI Covers](https:////github.com/CliMA/ClimaArtifacts/tree/main/era5_lai_covers)
 - [Soil freezing data from Mizoguchi](https:////github.com/CliMA/ClimaArtifacts/tree/main/mizoguchi_soil_freezing_data)
+- [Van Genuchten data from Huang](https:////github.com/CliMA/ClimaArtifacts/tree/main/huang_van_genucthen_data)
 
 ### Coupler/shared
 
