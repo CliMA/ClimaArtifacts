@@ -34,7 +34,7 @@ artifacts.
 - [Aerosol concentrations (monthly mean, decadal averaged from 1970 to 2030)](https://github.com/CliMA/ClimaArtifacts/tree/main/aerosol_concentrations)
 - [MERRA-2 Aerosol concentrations (monthly mean 1980 to 2024)](https://github.com/CliMA/ClimaArtifacts/tree/main/merra2_aerosols)
 - [Ozone concentrations (monthly mean, from 1850 to 2049)](https://github.com/CliMA/ClimaArtifacts/tree/main/ozone_concentrations)
-- [Cloud properties (hourly, 2010)]((https://github.com/CliMA/ClimaArtifacts/tree/main/era5_cloud))
+- [Cloud properties (hourly, 2010)](https://github.com/CliMA/ClimaArtifacts/tree/main/era5_cloud)
 - [Temperature average and restart file for ClimaAtmos Held-Suarez perfect model calibration](https://github.com/CliMA/ClimaArtifacts/tree/main/atmos_held_suarez_obs)
 - [Large-scale forcing from HadGEM2-A at cfSites for driving single column models in ClimaAtmos.jl](https://github.com/CliMA/ClimaArtifacts/tree/main/cfsite_gcm_forcing)
 - [Initial conditions for summer DYAMOND simulations](https:////github.com/CliMA/ClimaArtifacts/tree/main/atmos_dyamond_summer)
