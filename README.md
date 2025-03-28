@@ -83,7 +83,94 @@ S. Gupta et al 2022, 2024](https://github.com/CliMA/ClimaArtifacts/tree/main/soi
 
 # The ultimate guide to ClimaArtifacts
 
-Last update: 21 November 2024
+Last update: 28 March 2025
+
+If you are a developer, jump to the [For developers](https://github.com/CliMA/ClimaArtifacts#for-developers) section.
+
+## For users
+
+#### What is an artifact?
+
+Artifacts are objects that contain input data for CliMA simulations. CliMA
+artifacts leverage the [Julia
+artifact](https://docs.julialang.org/en/v1/stdlib/Artifacts/) system for
+distribution and validation. When you instantiate a CliMA package, Julia will
+automatically download the related input data (if needed).
+
+This repository contains many of the artifacts used by CliMA, alongside with
+documentation that describes the data and the scripts to reproduce them.
+
+> [!IMPORTANT]
+> Artifacts are always full folders and they can contain any number of files or
+> folders.
+
+
+#### How do I obtain an artifact?
+
+There are two categories of artifacts, _downloadable_ and _undownloadable_. The
+difference between the two is the size: _downloadable_ are small enough that
+they can be installed automatically, whereas _undownloadable_ need some special
+care.
+
+Let us first consider the _downloadable_ artifacts. Most downloadable artifacts
+are automatically installed when you instantiate a CliMA package. Other
+downloadable artifacts are lazy, meaning that they are downloaded when you first
+use them.
+
+Undownloadable artifacts, as the name suggests, cannot be downloaded
+automatically. ERA5 data is an examples of undownloadable artifacts: the hourly
+data required to force the CliMA land model takes over 2 TB of space.
+
+At the time of writing, undownloadable artifacts can be obtained by running the
+associated `create_artifact.jl` in this repository. Here we walk through an
+example (obtaining the historical sea surface temperature and sea ice
+concentration)
+
+1. Clone this repository: `git clone
+   https://github.com/CliMA/ClimaArtifacts.git`. For large artifacts, it is best
+   to clone the repository on a drive where you have enough storage space/quota.
+   Most of the undownloadable artifacts mention the file size in their README.
+2. Navigate to the artifact of interest `cd historical_sst_sic`
+3. Instantiate the Julia project: `julia --project=. -e 'using Pkg; Pkg.instantiate()'` 
+4. In `create_artifact.jl`, comment out the line with the
+   `create_artifact_guided` function (in the future, we will automate this step)
+5. Run the `create_artifact.jl` script: `julia --project=. create_artifact.jl`
+   This will automatically download and process the data. 
+   Note also that some of the artifacts might require some set up (e.g., obtaining
+   authentication tokens). These extra steps are explained in the associated README.
+> [!WARNING]
+> For large datasets and depending on the network speed, this can take several
+> hours/days. Refer to the README of the artifact to get a sense of space/time
+> required
+6. Optionally, move the artifact in your desired location. For example, here we
+   will move `historical_sst_sic` to `/my/drive/artifacts/historical_sst_sic`.
+7. Once the artifact is created, you need to make it available to Julia. For
+   this, navigate to the `artifacts` folder in your Julia depot (typically the
+   `.julia` folder): `cd ~/.julia/artifacts`
+8. Identify the hash associated to the artifact by looking at the
+   `OutputArtifacts.toml` in this repository. In the case of our example, we can
+   find it
+   [here](https://github.com/CliMA/ClimaArtifacts/blob/3e86f2a4907e2306f80d7fcfcb895461dda729b7/historical_sst_sic/OutputArtifacts.toml#L2),
+   and is `0d30d71a6f9b6548fe7395ca647e853ec36d1699`.
+
+9. Add to the `Overrides.toml` file (if such file does not already exist, create
+   it) a line that maps the hash with the path on the filesystem of the artifact
+   that we produced. In this example, this will look like:
+```toml
+0d30d71a6f9b6548fe7395ca647e853ec36d1699 = "/my/drive/artifacts/historical_sst_sic"
+```
+
+That is it!
+
+Using the hash allows different packages to share the same artifact (while
+possibly having different internal names for it).
+
+In the future, when the CliMA model settles to a more stable form, we hope to
+provide undownloadable artifacts in a simpler fashion (i.e., without having to
+regenerate them). In the meantime, please get in touch if you would like to
+receive a copy of some artifacts without regenerating them.
+
+## For developers
 
 #### What is an artifact?
 
@@ -92,8 +179,9 @@ might be a compiled library, a binary blob, or anything else. At CliMA, we use
 Julia artifacts to define and manage external data required to run our models
 (e.g., the surface albedo of the globe as a function of time).
 
-> Important: While we refer to data as artifacts, technically, Julia artifacts
-> are always folders and not single files.
+> [!IMPORTANT]
+> While we refer to data as artifacts, technically, Julia artifacts are always
+> folders and not single files.
 
 #### As a developer, how do I use an existing artifact?
 
