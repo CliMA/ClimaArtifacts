@@ -65,6 +65,7 @@ S. Gupta et al 2022, 2024](https://github.com/CliMA/ClimaArtifacts/tree/main/soi
 - [Topo Drag, created with the GDFL model](https:////github.com/CliMA/ClimaArtifacts/tree/main/topo_drag)
 - [Water conservation test data for RichardsModel](https:////github.com/CliMA/ClimaArtifacts/tree/main/water_conservation_test)
 - [ERA5 LAI Covers](https:////github.com/CliMA/ClimaArtifacts/tree/main/era5_lai_covers)
+- [Soil freezing data from Mizoguchi](https:////github.com/CliMA/ClimaArtifacts/tree/main/mizoguchi_soil_freezing_data)
 
 ### Coupler/shared
 
