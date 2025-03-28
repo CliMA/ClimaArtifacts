@@ -1,0 +1,6 @@
+[huang_van_genuchten_data]
+git-tree-sha1 = "39a344685d74346f89c4858c183565554494fc01"
+
+    [[huang_van_genuchten_data.download]]
+    sha256 = "1a31d971065bec12df089d95a6f385b44bf12fd136428fa7cb1456da87bd4fef"
+    url = "https://caltech.box.com/shared/static/fjq0f57qurctx9w5fc6vj8ml66wi8r73.gz"
