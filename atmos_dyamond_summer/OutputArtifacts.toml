@@ -1,2 +1,10 @@
 [DYAMOND_summer_initial_conditions]
 git-tree-sha1 = "931ce29dded2271fddd537a2492f3aef260624fd"
+[DYAMOND_SUMMER_ICS_p98deg]
+git-tree-sha1 = "72fcf327ce9859363fdd963b3439bfb36cd528e0"
+
+    [[DYAMOND_SUMMER_ICS_p98deg.download]]
+    sha256 = "139ee88a3c2c9c3001b7905c73f4ac907f0f33b4c800f206182aeb76aa36d20b"
+    url = "https://caltech.box.com/shared/static/wa1vi7kfuawncui44ucsri0al00bs4r5.gz"
+[DYAMOND_SUMMER_ICS_p14deg]
+git-tree-sha1 = "789c8dd160b022a6c714a102c1495530c7a9d20c"
