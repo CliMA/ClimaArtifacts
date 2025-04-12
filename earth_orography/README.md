@@ -18,12 +18,20 @@ A user guide and additional information for the ETOPO2022 dataset is available h
 ## Usage
 
 To recreate the artifact, start a Julia session and activate the 
-`earth_orography` project. Then, run the `create_artifact.jl` file. 
-e.g. 
-```
+`earth_orography` project. Then, run the `create_artifact.jl` file, e.g.,
+```julia
 (earth_orography) pkg>
 julia> include("create_artifact.jl")
 ```
+
+## Note
+If this is your first time running `create_artifact.jl` and encounter an error like 
+```bash
+Updating registry at ~/.julia/registries/General.toml
+ERROR: expected package ClimaArtifactsHelper [6ffa2572] to be registered
+```
+
+Optionally, follow the instructions [here](https://github.com/CliMA/ClimaArtifacts/tree/main#how-to-upload-on-the-caltech-box) to upload the artifacts to Caltech Box.
 
 ## References
 
