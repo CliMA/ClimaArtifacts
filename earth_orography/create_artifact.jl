@@ -11,7 +11,7 @@ output_dir_30arcsec =  "earth_orography_30arcsec"*"_artifact"
 output_dir_60arcsec =  "earth_orography_60arcsec"*"_artifact"
 
 if isdir(output_dir_30arcsec)
-    @warn "$output_dir already exists. Content will end up in the artifact and may be overwritten."
+    @warn "$output_dir_30arcsec already exists. Content will end up in the artifact and may be overwritten."
     @warn "Abort this calculation, unless you know what you are doing."
 else
     mkdir(output_dir_30arcsec)
@@ -32,11 +32,16 @@ if !isfile(path)
     downloaded_file = Downloads.download(url; progress = download_rate_callback())
     Base.mv(downloaded_file, path)
 end
-Base.cp(path, joinpath(output_dir_30arcsec, basename(path)))
+target_path = joinpath(output_dir_30arcsec, basename(path))
+if !isfile(target_path)
+    Base.cp(path, target_path)
+else
+    @info "$target_path already exists, skipping copy"
+end
 create_artifact_guided(output_dir_30arcsec; artifact_name = basename(@__DIR__) * "_30arcseconds")
 
 if isdir(output_dir_60arcsec)
-    @warn "$output_dir already exists. Content will end up in the artifact and may be overwritten."
+    @warn "$output_dir_60arcsec already exists. Content will end up in the artifact and may be overwritten."
     @warn "Abort this calculation, unless you know what you are doing."
 else
     mkdir(output_dir_60arcsec)
@@ -57,7 +62,12 @@ if !isfile(path)
     downloaded_file = Downloads.download(url; progress = download_rate_callback())
     Base.mv(downloaded_file, path)
 end
-Base.cp(path, joinpath(output_dir_60arcsec, basename(path)))
+target_path = joinpath(output_dir_30arcsec, basename(path))
+if !isfile(target_path)
+    Base.cp(path, target_path)
+else
+    @info "$target_path already exists, skipping copy"
+end
 create_artifact_guided(output_dir_60arcsec; artifact_name = basename(@__DIR__) * "_60arcseconds", append = true)
 
 @info "Generated earth orography files"
