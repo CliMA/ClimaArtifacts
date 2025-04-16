@@ -72,7 +72,7 @@ weakdeps = ["SparseArrays"]
     ChainRulesCoreSparseArraysExt = "SparseArrays"
 
 [[deps.ClimaArtifactsHelper]]
-deps = ["ArtifactUtils", "Downloads", "Pkg", "REPL", "SHA"]
+deps = ["ArtifactUtils", "Downloads", "NCDatasets", "Pkg", "REPL", "SHA"]
 path = "../ClimaArtifactsHelper.jl"
 uuid = "6ffa2572-8378-4377-82eb-ea11db28b255"
 version = "0.0.1"
