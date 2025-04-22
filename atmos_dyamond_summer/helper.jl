@@ -45,14 +45,15 @@ function compute_z_center(z_face)
     return z_center
 end
 
-function interpz_3d(target_z, z3d, var3d)
-    nx, ny, nz = size(z3d)
-    nztarget = length(target_z)
-    # flip dimensions from (nx, ny, nz) to (nz, nx, ny)
-    target_var3d = similar(var3d, nztarget, nx, ny)
-    target_z3 = repeat(target_z, 1, nx, ny)
-    z3d_permuted = permutedims(z3d, (3, 1, 2))
-    var3d_permuted = permutedims(var3d, (3, 1, 2))
-    interpolate1d!(target_var3d, z3d_permuted, target_z3, var3d_permuted, Linear(), Flat())
-    return permutedims(target_var3d, (2, 3, 1))
+function interpz_3d(ztarget, zsource, fsource)
+    nx, ny, nz = size(zsource)
+    # permute dimensions from (nx, ny, nz) to (nz, nx, ny) if needed
+    ztargetp = ndims(ztarget) == 1 ? ztarget : permutedims(ztarget, (3, 1, 2))
+    zsourcep = ndims(zsource) == 1 ? zsource : permutedims(zsource, (3, 1, 2))
+    fsourcep = ndims(fsource) == 1 ? fsource : permutedims(fsource, (3, 1, 2)) 
+    ftargetp = similar(fsourcep, size(ztargetp, 1), nx, ny)
+    # interpolate
+    interpolate1d!(ftargetp, zsourcep, ztargetp, fsourcep, Linear(), Flat())
+    # permute interpolated data to initial ordering
+    return permutedims(ftargetp, (2, 3, 1))
 end
