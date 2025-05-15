@@ -27,3 +27,8 @@ docs/site/
 *.tar.gz
 *.nc
 *.csv
+
+# Temp (do not merge!)
+rmses_thingy/cmip_download/
+rmses_thingy/cmip_download_esgpull/
+
