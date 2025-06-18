@@ -40,6 +40,7 @@ artifacts.
 - [Initial conditions for summer DYAMOND simulations](https:////github.com/CliMA/ClimaArtifacts/tree/main/atmos_dyamond_summer)
 - [MERRA-2 Aerosol Diagnostics (monthly mean 1980 to 2024)](https://github.com/CliMA/ClimaArtifacts/tree/main/merra2_AOD)
 - [MODIS liquid and ice water path (monthly mean 2002 to 2025)](https://github.com/CliMA/ClimaArtifacts/tree/main/modis_lwp_iwp)
+- [CloudSat/CALIPSO 3S-GEOPROF-COMB dataset](https://github.com/CliMA/ClimaArtifacts/tree/main/calipso_cloudsat)
 
 ### Land
 
