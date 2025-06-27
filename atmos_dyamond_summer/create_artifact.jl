@@ -85,6 +85,7 @@ function create_initial_conditions(infile, outfile; skip = 1)
         z = defVar(ncout, "z", FT, ( "z",), attrib = OrderedDict(
             "Datatype" => string(FT),
             "standard_name" => "altitude",
+            "short_name" => "z",
             "long_name" => "altitude",
             "units" => "m",
             ),
@@ -95,6 +96,7 @@ function create_initial_conditions(infile, outfile; skip = 1)
             "Datatype" => string(FT),
             "standard_name" => "pressure",
             "long_name" => "pressure",
+            "short_name" => "pfull",
             "units" => "Pa",
             ),
         )
