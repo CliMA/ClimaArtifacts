@@ -41,20 +41,8 @@ attrib_swe = (;
                    varname = "swe",
               )
 
-attrib_ct = (;
-                   vartitle = "Canopy temperature",
-                   varunits = "K",
-                   varname = "ct",
-              )
-
-attrib_lwp = (;
-                   vartitle = "Leaf water potential",
-                   varunits = "m",
-                   varname = "lwp",
-              )
-
 var_3d_attribs = [attrib_swc, attrib_si, attrib_sie]
-var_2d_attribs = [attrib_swe,attrib_lwp, attrib_ct]
+var_2d_attribs = [attrib_swe,]
 function replace_nan_with_mean!(x)
     nan_mask = isnan.(x)
     nonnan_mean = mean(x[.~nan_mask])
