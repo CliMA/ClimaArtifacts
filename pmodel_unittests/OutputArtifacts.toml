@@ -1,0 +1,6 @@
+[pmodel_unittests]
+git-tree-sha1 = "8d542ddf8c33e5e1e6b293119b8231fe368f76a7"
+
+    [[pmodel_unittests.download]]
+    sha256 = "00a2a4fb0a6c6746f662d216f2db1a5874e4fcfe7c1294cf8e76d6d0aed2bc8a"
+    url = "https://caltech.box.com/shared/static/o1qa0e0e2sh2w4hig3miy1jwzd41lafx.gz"

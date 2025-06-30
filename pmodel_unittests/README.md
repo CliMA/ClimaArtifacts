@@ -1,0 +1,3 @@
+This artifact contains unit test data (inputs and expected outputs) for the P-model, a model for photosynthesis and stomatal conductance used in ClimaLand. 
+
+`create_artifacts.jl` downloads two CSV data files required for P-model unit testing from Caltech Box. These files contain reference data and expected outputs that are used to validate the P-model implementation. These data were generated using [Rpmodel](https://github.com/geco-bern/rpmodel), an implementation of the P model in R. To generate this data from scratch, download the Rpmodel package in R according to these [instructions](https://github.com/geco-bern/rpmodel), then run the script `pmodel_test.r`.
