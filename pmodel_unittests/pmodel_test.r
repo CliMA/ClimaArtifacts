@@ -1,3 +1,17 @@
+"""
+This script generates the unit test data for the P-model using the R package `rpmodel`. 
+It saves the inputs and expected outputs to csv files. These files are then used to validate
+the P-model implementation in ClimaLand. To run this file, first install the `rpmodel` package 
+in R by typing install.packages('rpmodel') in the R terminal. Then, to run this script, do
+Rscript pmodel_test.r in the terminal. 
+
+Citation:
+Stocker, B. D., Wang, H., Smith, N. G., Harrison, S. P., Keenan, T. F., Sandoval, D., 
+Davis, T., and Prentice, I. C.: P-model v1.0: an optimality-based light use efficiency
+model for simulating ecosystem gross primary production, Geosci. Model Dev., 13, 
+1545–1581, https://doi.org/10.5194/gmd-13-1545-2020, 2020.
+"""
+
 library(rpmodel)
 
 testcases <- list(
