@@ -70,6 +70,7 @@ S. Gupta et al 2022, 2024](https://github.com/CliMA/ClimaArtifacts/tree/main/soi
 - [ERA5 LAI Covers](https:////github.com/CliMA/ClimaArtifacts/tree/main/era5_lai_covers)
 - [Soil freezing data from Mizoguchi](https:////github.com/CliMA/ClimaArtifacts/tree/main/mizoguchi_soil_freezing_data)
 - [Van Genuchten data from Huang](https:////github.com/CliMA/ClimaArtifacts/tree/main/huang_van_genucthen_data)
+- [P-model implementation test data](https:////github.com/CliMA/ClimaArtifacts/tree/main/pmodel_unittests)
 
 ### Coupler/shared
 
