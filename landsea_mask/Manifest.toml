@@ -100,7 +100,7 @@ uuid = "2a0fbf3d-bb9c-48f3-b0a9-814d99fd7ab9"
 version = "0.2.6"
 
 [[deps.ClimaArtifactsHelper]]
-deps = ["ArtifactUtils", "Downloads", "Pkg", "REPL", "SHA"]
+deps = ["ArtifactUtils", "Downloads", "NCDatasets", "Pkg", "REPL", "SHA"]
 path = "../ClimaArtifactsHelper.jl"
 uuid = "6ffa2572-8378-4377-82eb-ea11db28b255"
 version = "0.0.1"
