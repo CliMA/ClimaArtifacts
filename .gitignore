@@ -29,6 +29,5 @@ docs/site/
 *.csv
 
 # Temp (do not merge!)
-rmses_thingy/cmip_download/
-rmses_thingy/cmip_download_esgpull/
-
+cmip_model_rmse/cre_rmse/cmip_download/
+cip_model_rmse/cre_rmse/cmip_download_esgpull/
