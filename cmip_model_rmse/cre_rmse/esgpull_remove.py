@@ -15,7 +15,7 @@ def esgpull_remove(esgpull_dir, query_id):
 
 if __name__ == "__main__":
     query_id = str(sys.argv[1])
-    if len(sys.argv) <= 1:
+    if len(sys.argv) <= 2:
         esgpull_dir = "cmip_download_esgpull"
     else:
         esgpull_dir = str(sys.argv[2])

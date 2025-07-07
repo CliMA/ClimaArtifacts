@@ -12,6 +12,11 @@ function contain_year(file::AbstractString, year::Dates.Date)
     return (year0 <= year) && (year <= year1)
 end
 
+function contain_model(file::AbstractString, model_name)
+    model_name_from_file = find_model_name(file)
+    return model_name_from_file == model_name
+end
+
 """
     model_name(file::AbstractString)
 
@@ -22,4 +27,9 @@ The file name should follows the template:
 """
 function find_model_name(file::AbstractString)
     return split(basename(file), "_")[3]
+end
+
+function find_year(file::AbstractString)
+    year0_year1 = match(r"\d{6}-\d{6}", basename(file)).match
+    return Dates.Date(year0_year1[1:6], Dates.dateformat"yyyymm")
 end
