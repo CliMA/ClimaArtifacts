@@ -13,14 +13,15 @@ return the RMSEs as a vector.
 
 The order of the vector is MAM, JJA, SON, DJF, and ANN RMSE.
 """
-# TODO: Add sim_short_name and obs_short_name since the names could be different :(
-function compute_rmses(sim_file, obs_file, short_name, start_date, end_date)
+# TODO: Refactor this to take in OutputVars instead since it allows for the
+# flexibility of manipulating the OutputVars beforehand
+function compute_rmses(sim_file, obs_file, sim_short_name, obs_short_name, start_date, end_date)
     # Get the year as a datetime
     new_start_date = Dates.DateTime(start_date)
     # Load data
     sim_var = ClimaAnalysis.OutputVar(
         sim_file,
-        short_name,
+        sim_short_name,
         new_start_date = new_start_date,
         shift_by = Dates.firstdayofmonth,
     )
@@ -28,12 +29,22 @@ function compute_rmses(sim_file, obs_file, short_name, start_date, end_date)
 
     obs_var = ClimaAnalysis.OutputVar(
         obs_file,
-        short_name,
+        obs_short_name,
         new_start_date = new_start_date,
         shift_by = Dates.firstdayofmonth,
     )
 
-    # TODO: Check for units
+    if sim_short_name == "pr"
+        @info "Number of positive numbers: $(count(>(0), sim_var.data))"
+        @info "Number of negative numbers: $(count(<(0), sim_var.data))"
+        val = 86400
+        @info val
+        sim_var = ClimaAnalysis.convert_units(
+                    sim_var,
+                    "mm/day",
+                    conversion_function = x -> x .* Float32(val),
+                )
+    end
 
     # Window to get the dates we are interested in
     # Monthly averages are on the first day
@@ -116,28 +127,30 @@ function find_correct_files(sim_data_dir, short_name)
 end
 
 if abspath(PROGRAM_FILE) == @__FILE__
-    if length(ARGS) != 5
+    if length(ARGS) != 6
         error("Usage: julia compute_rmse.jl <Directory to the CMIP model outputs> <File to observation data> <Short name> <Start date> <End date>")
     end
     # "cmip_download_esgpull/data"
     sim_data_dir = ARGS[1]
-    # This should be a argument passed in
     obs_data_file = ARGS[2]
-    short_name = ARGS[3]
-    start_date = Dates.DateTime(ARGS[4])
-    end_date = Dates.DateTime(ARGS[5])
+    sim_short_name = ARGS[3]
+    obs_short_name = ARGS[4]
+    start_date = Dates.DateTime(ARGS[5])
+    end_date = Dates.DateTime(ARGS[6])
     # obs_data_file = "/home/kphan/Desktop/work_tree/cre-calibration/cre_rmse_creation/ceres_obs_data/CERES_EBAF_Ed4.2_Subset_200003-201910.nc"
 
-    # Map model name to tuple of rsut file and rsutcs file
-    model_to_short_name_dict = find_correct_files(sim_data_dir, short_name)
+    # Map model name to corresponding files
+    model_to_files_dict = find_correct_files(sim_data_dir, sim_short_name)
 
     # Map model name to RMSE
     # A sorted dictionary is used to sort the model names when producing the cvs file
-    rmses_dict = SortedDict(k => compute_rmses(v, obs_data_file, short_name, start_date, end_date) for (k, v) in model_to_short_name_dict)
+    rmses_dict = SortedDict(k => compute_rmses(v, obs_data_file, sim_short_name, obs_short_name, start_date, end_date) for (k, v) in model_to_files_dict)
 
-    open("$(short_name)_amip_amip_$(start_date)_$(end_date).csv", "w") do io
+    open("$(sim_short_name)_amip_$(start_date)_$(end_date).csv", "w") do io
         write(io, "Model,DJF,MAM,JJA,SON,ANN\n")
         for (model_name, rmses) in rmses_dict
+            # TODO: Update this since I should be able to control what the order should
+            # be
             rmses = (rmses[4], rmses[1], rmses[2], rmses[3], rmses[5])
             rmses = string(rmses)
             rmses = rmses[2:length(rmses)-1] # remove parentheses
