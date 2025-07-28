@@ -1,5 +1,5 @@
 ## Description
-FLUXNET eddy covariance flux tower site data is used to validate ClimaLand on a site-level basis. The data must be manually downloaded from the FLUXNET website before running this script. **As such, the only functionality of `create_artifact.jl` is to create a hash assuming that the downloaded data is in a directory called `fluxnet2015`**. In the future, we may update this to directly download data from the remote source, but this can be cumbersome because as of now the data can only be downloaded sitewise using a web browser macro. No preprocessing is done. 
+FLUXNET eddy covariance flux tower site data is used to validate ClimaLand on a site-level basis. The data must be manually downloaded from the FLUXNET website before running this script. **As such, the only functionality of `create_artifact.jl` is to create a hash assuming that the downloaded data is in a directory called `fluxnet2015`**. In the future, we may update this to directly download data from the remote source, but this can be cumbersome because as of now the data can only be downloaded sitewise using a web browser macro. No preprocessing is done. This is an undownloadable artifact (42 GB). 
 
 Individual site data can be retrieved from https://fluxnet.org/data/fluxnet2015-dataset/ 
 
