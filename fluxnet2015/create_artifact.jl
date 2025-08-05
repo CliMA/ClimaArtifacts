@@ -1,7 +1,8 @@
 """
-This file generates a hash for the existing fluxnet2015 artifact that is
-stored in the Caltech HPC cluster filesystem. As of now, there is unfortunately
-no way to reproduce the artifact from a downloadable source. 
+This file first generates a hash for the existing fluxnet2015 artifact that is
+stored in the Caltech HPC cluster filesystem, then retrieves and cleans its metadata. 
+As of now, there is unfortunately no way to reproduce the artifact from a 
+downloadable source. 
 """
 
 using ClimaArtifactsHelper
@@ -25,3 +26,8 @@ output_artifacts = "OutputArtifacts.toml"
 open(output_artifacts, "w") do file
     write(file, artifacts_str)
 end
+
+# Process metadata 
+script_path = "process_metadata.sh"
+file_path = "/groups/esm/ClimaArtifacts/artifacts/fluxnet2015/FLX_AA-Flx_BIF_ALL_20200501/FLX_AA-Flx_BIF_DD_20200501.xlsx"
+run(`bash $script_path $file_path`)
