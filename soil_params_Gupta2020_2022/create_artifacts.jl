@@ -52,16 +52,13 @@ nc_data = NCDatasets.NCDataset(file)
 lat = nc_data["lat"][:];
 lon = nc_data["lon"][:];
 
-# Simulation Resolution
-resolution = 1.0
-
+replace_missing_with_zero_transform_nonzero(x; transform) = ismissing(x)  ? 0f0 : transform(x)
 # Function which reads in the data, regrids to the simulation grid, writes the file to the correct output location.
 function create_artifact(data, files, attrib, transform, outfilepath)
     # get parameter values at each layer
     read_nc_data!(data, files, filedir)
-    outdata, outlat, outlon =
-        regrid(data, (lon, lat), resolution, transform, nlayers)
-    write_nc_out(outdata, outlat, outlon, z, attrib, outfilepath)
+    data .= replace_missing_with_zero_transform_nonzero.(data; transform)
+    write_nc_out(data, lat, lon, z, attrib, outfilepath)
     Base.mv(outfilepath, joinpath(outputdir, outfilepath))
 end
 
