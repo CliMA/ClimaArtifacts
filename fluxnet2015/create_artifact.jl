@@ -6,6 +6,7 @@ downloadable source.
 """
 
 using ClimaArtifactsHelper
+using SHA
 
 artifact_name = basename(@__DIR__)
 

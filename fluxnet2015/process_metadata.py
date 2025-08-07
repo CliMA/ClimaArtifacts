@@ -12,7 +12,9 @@ def process_metadata(input_csv, output_csv):
         "LOCATION_LAT": "latitude",
         "LOCATION_LONG": "longitude",
         "UTC_OFFSET": "utc_offset",
-        "HEIGHTC": "canopy_height_raw"
+        "HEIGHTC": "canopy_height_raw",
+        "MAT": "annual_temp",
+        "MAP": "annual_precip",
     }
 
     # Regex for SWC & TS variable detection
@@ -23,6 +25,8 @@ def process_metadata(input_csv, output_csv):
         "latitude": None,
         "longitude": None,
         "utc_offset": None,
+        "annual_temp": None,
+        "annual_precip": None,
         "canopy_height_values": [],
         "atmospheric_sensor_heights": set(),
         "swc_depths": set(),
@@ -84,15 +88,15 @@ def process_metadata(input_csv, output_csv):
 
         # Convert sets to sorted lists
         data["atmospheric_sensor_heights"] = sorted(data["atmospheric_sensor_heights"])
-        data["swc_depths"] = sorted(data["swc_depths"]) if data["swc_depths"] else ["NaN"]
-        data["ts_depths"] = sorted(data["ts_depths"]) if data["ts_depths"] else ["NaN"]
+        data["swc_depths"] = sorted(data["swc_depths"]) if data["swc_depths"] else "NaN"
+        data["ts_depths"] = sorted(data["ts_depths"]) if data["ts_depths"] else "NaN"
 
     # Write minimal CSV
     with open(output_csv, "w", newline='') as f:
         writer = csv.writer(f)
         writer.writerow([
-            "site_id","latitude","longitude","utc_offset",
-            "canopy_height","atmospheric_sensor_heights","swc_depths","ts_depths"
+            "site_id", "latitude", "longitude", "utc_offset", "annual_temp", "annual_precip",
+            "canopy_height", "atmospheric_sensor_heights", "swc_depths", "ts_depths"
         ])
         for site_id, data in sites.items():
             writer.writerow([
@@ -100,6 +104,8 @@ def process_metadata(input_csv, output_csv):
                 data["latitude"],
                 data["longitude"],
                 data["utc_offset"],
+                data["annual_temp"],
+                data["annual_precip"],
                 data["canopy_height"],
                 ";".join(map(str, data["atmospheric_sensor_heights"])),
                 ";".join(map(str, data["swc_depths"])),
