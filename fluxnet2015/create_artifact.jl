@@ -10,11 +10,12 @@ using SHA
 
 artifact_name = basename(@__DIR__)
 
+METADATA_FILE_PATH = "/groups/esm/ClimaArtifacts/artifacts/fluxnet2015/FLX_AA-Flx_BIF_ALL_20200501/FLX_AA-Flx_BIF_DD_20200501.xlsx"
+
 hash = bytes2hex(sha1(artifact_name))
 artifacts_str = "[$artifact_name]\ngit-tree-sha1 = \"$hash\"\n"
 
-println("Here is your artifact string. Copy and paste it to your Artifacts.toml. Note that this artifact 
-will only be available on the Caltech HPC cluster.")
+println("Here is your artifact string. Copy and paste it to your Artifacts.toml.")
 println()
 println(artifacts_str)
 
@@ -30,5 +31,4 @@ end
 
 # Process metadata 
 script_path = "process_metadata.sh"
-file_path = "/groups/esm/ClimaArtifacts/artifacts/fluxnet2015/FLX_AA-Flx_BIF_ALL_20200501/FLX_AA-Flx_BIF_DD_20200501.xlsx"
-run(`bash $script_path $file_path`)
+run(`bash $script_path $METADATA_FILE_PATH`)
