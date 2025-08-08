@@ -35,7 +35,8 @@ function regrid(data, (lon, lat), resolution, transform, nlayers)
             # Here we make a land mask by checking where x is *not* Missing.
             x_land_mask = .!ismissing.(x)
             if sum(x_land_mask) / prod(size(x)) > 0.5 # count as land
-                outdata[lon_id, lat_id, :] .= transform(mean(x[x_land_mask]))
+                m = [mean(skipmissing(x[:, :, k])) for k in 1:nlayers]
+                outdata[lon_id, lat_id, :] .= transform.(m)
             else
                 outdata[lon_id, lat_id, :] .= 0f0 # all set to zero
             end
@@ -43,16 +44,16 @@ function regrid(data, (lon, lat), resolution, transform, nlayers)
         end
     end
     return outdata,
-    range(stop = lat_max, step = resolution, length = lat_count),
-    range(stop = lon_max, step = resolution, length = lon_count)
+        range(stop = lat_max, step = resolution, length = lat_count),
+        range(stop = lon_max, step = resolution, length = lon_count)
 end
 
 function read_nc_data!(data, files, filedir)
-    for i in 1:nlayers
-        @show(i)
-        filepath = joinpath(filedir, files[i])
+    for layer in 1:nlayers
+        @show(layer)
+        filepath = joinpath(filedir, files[layer])
         nc_data = NCDatasets.NCDataset(filepath)
-        data[:, :, i] .= nc_data["Band1"][:,:];
+        data[:, :, layer] .= nc_data["Band1"][:,:];
     end
 end
 
