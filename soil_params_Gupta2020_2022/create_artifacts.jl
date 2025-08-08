@@ -96,7 +96,7 @@ attrib = (;
     varname = "Ksat",
 )
 @info "Creating highres Ksat artifact at $(outfilepath)"
-# create_artifact(data, files, attrib, transform, outfilepath)
+create_artifact(data, files, attrib, transform, outfilepath)
 @info "Creating lowres Ksat artifact at $(outfilepath_lowres)"
 create_artifact(data, files, attrib, transform, outfilepath_lowres; regrid_data = true)
 
@@ -112,7 +112,7 @@ outfilepath = "porosity_map_gupta_etal2020_1km_$(nlayers)layer.nc"
 outfilepath_lowres = "porosity_map_gupta_etal2020_$(resolution)x$(resolution)x$(nlayers).nc"
 attrib = (; vartitle = "Porosity", varunits = "m^3/m^3", varname = "ν")
 @info "Creating highres porosity artifact at $(outfilepath)"
-# create_artifact(data, files, attrib, transform, outfilepath)
+create_artifact(data, files, attrib, transform, outfilepath)
 @info "Creating lowres porosity artifact at $(outfilepath_lowres)"
 create_artifact(data, files, attrib, transform, outfilepath_lowres; regrid_data = true)
 
@@ -132,7 +132,7 @@ attrib = (;
     varname = "θ_r",
 )
 @info "Creating highres residual water fraction artifact at $(outfilepath)"
-# create_artifact(data, files, attrib, transform, outfilepath)
+create_artifact(data, files, attrib, transform, outfilepath)
 @info "Creating lowres residual water fraction artifact at $(outfilepath_lowres)"
 create_artifact(data, files, attrib, transform, outfilepath_lowres; regrid_data = true)
 
@@ -148,7 +148,7 @@ outfilepath = "vGalpha_map_gupta_etal2020_1km_$(nlayers)layer.nc"
 outfilepath_lowres = "vGalpha_map_gupta_etal2020_$(resolution)x$(resolution)x$(nlayers).nc"
 attrib = (; vartitle = "van Genuchten α", varunits = "1/m", varname = "α")
 @info "Creating highres van Genuchten alpha artifact at $(outfilepath)"
-# create_artifact(data, files, attrib, transform, outfilepath)
+create_artifact(data, files, attrib, transform, outfilepath)
 @info "Creating lowres van Genuchten alpha artifact at $(outfilepath_lowres)"
 create_artifact(data, files, attrib, transform, outfilepath_lowres; regrid_data = true)
 
@@ -164,7 +164,7 @@ outfilepath = "vGn_map_gupta_etal2020_1km_$(nlayers)layer.nc"
 outfilepath_lowres = "vGn_map_gupta_etal2020_$(resolution)x$(resolution)x$(nlayers).nc"
 attrib = (; vartitle = "van Genuchten n", varunits = "unitless", varname = "n")
 @info "Creating highres van Genuchten n artifact at $(outfilepath)"
-# create_artifact(data, files, attrib, transform, outfilepath)
+create_artifact(data, files, attrib, transform, outfilepath)
 @info "Creating lowres van Genuchten n artifact at $(outfilepath_lowres)"
 create_artifact(data, files, attrib, transform, outfilepath_lowres; regrid_data = true)
 
