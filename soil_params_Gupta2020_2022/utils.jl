@@ -35,7 +35,8 @@ function regrid(data, (lon, lat), resolution, transform, nlayers)
             # Here we make a land mask by checking where x is *not* Missing.
             x_land_mask = .!ismissing.(x)
             if sum(x_land_mask) / prod(size(x)) > 0.5 # count as land
-                outdata[lon_id, lat_id, :] .= transform.(vec(mean(x[x_land_mask], dims=(1,2))))
+                m = [mean(skipmissing(x[:, :, k])) for k in 1:nlayers]
+                outdata[lon_id, lat_id, :] .= transform.(m)
             else
                 outdata[lon_id, lat_id, :] .= 0f0 # all set to zero
             end

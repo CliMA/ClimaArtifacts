@@ -20,8 +20,8 @@ residual water content $\theta_{res}$, and van Genuchten parameters $\log (\alph
 depths and at 1km x 1km resolution.
 The `create_artifacts.jl` script
 - combines the data at different depths into a single file for each parameter
-- creates a coarser version of the data by taking an average of the parameters within the cell, and applying a transformation (10^ for the log
-variables, unit conversions) to that mean.
-- saves the coarse resolution data to netcdf files.
+- applies data transformations (e.g., 10^ for log variables, unit conversions)
+- saves the high resolution (1 km) data to netcdf files
+- regrids to low resolution (1 degree) and saves to netcdf files (lowres) 
 
 License: Creative Commons Attribution 4.0 International
