@@ -15,10 +15,10 @@ https://zenodo.org/records/3935359
 https://zenodo.org/records/6348799
 
 
-The raw data includes the log(saturated hydraulic conductivity), the porosity,
-residual water content, and van Genuchten parameters log(alpha) and n at four
-depths and at 1kmx1km resolution.
-The create_artifacts.jl script
+The raw data includes the log(saturated hydraulic conductivity) $K_{sat}$, the porosity $\nu$,
+residual water content $\theta_{res}$, and van Genuchten parameters $\log (\alpha)$ and $n$ at four
+depths and at 1km x 1km resolution.
+The `create_artifacts.jl` script
 - combines the data at different depths into a single file for each parameter
 - creates a coarser version of the data by taking an average of the parameters within the cell, and applying a transformation (10^ for the log
 variables, unit conversions) to that mean.
