@@ -69,14 +69,14 @@ function create_artifact(data, files, attrib, transform, outfilepath; regrid_dat
     # get parameter values at each layer
     read_nc_data!(data, files, filedir)
     if regrid_data
-        data, lat, lon = regrid(data, (native_lon, native_lat), resolution, transform, nlayers)
+        regridded_data, regridded_lat, regridded_lon = regrid(data, (native_lon, native_lat), resolution, transform, nlayers)
         dir = outputdir_lowres
+        write_nc_out(regridded_data, regridded_lat, regridded_lon, z, attrib, outfilepath)
     else
         data .= replace_missing_with_zero_transform_nonzero.(data; transform)
-        lat, lon = native_lat, native_lon
         dir = outputdir
+        write_nc_out(data, native_lat, native_lon, z, attrib, outfilepath)
     end
-    write_nc_out(data, lat, lon, z, attrib, outfilepath)
     Base.mv(outfilepath, joinpath(dir, outfilepath))
 end
 
