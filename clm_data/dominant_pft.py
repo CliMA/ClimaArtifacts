@@ -12,8 +12,8 @@ def main(input_filename, output_filename):
     ds = Dataset(input_filename, "r")
 
     # Read the latitude and longitude dimensions
-    latitudes = ds.variables["LATIXY"][:]
-    longitudes = ds.variables["LONGXY"][:]
+    latitudes = ds.variables["LATIXY"][:, 0]
+    longitudes = ds.variables["LONGXY"][0, :]
 
     # Read the PCT_NAT_PFT variable
     PCT_NAT_PFT = ds.variables["PCT_NAT_PFT"][:]
@@ -50,8 +50,8 @@ def main(input_filename, output_filename):
     lon_var = ds_out.createVariable("lon", np.float64, "lon")
 
     # Write latitude and longitude data
-    lat_var[:] = latitudes
-    lon_var[:] = longitudes
+    lat_var = latitudes
+    lon_var = longitudes
 
     # Define the dominant PFT variable
     dominant_PFT_var = ds_out.createVariable("dominant_PFT", np.int32, ("lat", "lon"))
