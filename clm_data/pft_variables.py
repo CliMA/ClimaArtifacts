@@ -123,8 +123,8 @@ with nc.Dataset(output_file, 'w', format='NETCDF4') as output_dataset:
     xl_var = output_dataset.createVariable('xl', 'f4', ('lat', 'lon',), fill_value=np.nan)
 
     # Assign data to variables
-    latitudes[:] = lat  # Assuming LATIXY and LONGXY are 2D arrays
-    longitudes[:] = lon  # Averaging to get 1D lat/lon
+    latitudes[:] = lat[:]  # Assuming LATIXY and LONGXY are 2D arrays
+    longitudes[:] = lon[:]  # Averaging to get 1D lat/lon
     canopy_height_var[:, :] = canopy_height_map
     c3_dominant_var[:, :]  = c3_dominant_map
     medlynslope_var[:, :] = medlynslope_map
