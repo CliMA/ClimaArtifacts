@@ -87,9 +87,8 @@ def process_metadata(input_csv, output_csv):
             data["canopy_height"] = None
 
         # Convert sets to sorted lists
-        data["atmospheric_sensor_heights"] = sorted(data["atmospheric_sensor_heights"])
-        data["swc_depths"] = sorted(data["swc_depths"]) if data["swc_depths"] else "NaN"
-        data["ts_depths"] = sorted(data["ts_depths"]) if data["ts_depths"] else "NaN"
+        for field in ["atmospheric_sensor_heights", "swc_depths", "ts_depths"]:
+            data[field] = sorted(data[field])
 
     # Write minimal CSV
     with open(output_csv, "w", newline='') as f:
