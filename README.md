@@ -45,6 +45,7 @@ artifacts.
 ### Land
 
 - [Spun up initial conditions for soil, Jan 1, 2008](https://github.com/CliMA/ClimaArtifacts/tree/main/soil_ic_2008_50m)
+- [Spun up initial conditions for soil and snow; 20 years; 10m depth](https://github.com/CliMA/ClimaArtifacts/tree/main/soil_ic_10m)
 - [CLM surface data for the year 2000](https://github.com/CliMA/ClimaArtifacts/tree/main/clm_data)
 - [Soil texture parameters needed for the full soil model; derived from SoilGrids](https://github.com/CliMA/ClimaArtifacts/tree/main/soilgrids)
 - [Soil parameters needed for Richards equation; global at 1km resolution from
