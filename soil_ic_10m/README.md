@@ -8,7 +8,11 @@ elements, and approximately 1x1 degrees resolution in the horizontal.
 
 We obtain this data by first running the ClimaLand model, forced by
 ERA5 data from 2000-2019. The script to do this is:
-ClimaLand.jl/experiments/long_runs/snowy_land.jl. The output saved
+ClimaLand.jl/experiments/long_runs/snowy_land.jl, and the commit and branch used are:
+7fa1f6509d6c191a290d7f2d42358baf165e323c
+kd/spinup_10m_depth
+
+The output saved
 from this via monthly diagnostics is used as input for the
 `create_artifacts.jl` script. 
 

@@ -64,15 +64,9 @@ for i in 1:length(var_3d_attribs)
             defDim(ds, "lon", length(lon))
             defDim(ds, "lat", length(lat))
             defDim(ds, "z", length(z))
-            la = defVar(ds, "lat", Float32, ("lat",))
-            lo = defVar(ds, "lon", Float32, ("lon",))
-            zv = defVar(ds, "z", Float32, ("z",))
-            la.attrib["units"] = "degrees_north"
-            la.attrib["standard_name"] = "latitude"
-            lo.attrib["standard_name"] = "longitude"
-            lo.attrib["units"] = "degrees_east"
-            zv.attrib["standard_name"] = "depth"
-            zv.attrib["units"] = "m"
+            la = defVar(ds, "lat", Float32, ("lat",), attrib = data["lat"].attrib)
+            lo = defVar(ds, "lon", Float32, ("lon",), attrib = data["lon"].attrib)
+            zv = defVar(ds, "z", Float32, ("z",), attrib = data["z"].attrib)
             la[:] = lat
             lo[:] = lon
             zv[:] = z
