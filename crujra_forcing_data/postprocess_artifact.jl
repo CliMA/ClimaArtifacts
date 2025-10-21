@@ -9,10 +9,10 @@ Postprocess CRUJRAv2.5 forcing data by stitching monthly files together into ann
 
 # Post-processing steps:
 - Stitch 12 monthly files into a single annual file
+- Reverse latitude dimension so latitudes are in increasing order (for ClimaLand compatibility)
 - Preserve variable attributes (units, long_name, standard_name, _FillValue)
 - Convert data variables to Float32 (time remains Int64)
 - Update global attributes with processing history and metadata
-- Maintain original coordinate order (latitude decreasing, longitude increasing)
 - Ensure CF-1.8 compliance
 """
 function postprocess_artifact(mfds::NCDataset, fileout::String)
@@ -34,22 +34,23 @@ function postprocess_artifact(mfds::NCDataset, fileout::String)
         ds["valid_time"].attrib["standard_name"] = "time"
         ds["valid_time"].attrib["calendar"] = "noleap"
         
-        defVar(ds, "latitude", Float32.(mfds["latitude"][:]), ("latitude",))
+        # Reverse latitude dimension so that elements are in increasing order
+        lat_reversed = reverse(Float32.(mfds["latitude"][:]))
+        defVar(ds, "latitude", lat_reversed, ("latitude",))
         ds["latitude"].attrib["units"] = "degrees_north"
         ds["latitude"].attrib["long_name"] = "latitude"
         ds["latitude"].attrib["standard_name"] = "latitude"
-        ds["latitude"].attrib["stored_direction"] = "decreasing"
         
         defVar(ds, "longitude", Float32.(mfds["longitude"][:]), ("longitude",))
         ds["longitude"].attrib["units"] = "degrees_east"
         ds["longitude"].attrib["long_name"] = "longitude"
         ds["longitude"].attrib["standard_name"] = "longitude"
-        ds["longitude"].attrib["stored_direction"] = "increasing"
         
-        # Copy data variables
+        # Copy data variables (reverse latitude dimension to match coordinate order)
         for var_name in var_names
             if haskey(mfds, var_name)
-                data = Float32.(mfds[var_name][:])
+                # Reverse the latitude dimension (dims = 2)
+                data = reverse(Float32.(mfds[var_name][:, :, :]), dims=2)
                 defVar(ds, var_name, data, ("valid_time", "latitude", "longitude"))
                 
                 # Copy important attributes

@@ -7,7 +7,7 @@ The CRUJRAv2.5 (Climatic Research Unit Japanese Reanalysis version 2.5) dataset 
 ## Data Structure
 
 In `crujra_forcing_data_YEAR_0.5x0.5.nc`, the dimensions are:
-- **Latitude** ("latitude"): 360 points from 89.75°N to -89.75°S at 0.5° resolution (stored in decreasing order)
+- **Latitude** ("latitude"): 360 points from -89.75°S to 89.75°N at 0.5° resolution (stored in increasing order)
 - **Longitude** ("longitude"): 720 points from 0.25°E to 359.75°E at 0.5° resolution (stored in increasing order)
 - **Time** ("valid_time"): 6-hourly intervals
 
@@ -73,15 +73,13 @@ The script will:
 The post-processing steps applied to the data include:
 
 1. **Temporal stitching**: Combine 12 monthly NetCDF files into a single annual file
-2. **Attribute preservation**: Maintain critical variable attributes:
+2. **Latitude reversal**: Reverse latitude dimension so latitudes are in increasing order (-89.75°S to 89.75°N) for ClimaLand compatibility
+3. **Attribute preservation**: Maintain critical variable attributes:
    - `units`: Physical units for each variable
    - `long_name`: Descriptive name
    - `standard_name`: CF-convention standard name (where applicable)
    - `_FillValue`: Missing value indicator (NaN32)
-3. **Data type conversion**: Convert all variables to Float32 (except time dimension which remains Int64)
-4. **Coordinate handling**: 
-   - Preserve original latitude order (89.75°N to -89.75°S, decreasing)
-   - Preserve original longitude order (0.25°E to 359.75°E, increasing)
+4. **Data type conversion**: Convert all variables to Float32 (except time dimension which remains Int64)
 5. **Metadata enhancement**: Add global attributes documenting:
    - Source dataset (CRUJRAv2.5)
    - Processing history and timestamp
