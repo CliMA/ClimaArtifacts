@@ -16,7 +16,8 @@ end
 sort!(crujra_dirs)
 
 # Make directory for artifact output
-output_dir = basename(@__DIR__) * "_artifact"
+# Use /home/renatob/data/ for large storage (614TB available vs 4.9TB in home)
+output_dir = "/home/renatob/data/crujra_forcing_data_artifact"
 if isdir(output_dir)
     @warn "$output_dir already exists. Content will end up in the artifact and may be overwritten."
     @warn "Abort this calculation, unless you know what you are doing."
