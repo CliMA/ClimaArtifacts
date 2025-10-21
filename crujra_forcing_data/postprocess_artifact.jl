@@ -15,7 +15,7 @@ Postprocess CRUJRAv2.5 forcing data by stitching monthly files together into ann
 - Update global attributes with processing history and metadata
 - Ensure CF-1.8 compliance
 """
-function postprocess_artifact(mfds::NCDataset, fileout::String)
+function postprocess_artifact(mfds, fileout::String)
     # Variables to copy
     var_names = ["t2m", "sp", "d2m", "msdwlwrf", "msdwswrf", "msdrswrf", 
                  "mtpr", "msr", "rainrate", "wind"]
@@ -50,7 +50,10 @@ function postprocess_artifact(mfds::NCDataset, fileout::String)
         for var_name in var_names
             if haskey(mfds, var_name)
                 # Reverse the latitude dimension (dims = 2)
-                data = reverse(Float32.(mfds[var_name][:, :, :]), dims=2)
+                # Handle missing values by replacing with NaN
+                raw_data = mfds[var_name][:, :, :]
+                data = replace(raw_data, missing => NaN32)
+                data = reverse(Float32.(data), dims=2)
                 defVar(ds, var_name, data, ("valid_time", "latitude", "longitude"))
                 
                 # Copy important attributes
