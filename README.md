@@ -66,6 +66,7 @@ S. Gupta et al 2022, 2024](https://github.com/CliMA/ClimaArtifacts/tree/main/soi
 - [ERA5 Monthly Averages on Single Levels 1979-2024](https:////github.com/CliMA/ClimaArtifacts/tree/main/era5_monthly_averages_single_level_1979_2024)
 - [Lehmann et al. 2008 Fig. 8 evaporation data](https:////github.com/CliMA/ClimaArtifacts/tree/main/lehmann2008_evaporation)
 - [Forty years of ERA5 forcing data for ClimaLand](https:////github.com/CliMA/ClimaArtifacts/tree/main/forty_yrs_era5_land_forcing_data)
+- [CRUJRAv2.5 forcing data for ClimaLand (1901-2023)](https:////github.com/CliMA/ClimaArtifacts/tree/main/crujra_forcing_data)
 - [Topo Drag, created with the GDFL model](https:////github.com/CliMA/ClimaArtifacts/tree/main/topo_drag)
 - [Water conservation test data for RichardsModel](https:////github.com/CliMA/ClimaArtifacts/tree/main/water_conservation_test)
 - [ERA5 LAI Covers](https:////github.com/CliMA/ClimaArtifacts/tree/main/era5_lai_covers)
