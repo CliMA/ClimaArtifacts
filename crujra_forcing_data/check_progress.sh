@@ -16,15 +16,16 @@ fi
 echo ""
 
 # Check output directory
-if [ -d "crujra_forcing_data_artifact" ]; then
-    echo "Output directory: crujra_forcing_data_artifact/"
-    FILES=$(ls crujra_forcing_data_artifact/*.nc 2>/dev/null | wc -l)
+OUTPUT_DIR="/home/renatob/data/crujra_forcing_data_artifact"
+if [ -d "$OUTPUT_DIR" ]; then
+    echo "Output directory: $OUTPUT_DIR/"
+    FILES=$(ls $OUTPUT_DIR/*.nc 2>/dev/null | wc -l)
     echo "  Files created: $FILES / 123"
     if [ $FILES -gt 0 ]; then
         echo "  Latest file:"
-        ls -lht crujra_forcing_data_artifact/*.nc 2>/dev/null | head -1
+        ls -lht $OUTPUT_DIR/*.nc 2>/dev/null | head -1
         echo "  Total size:"
-        du -sh crujra_forcing_data_artifact/ 2>/dev/null
+        du -sh $OUTPUT_DIR/ 2>/dev/null
     fi
 else
     echo "Output directory not yet created"

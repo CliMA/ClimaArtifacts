@@ -73,6 +73,9 @@ for dir in crujra_dirs
     
     close(mfds)
     
+    # Force garbage collection to free memory
+    GC.gc()
+    
     println("  ✓ Created $fileout")
 end
 

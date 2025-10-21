@@ -75,12 +75,13 @@ function postprocess_artifact(mfds, fileout::String)
                 # So raw_data is already (lon, lat, time) = (720, 360, 1460)
                 raw_data = mfds[var_name][:, :, :]  # Already (lon, lat, time)
                 
-                # Replace missing with NaN and convert to Float32
-                data_clean = Float32.(replace(raw_data, missing => NaN32))
+                # Process in-place to save memory: convert, replace missing, reverse
+                data_clean = reverse(Float32.(replace(raw_data, missing => NaN32)), dims=2)
                 
-                # Reverse latitude dimension (from 89.75→-89.75 to -89.75→89.75)
-                # Lat is dimension 2
-                data_var[:, :, :] = reverse(data_clean, dims=2)
+                # Write to output and clear memory
+                data_var[:, :, :] = data_clean
+                data_clean = nothing
+                raw_data = nothing
             else
                 @warn "Variable $var_name not found in source dataset"
             end
