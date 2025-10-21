@@ -1,3 +1,5 @@
+using Dates
+
 """
     postprocess_artifact(mfds::NCDataset, fileout::String)
 
@@ -68,12 +70,17 @@ function postprocess_artifact(mfds, fileout::String)
                 data_var.attrib["_FillValue"] = NaN32
                 
                 # Read and process data
-                # Source is (time, lat, lon), we need (lon, lat, time) with lat reversed
-                raw_data = mfds[var_name][:, :, :]  # (time, lat, lon)
-                # Replace missing with NaN
-                raw_data = replace(raw_data, missing => NaN32)
-                # Permute to (lon, lat, time) and reverse lat dimension
-                data_var[:, :, :] = permutedims(reverse(Float32.(raw_data), dims=2), (3, 2, 1))
+                # NCDatasets automatically reorders to match dimnames
+                # For these variables, dimnames = ("longitude", "latitude", "valid_time")
+                # So raw_data is already (lon, lat, time) = (720, 360, 1460)
+                raw_data = mfds[var_name][:, :, :]  # Already (lon, lat, time)
+                
+                # Replace missing with NaN and convert to Float32
+                data_clean = Float32.(replace(raw_data, missing => NaN32))
+                
+                # Reverse latitude dimension (from 89.75→-89.75 to -89.75→89.75)
+                # Lat is dimension 2
+                data_var[:, :, :] = reverse(data_clean, dims=2)
             else
                 @warn "Variable $var_name not found in source dataset"
             end
