@@ -1,0 +1,37 @@
+nohup: ignoring input
+┌ Warning: crujra_forcing_data_artifact already exists. Content will end up in the artifact and may be overwritten.
+└ @ Main ~/ClimaArtifacts/crujra_forcing_data/create_artifact.jl:21
+┌ Warning: Abort this calculation, unless you know what you are doing.
+└ @ Main ~/ClimaArtifacts/crujra_forcing_data/create_artifact.jl:22
+ERROR: LoadError: dimension valid_time is already defined with the length 1460. It cannot be redefined with a length of 720 for the variable t2m.
+Stacktrace:
+  [1] error(s::String)
+    @ Base ./error.jl:35
+  [2] _defVar(ds::NCDataset{Nothing, Missing}, name::String, data::Array{Float32, 3}, nctype::Type, vardimnames::Tuple{String, String, String}; attrib::Vector{Any}, kwargs::Base.Pairs{Symbol, Union{}, Tuple{}, NamedTuple{(), Tuple{}}})
+    @ CommonDataModel ~/.julia/packages/CommonDataModel/xg2OM/src/variable.jl:137
+  [3] _defVar
+    @ ~/.julia/packages/CommonDataModel/xg2OM/src/variable.jl:126 [inlined]
+  [4] #defVar#5
+    @ ~/.julia/packages/CommonDataModel/xg2OM/src/variable.jl:104 [inlined]
+  [5] defVar(ds::NCDataset{Nothing, Missing}, name::String, data::Array{Float32, 3}, dimnames::Tuple{String, String, String})
+    @ CommonDataModel ~/.julia/packages/CommonDataModel/xg2OM/src/variable.jl:94
+  [6] (::var"#3#4"{CommonDataModel.MFDataset{DeferDataset{NCDataset}, 1, String}, Vector{String}})(ds::NCDataset{Nothing, Missing})
+    @ Main ~/ClimaArtifacts/crujra_forcing_data/postprocess_artifact.jl:57
+  [7] NCDataset(::var"#3#4"{CommonDataModel.MFDataset{DeferDataset{NCDataset}, 1, String}, Vector{String}}, ::String, ::Vararg{String}; kwargs::Base.Pairs{Symbol, Union{}, Tuple{}, NamedTuple{(), Tuple{}}})
+    @ NCDatasets ~/.julia/packages/NCDatasets/LjXBn/src/dataset.jl:252
+  [8] NCDataset
+    @ ~/.julia/packages/NCDatasets/LjXBn/src/dataset.jl:249 [inlined]
+  [9] postprocess_artifact(mfds::CommonDataModel.MFDataset{DeferDataset{NCDataset}, 1, String}, fileout::String)
+    @ Main ~/ClimaArtifacts/crujra_forcing_data/postprocess_artifact.jl:24
+ [10] top-level scope
+    @ ~/ClimaArtifacts/crujra_forcing_data/create_artifact.jl:71
+in expression starting at /home/renatob/ClimaArtifacts/crujra_forcing_data/create_artifact.jl:47
+Processing 123 years of CRUJRA data
+Completed years: 2
+Remaining years: 121
+Free space: 4985.5 GB
+Required space: 350.9 GB
+
+crujra_forcing_data_artifact/crujra_forcing_data_1901_0.5x0.5.nc already exists; skipping
+crujra_forcing_data_artifact/crujra_forcing_data_1902_0.5x0.5.nc already exists; skipping
+Processing year 1903: 12 monthly files

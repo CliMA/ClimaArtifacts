@@ -23,50 +23,57 @@ function postprocess_artifact(mfds, fileout::String)
     # Create output dataset
     NCDataset(fileout, "c") do ds
         # Define dimensions
-        defDim(ds, "valid_time", length(mfds["valid_time"]))
-        defDim(ds, "latitude", length(mfds["latitude"]))
-        defDim(ds, "longitude", length(mfds["longitude"]))
+        defDim(ds, "time", length(mfds["valid_time"]))
+        defDim(ds, "lon", length(mfds["longitude"]))
+        defDim(ds, "lat", length(mfds["latitude"]))
         
-        # Copy coordinate variables
-        defVar(ds, "valid_time", mfds["valid_time"][:], ("valid_time",))
-        ds["valid_time"].attrib["units"] = "seconds since 1901-01-01 00:00:00"
-        ds["valid_time"].attrib["long_name"] = "time"
-        ds["valid_time"].attrib["standard_name"] = "time"
-        ds["valid_time"].attrib["calendar"] = "noleap"
+        # Create coordinate variables
+        time_var = defVar(ds, "time", Int64, ("time",))
+        time_var[:] = mfds["valid_time"][:]
+        time_var.attrib["units"] = "seconds since 1901-01-01 00:00:00"
+        time_var.attrib["long_name"] = "time"
+        time_var.attrib["standard_name"] = "time"
+        time_var.attrib["calendar"] = "noleap"
         
-        # Reverse latitude dimension so that elements are in increasing order
+        # Reverse latitude dimension so elements are in increasing order
         lat_reversed = reverse(Float32.(mfds["latitude"][:]))
-        defVar(ds, "latitude", lat_reversed, ("latitude",))
-        ds["latitude"].attrib["units"] = "degrees_north"
-        ds["latitude"].attrib["long_name"] = "latitude"
-        ds["latitude"].attrib["standard_name"] = "latitude"
+        lat_var = defVar(ds, "lat", Float32, ("lat",))
+        lat_var[:] = lat_reversed
+        lat_var.attrib["units"] = "degrees_north"
+        lat_var.attrib["long_name"] = "latitude"
+        lat_var.attrib["standard_name"] = "latitude"
         
-        defVar(ds, "longitude", Float32.(mfds["longitude"][:]), ("longitude",))
-        ds["longitude"].attrib["units"] = "degrees_east"
-        ds["longitude"].attrib["long_name"] = "longitude"
-        ds["longitude"].attrib["standard_name"] = "longitude"
+        lon_var = defVar(ds, "lon", Float32, ("lon",))
+        lon_var[:] = Float32.(mfds["longitude"][:])
+        lon_var.attrib["units"] = "degrees_east"
+        lon_var.attrib["long_name"] = "longitude"
+        lon_var.attrib["standard_name"] = "longitude"
         
         # Copy data variables (reverse latitude dimension to match coordinate order)
         for var_name in var_names
             if haskey(mfds, var_name)
-                # Reverse the latitude dimension (dims = 2)
-                # Handle missing values by replacing with NaN
-                raw_data = mfds[var_name][:, :, :]
-                data = replace(raw_data, missing => NaN32)
-                data = reverse(Float32.(data), dims=2)
-                defVar(ds, var_name, data, ("valid_time", "latitude", "longitude"))
+                # Define variable
+                data_var = defVar(ds, var_name, Float32, ("lon", "lat", "time"))
                 
-                # Copy important attributes
+                # Copy attributes
                 if haskey(mfds[var_name].attrib, "units")
-                    ds[var_name].attrib["units"] = mfds[var_name].attrib["units"]
+                    data_var.attrib["units"] = mfds[var_name].attrib["units"]
                 end
                 if haskey(mfds[var_name].attrib, "long_name")
-                    ds[var_name].attrib["long_name"] = mfds[var_name].attrib["long_name"]
+                    data_var.attrib["long_name"] = mfds[var_name].attrib["long_name"]
                 end
                 if haskey(mfds[var_name].attrib, "standard_name")
-                    ds[var_name].attrib["standard_name"] = mfds[var_name].attrib["standard_name"]
+                    data_var.attrib["standard_name"] = mfds[var_name].attrib["standard_name"]
                 end
-                ds[var_name].attrib["_FillValue"] = NaN32
+                data_var.attrib["_FillValue"] = NaN32
+                
+                # Read and process data
+                # Source is (time, lat, lon), we need (lon, lat, time) with lat reversed
+                raw_data = mfds[var_name][:, :, :]  # (time, lat, lon)
+                # Replace missing with NaN
+                raw_data = replace(raw_data, missing => NaN32)
+                # Permute to (lon, lat, time) and reverse lat dimension
+                data_var[:, :, :] = permutedims(reverse(Float32.(raw_data), dims=2), (3, 2, 1))
             else
                 @warn "Variable $var_name not found in source dataset"
             end
