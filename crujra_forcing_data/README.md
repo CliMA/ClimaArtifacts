@@ -11,6 +11,7 @@ In `crujra_forcing_data_YEAR_0.5x0.5.nc`, the dimensions are:
 - **Longitude** ("longitude"): 720 points from 0.25°E to 359.75°E at 0.5° resolution (stored in increasing order)
 - **Time** ("valid_time"): 6-hourly intervals
 
+
 The fields are:
 - **t2m** (valid_time, latitude, longitude): 2 metre temperature [K]
 - **sp** (valid_time, latitude, longitude): Surface pressure [Pa]
@@ -20,14 +21,24 @@ The fields are:
 - **msdrswrf** (valid_time, latitude, longitude): Mean surface direct short-wave radiation flux [W m⁻²]
 - **mtpr** (valid_time, latitude, longitude): Mean total precipitation rate [kg m⁻² s⁻¹]
 - **msr** (valid_time, latitude, longitude): Mean snowfall rate [kg m⁻² s⁻¹]
-- **rainrate** (valid_time, latitude, longitude): Mean rain rate [kg m⁻² s⁻¹]
 - **wind** (valid_time, latitude, longitude): Wind speed at lowest atmospheric level [m s⁻¹]
 
 ## Prerequisites
 
-1. Julia (version 1.9 or higher recommended)
-2. Access to CRUJRAv2.5 source data at `/net/sampo/data1/crujra/crujra_forcing_data/`
-3. ~360GB of storage for the processed artifact (123 years × ~2.9GB per year)
+1. Julia (version 1.10.10 or higher recommended)
+2. Access to CRUJRAv2.5 source data at `/net/sampo/data1/crujra/crujra_forcing_data/` (see below)
+## Obtaining Raw Data
+
+The CRUJRAv2.5 raw data is not automatically downloaded by the artifact creation script due to its large size and licensing restrictions. To obtain the data, you must contact the data providers via the CEDA catalogue:
+
+   https://catalogue.ceda.ac.uk/uuid/43ce517d74624a5ebf6eec5330cd18d5/
+
+Follow the instructions on the CEDA page to request access. Once you have obtained the data, manually place the files in:
+
+      /net/sampo/data1/crujra/crujra_forcing_data/
+
+before running `create_artifact.jl`.
+3. ~1.6TB of storage for the processed artifact (123 years × ~13GB per year)
 
 ## Usage
 
@@ -89,10 +100,11 @@ The post-processing steps applied to the data include:
 
 ## Files
 
+
 The artifact contains 123 annual files:
 - `crujra_forcing_data_YEAR_0.5x0.5.nc` for years 1901 to 2023
-- Each file is approximately 2.9 GB
-- Total artifact size: ~360 GB
+- Each file is approximately 13 GB (actual size may vary)
+- **Total artifact size:** ~1.6TB (as of latest generation)
 
 ## Time Convention
 

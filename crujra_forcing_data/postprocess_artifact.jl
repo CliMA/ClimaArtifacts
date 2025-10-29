@@ -20,7 +20,7 @@ Postprocess CRUJRAv2.5 forcing data by stitching monthly files together into ann
 function postprocess_artifact(mfds, fileout::String)
     # Variables to copy
     var_names = ["t2m", "sp", "d2m", "msdwlwrf", "msdwswrf", "msdrswrf", 
-                 "mtpr", "msr", "rainrate", "wind"]
+                 "mtpr", "msr", "wind"]
     
     # Create output dataset
     NCDataset(fileout, "c") do ds
@@ -30,12 +30,14 @@ function postprocess_artifact(mfds, fileout::String)
         defDim(ds, "lat", length(mfds["latitude"]))
         
         # Create coordinate variables
-        time_var = defVar(ds, "time", Int64, ("time",))
+        # Define time variable with required attributes at creation
+        time_var = defVar(ds, "time", Int64, ("time",), attrib = Dict(
+            "units" => "seconds since 1901-01-01 00:00:00",
+            "long_name" => "time",
+            "standard_name" => "time",
+            "calendar" => "noleap"
+        ))
         time_var[:] = mfds["valid_time"][:]
-        time_var.attrib["units"] = "seconds since 1901-01-01 00:00:00"
-        time_var.attrib["long_name"] = "time"
-        time_var.attrib["standard_name"] = "time"
-        time_var.attrib["calendar"] = "noleap"
         
         # Reverse latitude dimension so elements are in increasing order
         lat_reversed = reverse(Float32.(mfds["latitude"][:]))
@@ -75,13 +77,11 @@ function postprocess_artifact(mfds, fileout::String)
                 # So raw_data is already (lon, lat, time) = (720, 360, 1460)
                 raw_data = mfds[var_name][:, :, :]  # Already (lon, lat, time)
                 
-                # Process in-place to save memory: convert, replace missing, reverse
-                data_clean = reverse(Float32.(replace(raw_data, missing => NaN32)), dims=2)
-                
-                # Write to output and clear memory
+                # Process in-place to save memory: convert, replace missing, reverse!
+                data_clean = Float32.(replace(raw_data, missing => NaN32))
+                reverse!(data_clean, dims=2)
+                # Write to output
                 data_var[:, :, :] = data_clean
-                data_clean = nothing
-                raw_data = nothing
             else
                 @warn "Variable $var_name not found in source dataset"
             end
