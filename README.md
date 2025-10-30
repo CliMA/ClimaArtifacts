@@ -41,6 +41,7 @@ artifacts.
 - [MERRA-2 Aerosol Diagnostics (monthly mean 1980 to 2024)](https://github.com/CliMA/ClimaArtifacts/tree/main/merra2_AOD)
 - [MODIS liquid and ice water path (monthly mean 2002 to 2025)](https://github.com/CliMA/ClimaArtifacts/tree/main/modis_lwp_iwp)
 - [CloudSat/CALIPSO 3S-GEOPROF-COMB dataset](https://github.com/CliMA/ClimaArtifacts/tree/main/calipso_cloudsat)
+- [Monthly total solar irradiance from 1850 to 2299](https://github.com/CliMA/ClimaArtifacts/tree/main/cmip_monthly_tsi)
 
 ### Land
 

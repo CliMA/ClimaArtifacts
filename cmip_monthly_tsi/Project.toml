@@ -1,0 +1,6 @@
+[deps]
+CSV = "336ed68f-0bac-5ca0-87d4-7b16caf5d00b"
+ClimaArtifactsHelper = "6ffa2572-8378-4377-82eb-ea11db28b255"
+Dates = "ade2ca70-3891-5945-98fb-dc099432e06a"
+Downloads = "f43a241f-c20a-4ad4-852c-f6b1247861c6"
+NCDatasets = "85f8d34a-cbdd-5861-8df4-14fed0d494ab"
