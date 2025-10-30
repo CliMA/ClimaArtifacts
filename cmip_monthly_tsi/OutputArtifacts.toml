@@ -1,0 +1,6 @@
+[cmip_monthly_tsi]
+git-tree-sha1 = "a994acbf9906fbf605393420c153f7918fbbb66f"
+
+    [[cmip_monthly_tsi.download]]
+    sha256 = "7c7c8583a79dd5c28da494646674dc8911d66c9a983830df8b37d90b28f89fdd"
+    url = "https://caltech.box.com/shared/static/nkz3rb8sm5y91p5tlagoe8bdbvdcj5iq.gz"
