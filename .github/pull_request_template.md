@@ -16,8 +16,7 @@ Checklist:
   - [ ] I added the `OutputArtifacts.toml` file containing the information
         needed for package developers to add `$artifact_name` to their package
 - [ ] I uploaded the artifact folder to the Caltech cluster (in
-      `/groups/esm/ClimaArtifacts/artifacts/$artifact_name`)
+      `/resnick/groups/esm/ClimaArtifacts/artifacts/$artifact_name`)
 - [ ] I added the relevant code to the `Overides.toml` on the Caltech Cluster
-      (in `/groups/esm/ClimaArtifacts/artifacts/Overrides.toml`)
+      (in `/resnick/groups/esm/ClimaArtifacts/artifacts/Overrides.toml`)
 - [ ] I added a link to the main `README.md` to point to the new artifact
-

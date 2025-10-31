@@ -28,7 +28,7 @@ using NCDatasets
 using Statistics
 using ClimaArtifactsHelper
 
-filedir = "/groups/esm/ClimaArtifacts/artifacts/soil_params_Gupta2020_2022/raw_data_nc/"
+filedir = "/resnick/groups/esm/ClimaArtifacts/artifacts/soil_params_Gupta2020_2022/raw_data_nc/"
 
 outputdir = "soil_artifacts"
 outputdir_lowres = "soil_artifacts_lowres"

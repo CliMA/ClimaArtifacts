@@ -10,7 +10,7 @@ using NCDatasets, Statistics, Dates
 using ClimaArtifactsHelper
 
 const OUTPUT_DIR = @__DIR__
-const DATA_DIR = "/groups/esm/ClimaArtifacts/artifacts/MCD06COSP_M3_MODIS"
+const DATA_DIR = "/resnick/groups/esm/ClimaArtifacts/artifacts/MCD06COSP_M3_MODIS"
 const SAMPLE_FILE = "2003/001/MCD06COSP_M3_MODIS.A2003001.062.2022168173311.nc"
 
 # Read sample file to get dimension variables

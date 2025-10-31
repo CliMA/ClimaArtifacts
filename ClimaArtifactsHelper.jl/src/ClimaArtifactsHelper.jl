@@ -104,14 +104,14 @@ end
 function _recommend_uploading_to_cluster(hash, artifact_name, artifact_dir)
     println("The id of your artifact is $hash")
     println(
-        "Create the folder `/groups/esm/ClimaArtifacts/artifacts/$artifact_name` on the cluster",
+        "Create the folder `/resnick/groups/esm/ClimaArtifacts/artifacts/$artifact_name` on the cluster",
     )
     println("Then, upload the content of $artifact_dir to that folder")
     println(
-        "Add the following entry to the Overrides.toml file you find in `/groups/esm/ClimaArtifacts/artifacts/`",
+        "Add the following entry to the Overrides.toml file you find in `/resnick/groups/esm/ClimaArtifacts/artifacts/`",
     )
     println()
-    println("$hash = \"/groups/esm/ClimaArtifacts/artifacts/$artifact_name\"")
+    println("$hash = \"/resnick/groups/esm/ClimaArtifacts/artifacts/$artifact_name\"")
     println()
 end
 
