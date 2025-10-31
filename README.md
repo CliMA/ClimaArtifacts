@@ -367,7 +367,7 @@ can be correctly downloaded and corresponds to the hash.
 
 For large artifacts, we rely on the `Overrides.toml` mechanism described in the
 previous section. In this case, you will have to copy the data to the
-`/groups/esm/ClimaArtifacts/artifacts` folder on the cluster and add a new entry
+`/resnick/groups/esm/ClimaArtifacts/artifacts` folder on the cluster and add a new entry
 to the `Overrides.toml` that lives there. Add a line of comment to tell others
 about your new artifact and where it is used.
 
@@ -376,7 +376,7 @@ create an `Artifacts.toml` file in it, the content of which has to be the
 `OutputArtifacts.toml` file created by the `create_artifact_guided` function.
 Then, call `julia --project -e 'using Artifacts; println(artifact"AAAAAA")'` from
 that folder, where `AAAAAA` is the name of your artifact. It should print
-`/groups/esm/ClimaArtifacts/artifacts/AAAAAA`, where `AAAAAA` is the folder you
+`/resnick/groups/esm/ClimaArtifacts/artifacts/AAAAAA`, where `AAAAAA` is the folder you
 just uploaded.
 
 #### What is a _undownloadable_ artifact? Why do we need them?
@@ -437,12 +437,12 @@ which is accessible to users via `ClimaModules`. This allows us to execute code
 upon startup to customize the behavior of Julia for all our users. This is
 accomplished by editing the `/etc/julia/startup.jl` file. In particular, we are
 going to add a new entry to the `Base.DEPOT_PATH` vector to point to
-`/groups/esm/ClimaArtifacts`. So, we add a new line to the shared `startup.jl`:
+`/resnick/groups/esm/ClimaArtifacts`. So, we add a new line to the shared `startup.jl`:
 ```
-push!(Base.DEPOT_PATH, "/groups/esm/ClimaArtifacts")
+push!(Base.DEPOT_PATH, "/resnick/groups/esm/ClimaArtifacts")
 ```
-This adds `/groups/esm/ClimaArtifacts` as depot with lowest priority.
-In`/groups/esm/ClimaArtifacts`, there is a folder `artifacts`, which contains
+This adds `/resnick/groups/esm/ClimaArtifacts` as depot with lowest priority.
+In`/resnick/groups/esm/ClimaArtifacts`, there is a folder `artifacts`, which contains
 the data and contains a `Overrides.toml` that is loaded by all users. In this way,
 every user will automatically have access to all the artifacts available on the
 system.

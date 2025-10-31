@@ -16,7 +16,7 @@ This will work on the Resnick HPC:
 #SBATCH --ntasks=32
 #SBATCH --partition=expansion
 #SBATCH --output="model_log.txt"
-export MODULEPATH=/groups/esm/modules:$MODULEPATH
+export MODULEPATH=/resnick/groups/esm/modules:$MODULEPATH
 module load climacommon/2024_04_30
 
 srun julia --project=. run_model.jl
