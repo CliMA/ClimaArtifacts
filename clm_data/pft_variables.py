@@ -19,8 +19,8 @@ output_file = 'vegetation_properties_map.nc'
 # Read the dominant PFT data
 dominant_pft_dataset = nc.Dataset(dominant_pft_file, 'r')
 dominant_pft = dominant_pft_dataset.variables['dominant_PFT'][:]
-lat = dominant_pft_dataset.variables['LATIXY'][:]
-lon = dominant_pft_dataset.variables['LONGXY'][:]
+lat = dominant_pft_dataset.variables['lat']
+lon = dominant_pft_dataset.variables['lon']
 
 # Read the medlynslope and medlynintercept values from the CLM parameters file
 clm_params_dataset = nc.Dataset(clm_params_file, 'r')
@@ -77,8 +77,8 @@ for i in range(dominant_pft.shape[0]):
         if pft_index >= 0:
             if args.detailed:
                 # here we use the lower resolution height data to map the canopy height
-                lon_point = lon[i, j]
-                lat_point = lat[i, j]
+                lon_point = lon[j]
+                lat_point = lat[i]
                 canopy_height_lon_index = np.argmin(np.abs(height_lon - lon_point))
                 canopy_height_lat_index = np.argmin(np.abs(height_lat - lat_point))
                 canopy_height_map[i,j] = np.mean(height_values[:, pft_index,\
@@ -102,7 +102,7 @@ for i in range(dominant_pft.shape[0]):
 with nc.Dataset(output_file, 'w', format='NETCDF4') as output_dataset:
     # Define dimensions
     output_dataset.createDimension('lat', lat.shape[0])
-    output_dataset.createDimension('lon', lon.shape[1])
+    output_dataset.createDimension('lon', lon.shape[0])
 
     # Create variables
     latitudes = output_dataset.createVariable('lat', 'f4', ('lat',))
@@ -123,8 +123,8 @@ with nc.Dataset(output_file, 'w', format='NETCDF4') as output_dataset:
     xl_var = output_dataset.createVariable('xl', 'f4', ('lat', 'lon',), fill_value=np.nan)
 
     # Assign data to variables
-    latitudes[:] = np.mean(lat, axis=1)  # Assuming LATIXY and LONGXY are 2D arrays
-    longitudes[:] = np.mean(lon, axis=0)  # Averaging to get 1D lat/lon
+    latitudes[:] = lat[:]  # Assuming LATIXY and LONGXY are 2D arrays
+    longitudes[:] = lon[:]  # Averaging to get 1D lat/lon
     canopy_height_var[:, :] = canopy_height_map
     c3_dominant_var[:, :]  = c3_dominant_map
     medlynslope_var[:, :] = medlynslope_map
