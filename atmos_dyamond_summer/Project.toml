@@ -1,2 +1,8 @@
 [deps]
 ClimaArtifactsHelper = "6ffa2572-8378-4377-82eb-ea11db28b255"
+ClimaParams = "5c42b081-d73a-476f-9059-fd94b934656c"
+Distributed = "8ba89e20-285c-5b6f-9357-94700520ee1b"
+Interpolations = "a98d9a8b-a2ab-59e6-89dd-64a1c18fca59"
+ProgressMeter = "92933f4c-e287-5a05-a399-4b506db050ca"
+SharedArrays = "1a1011a3-84de-559e-8e89-a11a2f7dc383"
+Thermodynamics = "b60c26fb-14c3-4610-9d3e-2d17fe7ff00c"
