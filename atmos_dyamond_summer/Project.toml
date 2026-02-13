@@ -1,2 +1,7 @@
 [deps]
 ClimaArtifactsHelper = "6ffa2572-8378-4377-82eb-ea11db28b255"
+ClimaInterpolations = "dd0f122e-fa3b-47f3-bcf0-93bbc60d885e"
+ClimaParams = "5c42b081-d73a-476f-9059-fd94b934656c"
+DataStructures = "864edb3b-99cc-5e75-8d2d-829cb0a9cfe8"
+NCDatasets = "85f8d34a-cbdd-5861-8df4-14fed0d494ab"
+Thermodynamics = "b60c26fb-14c3-4610-9d3e-2d17fe7ff00c"
