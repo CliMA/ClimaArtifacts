@@ -39,10 +39,10 @@ attrib_swe = (;
                    varunits = "m",
                    varname = "swe",
               )
-	      attrib_lwp = (;
-                   vartitle = "Leaf water potential",
-                   varunits = "m",
-                   varname = "lwp",
+attrib_lwp = (;
+              vartitle = "Leaf water potential",
+              varunits = "m",
+              varname = "lwp",
               )
 
 var_3d_attribs = [attrib_swc, attrib_si, attrib_sie]

@@ -8,7 +8,8 @@ grid points in latitude and longitude, and a 15 m vertical extent with
 15 layers. The soil was initialized at 98% of saturated, with a temperature
 at every level corresponding to the air temperature. The canopy began
 with a temperature equal to the air temperature, and moisture
-corresponding to a potential equal to the vertical mean of the soil potential. Snow is initialized with zero liquid water, temperature equal to
+corresponding to a potential equal to the vertical mean of the soil potential.
+Snow is initialized with zero liquid water, temperature equal to
 the air temperature maxed at 273K, and snow water content set to the value
 read from the initial conditions in soil_ic_2008_50m artifact.
 Please see commit 9be57aff5200d832c5d90abeb157754ab202921b in
@@ -25,3 +26,10 @@ Assume that this monthly diagnostic data is in the directory `filedir`.
 
 Create the artifact by running:
 julia --project create_artifacts.jl filedir
+
+Alternatively, you can call the run_simulation_create_artifact.sh script directly.
+Please be aware that this will take around 7 hours to run on an A100 GPU.
+The output diagnostics take about 3GB of space; the netcdf file created by
+create_artifacts.jl is 12M.
+
+All were created using Julia 1.11.8.
