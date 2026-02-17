@@ -44,8 +44,8 @@ artifacts.
 - [Monthly total solar irradiance from 1850 to 2299](https://github.com/CliMA/ClimaArtifacts/tree/main/cmip_monthly_tsi)
 
 ### Land
-
-- [Spun up initial conditions for soil, Jan 1, 2008](https://github.com/CliMA/ClimaArtifacts/tree/main/soil_ic_2008_50m)
+- [Spun up initial conditions for soil, Jan 1, 2008, with free drainage at the bottom](https://github.com/CliMA/ClimaArtifacts/tree/main/soil_ic_2008_50m)
+- [Spun up initial conditions for soil, snow, canopy, with no flux at the bottom](https://github.com/CliMA/ClimaArtifacts/tree/main/saturated_land_ic)
 - [CLM surface data for the year 2000](https://github.com/CliMA/ClimaArtifacts/tree/main/clm_data)
 - [Soil texture parameters needed for the full soil model; derived from SoilGrids](https://github.com/CliMA/ClimaArtifacts/tree/main/soilgrids)
 - [Soil parameters needed for Richards equation; global at 1km resolution from
