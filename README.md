@@ -75,6 +75,7 @@ S. Gupta et al 2022, 2024](https://github.com/CliMA/ClimaArtifacts/tree/main/soi
 - [Van Genuchten data from Huang](https:////github.com/CliMA/ClimaArtifacts/tree/main/huang_van_genucthen_data)
 - [P-model implementation test data](https:////github.com/CliMA/ClimaArtifacts/tree/main/pmodel_unittests)
 - [FLUXNET2015 site data](https:////github.com/CliMA/ClimaArtifacts/tree/main/fluxnet2015)
+- [Initial conditions for the optimal LAI model](https://github.com/CliMA/ClimaArtifacts/tree/main/optimal_lai_inputs)
 
 ### Coupler/shared
 
