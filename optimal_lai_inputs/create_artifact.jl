@@ -2,18 +2,16 @@
 Compute initial conditions for the optimal LAI model.
 
 This script generates spatially varying initial conditions:
-- GSL: Growing season length (days) - hybrid LAI/temperature approach following Zhou et al. (2025)
+- GSL: Growing season length (days) - longest continuous above-0°C period, following Zhou et al. (2025)
 - A0_annual: Annual potential GPP (mol CO₂ m⁻² yr⁻¹) from P-model simulation
 - precip_annual: Mean annual precipitation (mol H₂O m⁻² yr⁻¹)
 - vpd_gs: Average VPD during growing season (Pa)
 - lai_init: Initial LAI from MODIS (m² m⁻²) - first timestep of satellite data
 - f0: Spatially varying fraction of precipitation for transpiration (dimensionless) from Zhou et al.
 
-GSL computation follows Zhou et al. (2025) definition with hybrid approach:
-- For regions with clear LAI seasonality: GSL from LAI dynamics
-- For non-seasonal regions (tropics, deserts): GSL from temperature (days with T > 0°C)
-
-This avoids GSL = 0 which would break the optimal LAI model equations.
+GSL follows Zhou et al. (2025): the longest continuous above-0°C period (longer than 5 days).
+With monthly data, this is the longest continuous run of months with mean T > 0°C.
+Minimum GSL = 30 days for numerical stability in ice-covered regions.
 
 The f₀×P/A₀ water limitation term in LAI_max follows Zhou et al. (2025, Eq. 11).
 
@@ -28,25 +26,40 @@ using ClimaArtifactsHelper
 LAI_FILE = joinpath(@__DIR__, "lai_1M_average.nc")
 A0_FILE = joinpath(@__DIR__, "a0a_1M_average.nc")
 TAIR_FILE = joinpath(@__DIR__, "tair_1M_average.nc")
-PRECIP_FILE = joinpath(@__DIR__, "precip_1M_average.nc")
+PRECIP_FILE = joinpath(@__DIR__, "precip_1M_average.nc")  # units: kg m⁻² s⁻¹
 VPD_FILE = joinpath(@__DIR__, "vpd_1M_average.nc")
 F0_FILE = joinpath(@__DIR__, "f0.nc")  # Zhou et al. spatially varying f0
 OUTPUT_DIR = joinpath(@__DIR__, "optimal_lai_inputs_artifact")
 mkpath(OUTPUT_DIR)
 OUTPUT_FILE = joinpath(OUTPUT_DIR, "optimal_lai_inputs.nc")
 
-# GSL parameters
-LAI_THRESHOLD_FRACTION = 0.2  # LAI must be above 20% of annual max to count as "growing"
-SEASONALITY_CV_THRESHOLD = 0.15  # Coefficient of variation below this = non-seasonal
-FREEZING_TEMP = 273.15  # K (0°C) - Zhou et al. threshold for growing season
+# GSL parameters (Zhou et al. 2025)
+FREEZING_TEMP = 273.15  # K (0°C) - threshold for growing season
 MIN_GSL = 30.0  # Minimum GSL in days (for numerical stability in ice-covered regions)
+
+"""
+    mean_annual_cycle(ts::Vector{T}) -> Vector{T}
+
+Compute the mean annual cycle (12 monthly values) from a time series
+that must contain complete years (length ≥ 12 and a multiple of 12).
+Averages across all years present.
+"""
+function mean_annual_cycle(ts::Vector{T}) where {T}
+    n = length(ts)
+    @assert n >= 12 && mod(n, 12) == 0 "Time series length must be ≥ 12 and a multiple of 12, got $n"
+    nyears = n ÷ 12
+    monthly = reshape(ts, 12, nyears)
+    return vec(mean(monthly, dims = 2))
+end
 
 function compute_gsl_from_temperature(tair_timeseries::Vector{T}) where {T}
     """
     Compute GSL from monthly temperature following Zhou et al. (2025):
-    GSL = number of days with T > 0°C.
+    GSL = length of the longest continuous above-0°C period longer than 5 days.
 
-    For monthly data, we count months above freezing and convert to days.
+    With monthly data, we find the longest continuous run of months with
+    mean T > 0°C (any single month ≈ 30 days already exceeds the 5-day
+    threshold). Handles wrap-around for Southern Hemisphere summers.
     """
     # Handle NaN
     valid = .!isnan.(tair_timeseries)
@@ -54,112 +67,35 @@ function compute_gsl_from_temperature(tair_timeseries::Vector{T}) where {T}
         return T(NaN)
     end
 
-    # If we have 24 months (2 years), compute mean annual cycle
-    if length(tair_timeseries) == 24
-        tair_monthly =
-            [mean([tair_timeseries[i], tair_timeseries[i + 12]]) for i in 1:12]
-    elseif length(tair_timeseries) == 12
-        tair_monthly = tair_timeseries
-    else
-        tair_monthly = tair_timeseries[1:min(12, length(tair_timeseries))]
-    end
+    tair_monthly = mean_annual_cycle(tair_timeseries)
 
     # Replace NaN with very cold temp (won't count as growing)
     tair_monthly = [isnan(x) ? T(200) : x for x in tair_monthly]
 
-    # Count months above freezing
-    months_above_freezing = sum(tair_monthly .> FREEZING_TEMP)
+    above = [t > FREEZING_TEMP for t in tair_monthly]
 
-    # Convert to days
-    gsl = months_above_freezing * T(365.25 / 12)
+    # Find longest continuous run of above-freezing months,
+    # handling wrap-around by doubling the cycle
+    above_doubled = vcat(above, above)
+    max_run = 0
+    current_run = 0
+    for a in above_doubled
+        if a
+            current_run += 1
+        else
+            current_run = 0
+        end
+        max_run = max(max_run, current_run)
+    end
+    # Cap at 12 months (full year)
+    max_run = min(max_run, 12)
+
+    # Convert months to days
+    gsl = max_run * T(365.25 / 12)
 
     return gsl
 end
 
-function compute_gsl_from_lai(
-    lai_timeseries::Vector{T};
-    threshold_frac = LAI_THRESHOLD_FRACTION,
-    cv_threshold = SEASONALITY_CV_THRESHOLD,
-) where {T}
-    """
-    Compute GSL from monthly LAI time series.
-    Returns (gsl, is_seasonal) tuple.
-
-    Args:
-        lai_timeseries: Vector of monthly LAI values
-        threshold_frac: Fraction of max LAI above which counts as growing season
-        cv_threshold: Below this coefficient of variation, region is non-seasonal
-
-    Returns:
-        (gsl_days, is_seasonal): GSL in days and whether LAI shows seasonality
-    """
-    # Handle NaN - if all NaN, return NaN
-    valid = .!isnan.(lai_timeseries)
-    if !any(valid)
-        return T(NaN), false
-    end
-
-    # If we have 24 months (2 years), compute mean annual cycle
-    if length(lai_timeseries) == 24
-        lai_monthly =
-            [mean([lai_timeseries[i], lai_timeseries[i + 12]]) for i in 1:12]
-    elseif length(lai_timeseries) == 12
-        lai_monthly = lai_timeseries
-    else
-        lai_monthly = lai_timeseries[1:min(12, length(lai_timeseries))]
-    end
-
-    # Replace NaN with 0 for calculations
-    lai_monthly = [isnan(x) ? T(0) : x for x in lai_monthly]
-
-    # Check for seasonality using coefficient of variation
-    lai_mean = mean(lai_monthly)
-    lai_std = std(lai_monthly)
-
-    # If mean LAI is essentially zero, not seasonal (desert/ice)
-    if lai_mean < T(0.01)
-        return T(0), false  # Will use temperature-based GSL
-    end
-
-    cv = lai_std / lai_mean
-
-    # Non-seasonal regions
-    if cv < cv_threshold
-        return T(365), false  # Will use temperature-based GSL
-    end
-
-    # Seasonal: compute threshold-based GSL
-    lai_max = maximum(lai_monthly)
-    threshold = threshold_frac * lai_max
-    months_above = sum(lai_monthly .> threshold)
-    gsl = months_above * T(365.25 / 12)
-
-    return gsl, true
-end
-
-function compute_hybrid_gsl(lai_ts::Vector{T}, tair_ts::Vector{T}) where {T}
-    """
-    Hybrid GSL computation:
-    - If LAI shows clear seasonality → use LAI-based GSL
-    - Otherwise → use temperature-based GSL (Zhou et al. definition)
-
-    This ensures:
-    - Tropics get GSL ≈ 365 (warm year-round)
-    - Deserts get GSL ≈ 365 (warm year-round, just water-limited)
-    - Tundra gets short GSL based on temperature
-    - Temperate gets LAI-based GSL reflecting actual phenology
-    """
-    lai_gsl, is_seasonal = compute_gsl_from_lai(lai_ts)
-
-    if is_seasonal && !isnan(lai_gsl) && lai_gsl > 0
-        # Use LAI-based GSL for regions with clear seasonality
-        return lai_gsl
-    else
-        # Use temperature-based GSL for non-seasonal or no-vegetation regions
-        temp_gsl = compute_gsl_from_temperature(tair_ts)
-        return temp_gsl
-    end
-end
 
 function compute_annual_precipitation(precip_timeseries::Vector{T}) where {T}
     """
@@ -167,12 +103,13 @@ function compute_annual_precipitation(precip_timeseries::Vector{T}) where {T}
 
     Args:
         precip_timeseries: Vector of monthly precipitation rates (kg m⁻² s⁻¹)
-            Note: ERA5 often uses negative values for precipitation (downward flux convention).
 
     Returns:
         precip_annual: Mean annual precipitation (mol H₂O m⁻² yr⁻¹), always positive
 
-    Note: 1 kg m⁻² = 1 mm water depth = 1000 g m⁻² = 1000/18.015 mol H₂O m⁻²
+    Conversion:
+        kg m⁻² s⁻¹ × (s yr⁻¹) → kg m⁻² yr⁻¹ (= mm yr⁻¹)
+        1 mm = 1 kg m⁻² = 1000 g m⁻²; 1000 / 18.015 ≈ 55.51 mol H₂O m⁻²
     """
     # Handle NaN
     valid = .!isnan.(precip_timeseries)
@@ -180,101 +117,80 @@ function compute_annual_precipitation(precip_timeseries::Vector{T}) where {T}
         return T(NaN)
     end
 
-    # If we have 24 months (2 years), compute mean annual cycle
-    if length(precip_timeseries) == 24
-        precip_monthly = [
-            mean([precip_timeseries[i], precip_timeseries[i + 12]]) for
-            i in 1:12
-        ]
-    elseif length(precip_timeseries) == 12
-        precip_monthly = precip_timeseries
-    else
-        precip_monthly = precip_timeseries[1:min(12, length(precip_timeseries))]
-    end
+    precip_monthly = mean_annual_cycle(precip_timeseries)
 
     # Replace NaN with 0 for calculations and take absolute value
-    # (ERA5 uses negative values for precipitation by convention)
     precip_monthly = [isnan(x) ? T(0) : abs(x) for x in precip_monthly]
 
-    # Convert from kg m⁻² s⁻¹ to mol H₂O m⁻² yr⁻¹
-    # Sum monthly values, each multiplied by seconds in that month
-    # For simplicity, use average seconds per month = 365.25 * 24 * 3600 / 12
     seconds_per_month = T(365.25 * 24 * 3600 / 12)
 
-    # Conversion factor from mm (= kg m⁻²) to mol H₂O m⁻²
-    # 1 mm = 1 kg m⁻² = 1000 g m⁻²; Molar mass of water = 18.015 g/mol
-    # So: 1 mm = 1000/18.015 mol m⁻² ≈ 55.51 mol m⁻²
+    # Convert from kg m⁻² s⁻¹ to mol H₂O m⁻² yr⁻¹
+    # 1 kg m⁻² = 1 mm = 1000 g m⁻²; Molar mass of water = 18.015 g/mol
+    # So: 1 kg m⁻² = 1000 / 18.015 mol H₂O m⁻² ≈ 55.51 mol m⁻²
     MM_TO_MOL_H2O = T(1000.0 / 18.015)
 
     # Annual precipitation = sum of (monthly_rate × seconds_per_month) × conversion
-    # kg m⁻² s⁻¹ × s → kg m⁻² (= mm) → mol H₂O m⁻²
+    # kg m⁻² s⁻¹ × s → kg m⁻² (= mm) per month, sum over 12 months → mm yr⁻¹ → mol H₂O m⁻² yr⁻¹
     precip_annual_mm = sum(precip_monthly) * seconds_per_month
     precip_annual = precip_annual_mm * MM_TO_MOL_H2O
 
     return precip_annual
 end
 
-function get_growing_season_mask(
-    lai_ts::Vector{T},
-    tair_ts::Vector{T};
-    threshold_frac = LAI_THRESHOLD_FRACTION,
-    cv_threshold = SEASONALITY_CV_THRESHOLD,
-) where {T}
+function get_growing_season_mask(tair_ts::Vector{T}) where {T}
     """
-    Determine which months are in the growing season.
+    Determine which months are in the growing season following Zhou et al. (2025):
+    the longest continuous above-0°C period.
 
     Returns a 12-element boolean vector indicating growing season months.
-    Uses LAI-based criterion for seasonal regions, temperature-based for non-seasonal.
+    Handles wrap-around for Southern Hemisphere summers.
     """
-    # Get mean annual cycle
-    if length(lai_ts) == 24
-        lai_monthly = [mean([lai_ts[i], lai_ts[i + 12]]) for i in 1:12]
-        tair_monthly = [mean([tair_ts[i], tair_ts[i + 12]]) for i in 1:12]
-    elseif length(lai_ts) == 12
-        lai_monthly = lai_ts
-        tair_monthly = tair_ts
-    else
-        lai_monthly = lai_ts[1:min(12, length(lai_ts))]
-        tair_monthly = tair_ts[1:min(12, length(tair_ts))]
-    end
+    tair_monthly = mean_annual_cycle(tair_ts)
 
-    # Replace NaN with 0/very cold for calculations
-    lai_monthly = [isnan(x) ? T(0) : x for x in lai_monthly]
+    # Replace NaN with very cold temp (won't count as growing)
     tair_monthly = [isnan(x) ? T(200) : x for x in tair_monthly]
 
-    # Check for seasonality using coefficient of variation
-    lai_mean = mean(lai_monthly)
-    lai_std = std(lai_monthly)
+    above = [t > FREEZING_TEMP for t in tair_monthly]
 
-    # If mean LAI is essentially zero (desert/ice), use temperature
-    if lai_mean < T(0.01)
-        return tair_monthly .> FREEZING_TEMP
+    # Find the longest continuous run of above-freezing months,
+    # handling wrap-around by doubling the cycle
+    above_doubled = vcat(above, above)
+    best_run_len = 0
+    best_run_end = 0
+    current_run = 0
+    for i in eachindex(above_doubled)
+        if above_doubled[i]
+            current_run += 1
+        else
+            current_run = 0
+        end
+        if current_run > best_run_len
+            best_run_len = current_run
+            best_run_end = i
+        end
+    end
+    best_run_len = min(best_run_len, 12)
+
+    # Build mask: mark the months belonging to the longest run
+    mask = falses(12)
+    for k in 0:(best_run_len - 1)
+        mask[mod1(best_run_end - k, 12)] = true
     end
 
-    cv = lai_std / lai_mean
-
-    # Non-seasonal regions: use temperature criterion
-    if cv < cv_threshold
-        return tair_monthly .> FREEZING_TEMP
-    end
-
-    # Seasonal: use LAI threshold
-    lai_max = maximum(lai_monthly)
-    threshold = threshold_frac * lai_max
-    return lai_monthly .> threshold
+    return mask
 end
 
 function compute_vpd_growing_season(
     vpd_timeseries::Vector{T},
-    lai_ts::Vector{T},
     tair_ts::Vector{T},
 ) where {T}
     """
-    Compute average VPD during growing season.
+    Compute average VPD during the growing season following Zhou et al. (2025).
+
+    Growing season is the longest continuous above-0°C period.
 
     Args:
         vpd_timeseries: Vector of monthly VPD values (Pa)
-        lai_ts: Vector of monthly LAI values (for determining growing season)
         tair_ts: Vector of monthly temperature values (K)
 
     Returns:
@@ -287,17 +203,10 @@ function compute_vpd_growing_season(
     end
 
     # Get mean annual cycle for VPD
-    if length(vpd_timeseries) == 24
-        vpd_monthly =
-            [mean([vpd_timeseries[i], vpd_timeseries[i + 12]]) for i in 1:12]
-    elseif length(vpd_timeseries) == 12
-        vpd_monthly = vpd_timeseries
-    else
-        vpd_monthly = vpd_timeseries[1:min(12, length(vpd_timeseries))]
-    end
+    vpd_monthly = mean_annual_cycle(vpd_timeseries)
 
     # Get growing season mask
-    gs_mask = get_growing_season_mask(lai_ts, tair_ts)
+    gs_mask = get_growing_season_mask(tair_ts)
 
     # Replace NaN with 0 for calculations
     vpd_monthly = [isnan(x) ? T(0) : x for x in vpd_monthly]
@@ -318,16 +227,16 @@ function load_and_regrid_f0(
     target_lat::Vector,
 )
     """
-    Load f0 from Zhou et al. NetCDF file and regrid to target 1° grid.
+    Load f0 from Zhou et al. NetCDF file and regrid to target grid.
 
-    f0.nc is at 0.5° resolution (720 × 360), needs to be regridded to 1° (360 × 180).
-    Uses simple area-averaging (2x2 box averaging).
+    Regrids by averaging all source cells whose centers fall within each
+    target cell's ±0.5° box. Works for any source resolution.
 
     Returns:
         f0_regridded: Matrix of f0 values on target grid (nlon × nlat)
     """
     ds = NCDataset(f0_file)
-    f0_raw = ds["f0"][:, :, 1]  # 720 × 360 (lon × lat)
+    f0_raw = ds["f0"][:, :, 1]
     f0_lon = ds["lon"][:]
     f0_lat = ds["lat"][:]
     close(ds)
@@ -339,28 +248,27 @@ function load_and_regrid_f0(
     nlat_target = length(target_lat)
     f0_regridded = fill(NaN, nlon_target, nlat_target)
 
-    # Simple 2x2 box averaging (0.5° → 1°)
-    # f0.nc: lon from -180 to 180 (0.5° spacing), lat from -90 to 90 (0.5° spacing)
-    # target: lon from -180 to 179 (1° spacing), lat from -90 to 89 (1° spacing)
-    for i in 1:nlon_target
-        for j in 1:nlat_target
-            # Find the 2x2 box of source cells that correspond to this target cell
-            # Source indices: 2*(i-1)+1 and 2*(i-1)+2 for lon, same for lat
-            i_src1 = 2 * (i - 1) + 1
-            i_src2 = min(i_src1 + 1, 720)
-            j_src1 = 2 * (j - 1) + 1
-            j_src2 = min(j_src1 + 1, 360)
+    # Average source cells whose centers fall within each 1° target box
+    for j in 1:nlat_target
+        lat_lo = target_lat[j] - 0.5
+        lat_hi = target_lat[j] + 0.5
+        lat_mask = (f0_lat .>= lat_lo) .& (f0_lat .< lat_hi)
 
-            # Get 2x2 box values
-            vals = [
-                f0_data[i_src1, j_src1],
-                f0_data[i_src2, j_src1],
-                f0_data[i_src1, j_src2],
-                f0_data[i_src2, j_src2],
-            ]
+        for i in 1:nlon_target
+            lon_lo = target_lon[i] - 0.5
+            lon_hi = target_lon[i] + 0.5
 
-            # Average valid values
-            valid_vals = filter(!isnan, vals)
+            # Handle periodic longitude boundary
+            if lon_hi > 180
+                lon_mask = (f0_lon .>= lon_lo) .| (f0_lon .< lon_hi - 360)
+            elseif lon_lo < -180
+                lon_mask = (f0_lon .>= lon_lo + 360) .| (f0_lon .< lon_hi)
+            else
+                lon_mask = (f0_lon .>= lon_lo) .& (f0_lon .< lon_hi)
+            end
+
+            vals = f0_data[lon_mask, lat_mask]
+            valid_vals = filter(!isnan, vec(vals))
             if !isempty(valid_vals)
                 f0_regridded[i, j] = mean(valid_vals)
             end
@@ -416,12 +324,8 @@ function main()
     precip_annual = fill(NaN, nlon, nlat)
     vpd_gs = fill(NaN, nlon, nlat)
 
-    # Track which method was used
-    n_lai_based = 0
-    n_temp_based = 0
-
     # Compute GSL, A0, precip_annual, and vpd_gs for each grid cell
-    println("Computing GSL (hybrid), A0_annual, precip_annual, and vpd_gs...")
+    println("Computing GSL, A0_annual, precip_annual, and vpd_gs...")
     for i in 1:nlon
         for j in 1:nlat
             # Extract time series for this pixel
@@ -431,15 +335,8 @@ function main()
             precip_ts = Float64.(precip[:, i, j])
             vpd_ts = Float64.(vpd[:, i, j])
 
-            # Compute hybrid GSL
-            lai_gsl, is_seasonal = compute_gsl_from_lai(lai_ts)
-            if is_seasonal && !isnan(lai_gsl) && lai_gsl > 0
-                gsl[i, j] = max(lai_gsl, MIN_GSL)
-                n_lai_based += 1
-            else
-                gsl[i, j] = max(compute_gsl_from_temperature(tair_ts), MIN_GSL)
-                n_temp_based += 1
-            end
+            # Compute GSL following Zhou et al. (2025)
+            gsl[i, j] = max(compute_gsl_from_temperature(tair_ts), MIN_GSL)
 
             # Use last time point for A0_annual (model spins up from uniform initial value)
             a0_last = a0_ts[end]
@@ -451,7 +348,7 @@ function main()
             precip_annual[i, j] = compute_annual_precipitation(precip_ts)
 
             # Compute average VPD during growing season
-            vpd_gs[i, j] = compute_vpd_growing_season(vpd_ts, lai_ts, tair_ts)
+            vpd_gs[i, j] = compute_vpd_growing_season(vpd_ts, tair_ts)
         end
     end
 
@@ -461,11 +358,7 @@ function main()
     valid_precip = filter(!isnan, vec(precip_annual))
     valid_vpd = filter(!isnan, vec(vpd_gs))
 
-    println("\nGSL computation method:")
-    println("  LAI-based (seasonal): $n_lai_based pixels")
-    println("  Temperature-based (non-seasonal): $n_temp_based pixels")
-
-    println("\nGSL statistics:")
+    println("\nGSL statistics (Zhou et al. 2025: longest continuous above-0°C period):")
     println("  Valid points: $(length(valid_gsl))")
     println("  Range: $(minimum(valid_gsl)) - $(maximum(valid_gsl)) days")
     println("  Mean: $(round(mean(valid_gsl), digits=1)) days")
@@ -537,7 +430,7 @@ function main()
     gsl_var = defVar(ds_out, "gsl", Float64, ("lon", "lat"))
     gsl_var.attrib["units"] = "days"
     gsl_var.attrib["long_name"] = "Growing Season Length"
-    gsl_var.attrib["description"] = "Hybrid GSL following Zhou et al. (2025): LAI-based for seasonal regions (CV > $(SEASONALITY_CV_THRESHOLD)), temperature-based (days with T > 0C) for non-seasonal regions. Minimum GSL = $(MIN_GSL) days for numerical stability."
+    gsl_var.attrib["description"] = "GSL following Zhou et al. (2025): longest continuous above-0C period. Minimum GSL = $(MIN_GSL) days."
     gsl_var[:, :] = gsl
 
     a0_var = defVar(ds_out, "a0_annual", Float64, ("lon", "lat"))
@@ -555,7 +448,7 @@ function main()
     vpd_var = defVar(ds_out, "vpd_gs", Float64, ("lon", "lat"))
     vpd_var.attrib["units"] = "Pa"
     vpd_var.attrib["long_name"] = "Growing Season Vapor Pressure Deficit"
-    vpd_var.attrib["description"] = "Average VPD during growing season months. Growing season is determined using the same hybrid LAI/temperature criterion as GSL. Used for water limitation term in LAI_max calculation following Zhou et al. (2025)."
+    vpd_var.attrib["description"] = "Average VPD during growing season months (longest continuous above-0C period, Zhou et al. 2025). Used for water limitation term in LAI_max calculation."
     vpd_var[:, :] = vpd_gs
 
     lai_init_var = defVar(ds_out, "lai_init", Float64, ("lon", "lat"))
