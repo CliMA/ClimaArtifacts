@@ -1,6 +1,7 @@
 using NCDatasets
 using DataStructures
 using ClimaArtifactsHelper
+import Dates
 
 """
     parse_year_season(path)
@@ -12,10 +13,23 @@ The seasons MAM, JJA, SON, and DJF map to 1, 2, 3, and 4.
 function parse_year_season(path)
     # File name should look like "2008-MAM-..."
     filename = last(splitpath(path))
-    s = first(filename, 8)
+    s = split(filename, "_")[1]
     year, season = split(s, "-")
     SEASON_ORDER = Dict("MAM" => 1, "JJA" => 2, "SON" => 3, "DJF" => 4)
     return (parse(Int, year), SEASON_ORDER[season])
+end
+
+"""
+    parse_year_month(path)
+
+Given a file `path`, return the year and month as integers.
+"""
+function parse_year_month(path)
+    # File name should look like "2008-MAM-..."
+    filename = last(splitpath(path))
+    s = split(filename, "_")[1]
+    year, month = split(s, "-")
+    return parse.(Int, (year, month))
 end
 
 """
@@ -31,7 +45,13 @@ function get_and_sort_files(dir)
     # For each year, the order of the seasons are "MAM", "JJA", "SON", "DJF"
     # Note that the first month is used, so 2006-DJF refers to Dec 2006, Jan
     # 2007, and Feb 2007
-    sort!(files, by = parse_year_season)
+    if occursin("seasonal", dir)
+        sort!(files, by = parse_year_season)
+    elseif occursin("monthly", dir)
+        sort!(files, by = parse_year_month)
+    else
+        error("Only support files with monthly or seasonal periods")
+    end
     return files
 end
 
@@ -79,6 +99,16 @@ function stitch_cloud_data(files, output_filepath)
         check_var_attribs(files, varname)
         data = varname == "time" ? get_time_vec(files) : Array(mfds[varname])
         defVar(ds, varname, data, dimnames(mfds[varname]), attrib = mfds[varname].attrib)
+    end
+
+    # Seasonal files have a time dimension, but monthly files doesn't
+    if occursin("monthly", first(files))
+        @info "Adding time dimension for monthly dataset"
+        year_and_month = parse_year_month.(files)
+        data = [Dates.DateTime(year, month) for (year, month) in year_and_month]
+        attrib = Dict("units" => "days since 2006-06-01 00:00:00", "calendar" => "proleptic_gregorian")
+        first(data) == Dates.DateTime(2006, 6) || error("The first date is not 2006-06-01")
+        defVar(ds, "time", data, ("time", ), attrib = attrib)
     end
 
     # Close datasets
@@ -179,7 +209,7 @@ function make_artifact(filepath_names)
     end
 
     for filepath_name in filepath_names
-        if endswith(filepath_name, "radarlidar_seasonal_2.5x2.5.nc")
+        if endswith(filepath_name, "_2.5x2.5.nc")
             filename = last(splitpath(filepath_name))
             mv(filepath_name, joinpath(output_dir, filename), force = true)
         end
@@ -196,7 +226,7 @@ function make_artifact(filepath_names)
     end
 
     for filepath_name in filepath_names
-        if endswith(filepath_name, "radarlidar_seasonal_10x10.nc")
+        if endswith(filepath_name, "_10x10.nc")
             filename = last(splitpath(filepath_name))
             mv(filepath_name, joinpath(output_dir_lowres, filename), force = true)
         end
@@ -208,13 +238,15 @@ function make_artifact(filepath_names)
     )
 end
 
-radarlidar_dir_2_5 =
-    joinpath(dirname(@__FILE__), "radarlidar_seasonal_data", "radarlidar_seasonal_2.5x2.5")
-radarlidar_dir_10 =
-    joinpath(dirname(@__FILE__), "radarlidar_seasonal_data", "radarlidar_seasonal_10x10")
+radarlidar_dirs = [
+    joinpath(dirname(@__FILE__), "radarlidar_data", "radarlidar_seasonal_2.5x2.5")
+    joinpath(dirname(@__FILE__), "radarlidar_data", "radarlidar_seasonal_10x10")
+    joinpath(dirname(@__FILE__), "radarlidar_data", "radarlidar_monthly_2.5x2.5")
+    joinpath(dirname(@__FILE__), "radarlidar_data", "radarlidar_monthly_10x10")
+]
 
 # Check if the directory exists
-for directory in (radarlidar_dir_10, radarlidar_dir_2_5)
+for directory in radarlidar_dirs
     if !isdir(directory)
         error("$directory is not a directory. Check the file path passed in")
     end
@@ -223,7 +255,7 @@ end
 # Loop over the directories containing the NetCDF files and create a netcdf file
 # from them
 filepath_names = []
-for directory in (radarlidar_dir_10, radarlidar_dir_2_5)
+for directory in radarlidar_dirs
     files = get_and_sort_files(directory)
     filename = last(splitpath(directory)) * ".nc"
     filepath_name = joinpath(dirname(directory), filename)

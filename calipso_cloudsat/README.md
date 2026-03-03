@@ -2,8 +2,11 @@
 
 This artifact repackages data coming from the [3S-GEOPROF-COMB
 Dataset](https://zenodo.org/records/12768877) and contains seasonal data from
-2006 JJA (June, July, August) to 2020 JJA. In particular, the data is from
-`radarlidar_seasonal_2.5x2.5.zip` and `radarlidar_seasonal_10x10.zip`.
+2006 JJA (June, July, August) to 2020 JJA and monthly data from June 2006 to
+August 2020. In particular, the seasonal data is from
+`radarlidar_seasonal_2.5x2.5.zip` and `radarlidar_seasonal_10x10.zip` and the
+monthly data is from `radarlidar_monthly_2.5x2.5.zip` and
+`radarlidar_monthly_10x10.zip`.
 
 ## Data
 
@@ -54,7 +57,7 @@ For more information about the data, refer to the documentation on
 
 1. Julia
 2. Python
-3. 3.9GiB to download and extract the data from the downloaded zip files.
+3. 16GiB to download and extract the data from the downloaded zip files.
 
 ## Usage
 
@@ -74,10 +77,15 @@ while any global attribute that remains the same is included as a single value.
 
 ## Files
 
-The files included are `radarlidar_seasonal_2.5x2.5.nc` and
+The files included for seasonal data are `radarlidar_seasonal_2.5x2.5.nc` and
 `radarlidar_seasonal_10x10.nc`, a lower resolution version of
 `radarlidar_seasonal_2.5x2.5.nc`. The size of `radarlidar_seasonal_2.5x2.5.nc`
 is 3.1GiB and the size of `radarlidar_seasonal_10x10.nc` is 196MiB.
+
+The files included for monthly data are `radarlidar_monthly_2.5x2.5.nc` and
+`radarlidar_monthly_10x10.nc`, a lower resolution version of
+`radarlidar_monthly_2.5x2.5.nc`. The size of `radarlidar_monthly_2.5x2.5.nc`
+is 9.2GiB and the size of `radarlidar_monthly_10x10.nc` is 588MiB.
 
 ## License
 
