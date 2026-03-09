@@ -11,6 +11,7 @@ using ClimaArtifactsHelper
 # Base Flux", J. Atmos. Sci., 62, 2302-2315.
 
 artifacts = [
+    (4, "https://caltech.box.com/shared/static/ghkb0xe93tm4aorub444wllf1jupocra.hdf5"),
     (6, "https://caltech.box.com/shared/static/hgt34tmy209g0z68mr7xj4nyzytik4bo.hdf5"),
     (8, "https://caltech.box.com/shared/static/xshzmpklwrrjvf09m3i9iy3mk0dx4agc.hdf5"),
     (12, "https://caltech.box.com/shared/static/go8jandvoy5ofeyghz0rosx9v050kbc3.hdf5"),
