@@ -89,6 +89,7 @@ S. Gupta et al 2022, 2024](https://github.com/CliMA/ClimaArtifacts/tree/main/soi
 - [Monthly Mean CO2 from Mauna Loa](https://github.com/CliMA/ClimaArtifacts/tree/main/co2_dataset)
 - [Land-sea mask](https://github.com/CliMA/ClimaArtifacts/tree/main/landsea_mask)
 - [Global shortwave albedo](https://github.com/CliMA/ClimaArtifacts/tree/main/sw_albedo)
+- [Multisensor Advanced Climatology Mean Liquid Water Path](https://github.com/CliMA/ClimaArtifacts/tree/main/mac_lwp)
 
 
 # The ultimate guide to ClimaArtifacts

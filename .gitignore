@@ -26,4 +26,5 @@ docs/site/
 # Ignore files generated during artifact creation
 *.tar.gz
 *.nc
+*.nc4
 *.csv
