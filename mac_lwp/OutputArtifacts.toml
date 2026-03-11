@@ -1,0 +1,6 @@
+[mac_lwp]
+git-tree-sha1 = "edd3265e3be0938821451c24d411f4dc066bbf0e"
+
+    [[mac_lwp.download]]
+    sha256 = "fd24ea0d4491ef95b0a3a362d9f5faf320e5dd6caf3f4fb8683e9ab71357c13f"
+    url = "https://caltech.box.com/shared/static/4ukyc2pn5mq3zou5f7g2mjfkr86s7vdr.gz"
