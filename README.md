@@ -43,6 +43,7 @@ artifacts.
 - [CloudSat/CALIPSO 3S-GEOPROF-COMB dataset](https://github.com/CliMA/ClimaArtifacts/tree/main/calipso_cloudsat)
 - [Monthly total solar irradiance from 1850 to 2299](https://github.com/CliMA/ClimaArtifacts/tree/main/cmip_monthly_tsi)
 - [Pre-computed orographic gravity wave drag tensors (h_elem=6,8,12,16)](https://github.com/CliMA/ClimaArtifacts/tree/main/ogw_computed_drag)
+- [WeatherQuest initial conditions](https://github.com/CliMA/ClimaArtifacts/tree/main/wxquest_initial_condition)
 
 ### Land
 - [Spun up initial conditions for soil, Jan 1, 2008, with free drainage at the bottom](https://github.com/CliMA/ClimaArtifacts/tree/main/soil_ic_2008_50m)

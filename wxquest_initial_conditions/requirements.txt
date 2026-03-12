@@ -1,0 +1,4 @@
+cdsapi>=0.7.2
+xarray
+netcdf4
+python-dateutil
