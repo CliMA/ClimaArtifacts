@@ -88,6 +88,7 @@ S. Gupta et al 2022, 2024](https://github.com/CliMA/ClimaArtifacts/tree/main/soi
 - [Earth orography at 30 and 60 arc-second resolutions](https:////github.com/CliMA/ClimaArtifacts/tree/main/earth_orography)
 - [Monthly Mean CO2 from Mauna Loa](https://github.com/CliMA/ClimaArtifacts/tree/main/co2_dataset)
 - [Land-sea mask](https://github.com/CliMA/ClimaArtifacts/tree/main/landsea_mask)
+- [IMERG Land-Sea Mask](https://github.com/CliMA/ClimaArtifacts/tree/main/imerg_landsea_mask)
 - [Global shortwave albedo](https://github.com/CliMA/ClimaArtifacts/tree/main/sw_albedo)
 - [Multisensor Advanced Climatology Mean Liquid Water Path](https://github.com/CliMA/ClimaArtifacts/tree/main/mac_lwp)
 
