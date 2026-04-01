@@ -78,6 +78,7 @@ S. Gupta et al 2022, 2024](https://github.com/CliMA/ClimaArtifacts/tree/main/soi
 - [P-model implementation test data](https:////github.com/CliMA/ClimaArtifacts/tree/main/pmodel_unittests)
 - [FLUXNET2015 site data](https:////github.com/CliMA/ClimaArtifacts/tree/main/fluxnet2015)
 - [Initial conditions for the optimal LAI model](https://github.com/CliMA/ClimaArtifacts/tree/main/optimal_lai_inputs)
+- [ERA5 Lake Cover and Lake Depth](https://github.com/CliMA/ClimaArtifacts/tree/main/era5_lake_cover_and_depth)
 
 ### Coupler/shared
 
