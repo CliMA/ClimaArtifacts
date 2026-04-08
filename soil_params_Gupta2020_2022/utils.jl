@@ -1,51 +1,19 @@
+replace_missing_with_zero_transform_nonzero(x; transform) = ismissing(x)  ? 0f0 : transform(x)
+
 """
-    regrid(data, (lon, lat), resolution, transform, nlayers)
+    thin_data(data, (lon, lat), transform, thin_factor, nlayers)
 
-Regrids `data` to the resolution specified, returns the regridded data.
+Thins `data` using the thin_factor specified, returns the thinned data, after applying the transform
 
-This function takes `data` (size (nlon, nlat, nlayers)) defined at the points specified by the arrays of `lon` (length nlon) and `lat` (length nlat), 
-as well as a desired `resolution` in degrees. The resolution should
-correspond to grid cells larger than 1kmx1km (the resolution of `data`).
-
-For each coarse grid cell, the mean over the data in that cell is
-taken, ignoring points in lakes or oceans. The function `transform`
-is then applied to the mean.
-
-No regridding in depth is carried out.
+This function takes `data` (size (nlon, nlat, nlayers)) defined at the points specified by the arrays of `lon` (length nlon) and `lat` (length nlat).
 """
-function regrid(data, (lon, lat), resolution, transform, nlayers)
-    (lat_min, lat_max) = extrema(lat)
-    (lon_min, lon_max) = extrema(lon)
-
-    lat_count = Int(ceil((lat_max - lat_min) / resolution)) + 1
-    lon_count = Int(ceil((lon_max - lon_min) / resolution)) + 1
+function thin_data(data, (lon, lat), transform, thin_factor, nlayers)
+    new_lat = lat[1:thin_factor:end]
+    new_lon = lon[1:thin_factor:end]
     
-    outdata = zeros(Float32, lon_count, lat_count, nlayers)
-
-    for lat_id in 1:1:lat_count
-        for lon_id in 1:1:lon_count
-            lat_mask =
-                (lat .>= lat_min + resolution * (lat_id - 1)) .&
-                (lat .< lat_min + resolution * lat_id)
-            lon_mask =
-                (lon .>= lon_min + resolution * (lon_id - 1)) .&
-                (lon .< lon_min + resolution * lon_id)
-            x = data[lon_mask, lat_mask, :]
-            # If `x` is Missing, we are over the ocean, and not over the land.
-            # Here we make a land mask by checking where x is *not* Missing.
-            x_land_mask = .!ismissing.(x)
-            if sum(x_land_mask) / prod(size(x)) > 0.5 # count as land
-                m = [mean(skipmissing(x[:, :, k])) for k in 1:nlayers]
-                outdata[lon_id, lat_id, :] .= transform.(m)
-            else
-                outdata[lon_id, lat_id, :] .= 0f0 # all set to zero
-            end
-
-        end
-    end
-    return outdata,
-        range(stop = lat_max, step = resolution, length = lat_count),
-        range(stop = lon_max, step = resolution, length = lon_count)
+    outdata = zeros(Float32, length(new_lon), length(new_lat), nlayers)
+    outdata .= replace_missing_with_zero_transform_nonzero.(data[1:thin_factor:end, 1:thin_factor:end, :]; transform)
+    return outdata, new_lat, new_lon
 end
 
 function read_nc_data!(data, files, filedir)
