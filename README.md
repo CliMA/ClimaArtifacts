@@ -56,6 +56,7 @@ S. Gupta et al 2022, 2024](https://github.com/CliMA/ClimaArtifacts/tree/main/soi
 - [Leaf area index, derived from MODIS data for 2000-2020](https:////github.com/CliMA/ClimaArtifacts/tree/main/modis_lai)
 - [MODIS LAI data for 4 AMERIFLUX SITES](https:////github.com/CliMA/ClimaArtifacts/tree/main/MODIS_LAI_fluxnet_sites)
 - [Subset of ILAMB datasets](https:////github.com/CliMA/ClimaArtifacts/tree/main/ilamb_data)
+- [Subset of ILAMB datasets for ecosystem respiration and net ecosystem exchange](https:////github.com/CliMA/ClimaArtifacts/tree/main/ilamb_respiration_nee)
 - [Bonan 2019 Richards equation data](https:////github.com/CliMA/ClimaArtifacts/tree/main/bonan_richards_eqn)
 - [TwoStream model implementation test data](https:////github.com/CliMA/ClimaArtifacts/tree/main/twostr_test)
 - [Berkeley Earth Global Gridded Temperature Data](https:////github.com/CliMA/ClimaArtifacts/tree/main/surface_temperatures)
