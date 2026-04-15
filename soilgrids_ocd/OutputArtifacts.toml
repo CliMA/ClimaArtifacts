@@ -1,0 +1,8 @@
+[soilgrids_ocd]
+git-tree-sha1 = "39b86daa8a335c7efa894b2a8c38419e98e9b228"
+[soilgrids_ocd_lowres_interp]
+git-tree-sha1 = "11d53b5e1ff9031a5e94cfe4b93322edcb1a6129"
+
+    [[soilgrids_ocd_lowres_interp.download]]
+    sha256 = "dec8ac8dfe23c088f7acdf790ce6fa8f958c6bfeb1e1d742a5904661f7facaef"
+    url = "https://caltech.box.com/shared/static/nr0bd7l18ka5fmvcmtwyj1t444vuonx8.gz"
