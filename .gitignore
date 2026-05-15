@@ -28,3 +28,6 @@ docs/site/
 *.nc
 *.nc4
 *.csv
+
+# Ignore .env files with usernames and passwords
+.env
