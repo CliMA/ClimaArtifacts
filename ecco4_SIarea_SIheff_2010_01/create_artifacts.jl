@@ -48,8 +48,8 @@ if isdir(artifact_dir)
 else
     mkdir(artifact_dir)
 end
-Base.cp(sic_path, joinpath(artifact_dir, "ecco4_SIarea_2010_01.nc"), force = true)
-Base.cp(sit_path, joinpath(artifact_dir, "ecco4_SIheff_2010_01.nc"), force = true)
+Base.cp(sic_path, joinpath(artifact_dir, "SIarea_2010_01.nc"), force = true)
+Base.cp(sit_path, joinpath(artifact_dir, "SIheff_2010_01.nc"), force = true)
 @info "Data files copied to $artifact_dir"
 
 # since ECCO data requires credentials, we'll make this an undownloadable artifact
@@ -73,5 +73,5 @@ open(output_artifacts, open_mode) do file
 end
 
 # ecco4_SIarea_SIheff_2010_01_artifact should now have the following files:
-# - ecco4_SIarea_2010_01.nc (2.1 MB)
-# - ecco4_SIheff_2010_01.nc (2.1 MB)
+# - SIarea_2010_01.nc (2.1 MB)
+# - SIheff_2010_01.nc (2.1 MB)

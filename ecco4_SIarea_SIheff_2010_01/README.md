@@ -13,8 +13,8 @@ ECCO_WEBDAV_PASSWORD=your_ecco_webdav_password
 ```
 
 After running `create_artifacts.jl`, the subfolder `ecco4_SIarea_SIheff_2010_01_artifact` should contain the following files:
-- `ecco4_SIarea_2010_01.nc` (2.1 MB)
-- `ecco4_SIheff_2010_01.nc` (2.1 MB)
+- `SIarea_2010_01.nc` (2.1 MB)
+- `SIheff_2010_01.nc` (2.1 MB)
 
 ## Citation
 
