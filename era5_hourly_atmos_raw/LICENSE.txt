@@ -1,0 +1,93 @@
+I. Licence to Use Copernicus Products
+
+1.	Definitions
+
+1.1.	‘Licensor’ means the European Union, represented by the European Centre for Medium-Range Weather Forecasts (ECMWF).
+
+1.2.	‘Licensee’ means all natural or legal persons who agree to the terms of this Licence.
+
+1.3.	‘Licence’ means this license agreement between the Licensor and the Licensee as amended from time to time.
+
+1.4.	‘Copernicus Services’ means:
+
+1.4.1.	the Copernicus Atmosphere Monitoring Service (CAMS), which is to provide information on air quality on a local, national, and European scale, and the chemical composition of the atmosphere on a global scale.
+
+1.4.2.	the Copernicus Climate Change Service (C3S), which is to provide information to increase the knowledge base to support policies on adaptation to and mitigation of climate change
+
+1.5.	‘Copernicus Products’ means all products listed in the C3S or CAMS Service Product Specification or any other items available through an ECMWF Copernicus portal, except those items which are labelled/flagged as being subject to their own separate terms of use.
+
+1.6.	‘Intellectual Property Rights’ refers to intellectual property rights of all kinds,
+
+1.6.1.	including: all patents; rights to inventions; copyright and related rights; moral rights; trademarks and service marks; trade names and domain names; rights in get-up; rights to goodwill or to sue for passing off or unfair competition; rights in designs; rights in computer software; database rights; rights in confidential information (including know-how and trade secrets); any other rights in the nature of intellectual property rights;
+
+1.6.2.	in each case whether registered or unregistered and including all applications (or rights to apply) for, and renewals or extensions of, such rights and all similar or equivalent rights or forms of protection which subsist or will subsist now or in the future in any part of the world together with all rights of action in relation to the infringement of any of the above.
+
+1.7.	‘Copernicus Contractor’ refers to providers of Copernicus related goods and services to ECMWF, including information and data, to the Licensor and/or to the users.
+
+1.8.	‘Copernicus Regulations’ refers to Regulation (EU) No 377/2014 of the European Parliament and of the Council of 3 April 2014 establishing the Copernicus Programme.
+
+1.9.	 ‘ECMWF Agreement’ refers to the agreement between the European Commission and ECMWF dated 11 November 2014 on the implementation of CAMS and C3S.
+
+2.	Introduction
+
+Copernicus is funded under the Copernicus Regulation and operated by ECMWF under the ECMWF Agreement. Access to all Copernicus (previously known as GMES or Global Monitoring for Environment and Security) Information and Data is regulated under Regulation (EU) No 1159/2013 of the European Parliament and of the Council of 12 July 2013 on the European Earth monitoring programme, under the ECMWF Agreement and under the European Commission’s Terms and Conditions. Access to all Copernicus information is regulated under Regulation (EU) No 1159/2013 and under the ECMWF Agreement.
+
+3.	Terms of the Licence
+
+This Licence sets out the terms for use of Copernicus Products. By agreeing to these terms, the Licensee agrees to abide by all of the terms and conditions in this Licence for the use of Copernicus Products.
+
+4.	Licence Permission
+
+4.1.	This Licence is free of charge, worldwide, non-exclusive, royalty free and perpetual.
+
+4.2.	Access to Copernicus Products is given for any purpose in so far as it is lawful, whereas use may include, but is not limited to: reproduction; distribution; communication to the public; adaptation, modification and combination with other data and information; or any combination of the foregoing.
+
+5.	 Attribution
+
+5.1.	All users of Copernicus Products must provide clear and visible attribution to the Copernicus programme. The Licensee will communicate to the public the source of the Copernicus Products by crediting the Copernicus Climate Change and Atmosphere Monitoring Services:
+
+5.1.1.	Where the Licensee communicates or distributes Copernicus Products to the public, the Licensee shall inform the recipients of the source by using the following or any similar notice:
+•	'Generated using Copernicus Climate Change Service information [Year]' and/or
+•	'Generated using Copernicus Atmosphere Monitoring Service information [Year]'.
+
+5.1.2.	Where the Licensee makes or contributes to a publication or distribution containing adapted or modified Copernicus Products, the Licensee shall provide the following or any similar notice:
+•	'Contains modified Copernicus Climate Change Service information [Year]'; and/or
+•	'Contains modified Copernicus Atmosphere Monitoring Service information [Year]'
+
+5.1.3.	Any such publication or distribution covered by clauses 5.1.1 and 5.1.2 shall state that neither the European Commission nor ECMWF is responsible for any use that may be made of the Copernicus information or data it contains.
+
+6.	Intellectual Property Rights
+
+6.1.	All Intellectual Property Rights in the Copernicus Products belong, and will continue to belong, to the European Union.
+
+6.2.	All Intellectual Property Rights of new items created as a result of modifying or adapting the Copernicus Products through the applications and workflows accessible on the ECMWF Copernicus portals (e.g. through the CDS Toolbox) will belong to the European Union.
+
+6.3.	All other new Intellectual Property Rights created as a result of modifying or adapting the Copernicus information will be owned by the creator.
+
+7.	Provision of Third Party Information and Data
+
+This Licence only covers Copernicus Products. Access to third party products, information, and data related to Copernicus information to which the Licensee is directed or which can be directly accessed through any Copernicus portal will be subject to different licence terms.
+
+8.	Disclaimers
+
+8.1.	Neither the Licensor nor ECMWF warrant that Copernicus Products will be free from errors or omissions or that such errors or omissions can or will be rectified, or that the Licensee will have uninterrupted, continuous, or timely access to Copernicus Products.
+
+8.2.	The Licensor, as well as ECMWF, exclude all warranties, conditions, terms, undertakings, obligations whether express or implied by statute including but not limited to the implied warranties of satisfactory quality and fitness for a particular purpose or otherwise to the fullest extent permitted by law.
+
+9.	Liabilities
+
+Neither the Licensor nor ECMWF will accept liability for any damage, loss whether direct, indirect or consequential resulting from the Licensee’s use of the Copernicus Products.
+
+10.	Termination of and Changes to this Licence
+
+The Licensor may terminate this licence if the Licensee breaches its obligations under these terms. The Licensor may revise this Licence at any time and will notify the Licensee of any revisions.
+
+11.	Arbitration Clause and Governing Law
+
+In the event of a dispute arising in connection with this License, the parties shall attempt to settle their differences in an amicable manner. If any dispute cannot be so settled, it shall be settled under the Rules of Arbitration of the International Chamber of Commerce by one arbitrator appointed in accordance with the said rules sitting in London, United Kingdom. The proceedings shall be in the English language. The right of appeal by either party to regular Courts on a question of law arising in the course of any arbitral proceedings or out of an award made in any arbitral proceedings is hereby agreed to be excluded.
+
+It is the intention of the parties that this License shall comprehensively govern the legal relations between the parties to the Licence, without interference or contradiction by any unspecified law. However, where a matter is not specifically covered by these terms or a provision of the Licence terms is ambiguous or unclear, resolution shall be found by reference to the laws of England and Wales, including any relevant law of the European Union.
+
+Nothing stated in this License shall be construed as a waiver of any privileges or immunities of the Licensor or of ECMWF.
+
+Version 1.2 (November 2019)
