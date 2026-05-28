@@ -1,8 +1,8 @@
 #=
 create_artifact.jl
 
-Build a NEE + GPP + ER artifact on a global 1°×1° monthly grid for
-2002-01 .. 2020-12, from three open data sources:
+Build a NEE + GPP + ER + Rh artifact on a global 1°×1° monthly grid for
+2002-01 .. 2020-12, from four open data sources:
 
   1. NOAA CarbonTracker CT2022, monthly 1°×1° fluxes
         https://gml.noaa.gov/aftp/products/carbontracker/co2/CT2022/fluxes/monthly/
@@ -10,12 +10,15 @@ Build a NEE + GPP + ER artifact on a global 1°×1° monthly grid for
         https://zenodo.org/records/16794692
   3. GOSIF-GPP v2 monthly Mean GeoTIFFs (Li & Xiao 2019)
         http://data.globalecology.unh.edu/data/GOSIF-GPP_v2/Monthly/Mean/
+  4. Hashimoto 2015 global soil respiration (Hashimoto et al. 2015)
+        https://zenodo.org/records/4708444
 
 Derivations (all on the 1°×1° monthly grid):
 
   NEE  =  CT2022 bio_flux_opt                            (positive = source)
   GPP  =  GOSIF-GPP, regridded                           (positive = uptake)
   ER   =  NEE + GPP                                      (positive = source)
+  Rh   =  Hashimoto monthly Rs × (annual Rh / annual Rs) (positive = source)
 
 CarbonTracker's `bio_flux_opt` is the inversion-optimized biospheric flux with
 fire already separated out (CT prescribes fire from GFED4.1s as `fire_flux_imp`,
@@ -23,9 +26,21 @@ which we keep as a diagnostic only). So no GFED fire subtraction is needed to
 get a near-NEE quantity; the remaining contamination is LUC and lateral
 fluxes, the same as for any inversion product.
 
-Sign conventions throughout: NEE and ER are positive when carbon flows TO the
-atmosphere; GPP is positive when carbon flows INTO the ecosystem. ER is
-therefore guaranteed non-negative for typical pixels by construction.
+Rh derivation: Hashimoto publishes monthly Rs (1965–2012) and annual Rh
+(1965–2012) but no monthly Rh. We derive monthly Rh by scaling monthly Rs
+by the per-pixel annual Rh/Rs ratio:
+    Rh_monthly[lon,lat,y,m] = Rs_monthly[lon,lat,y,m] *
+                              Rh_annual[lon,lat,y] / sum_m Rs_monthly[lon,lat,y,m]
+This preserves the annual mass balance (sum_m Rh_monthly = Rh_annual) and
+gives Rh seasonality from Rs seasonality (i.e., assumes Rh/Rs is constant
+within a year per pixel). Hashimoto coverage ends in 2012, so 2013–2020 are
+filled with the 2002–2012 monthly climatology. Rh is a *soft constraint* in
+the calibration (a magnitude prior to keep modeled Rh from collapsing to 0),
+not a pixel-by-pixel target.
+
+Sign conventions throughout: NEE, ER, Rh are positive when carbon flows TO
+the atmosphere; GPP is positive when carbon flows INTO the ecosystem. ER and
+Rh are guaranteed non-negative by construction.
 
 See README.md for the choices, limitations, and citations. Run with:
 
@@ -70,7 +85,21 @@ gosif_url(y, m)      = "$GOSIF_BASE/$(gosif_filename(y, m))"
 const GOSIF_SCALE     = 0.01
 const GOSIF_FILL_VALS = (UInt16(65535), UInt16(65534))
 
-const OUTPUT_FILE = "derived_nee_gpp_er_$(YEAR_START)_$(YEAR_END).nc"
+# Hashimoto 2015 soil-respiration files (Zenodo 4708444).
+# RS_mon: monthly total soil respiration, 1965–2012, 0.5°, gC m⁻² day⁻¹.
+# RH_yr:  annual heterotrophic respiration, 1965–2012, 0.5°, gC m⁻² year⁻¹.
+# Both files: lon 0..360, lat -89.75..89.75, fill -999.0, variable name `co2`.
+const HASHIMOTO_RS_URL =
+    "https://zenodo.org/records/4708444/files/RS_mon_Hashimoto2015.nc"
+const HASHIMOTO_RH_URL =
+    "https://zenodo.org/records/4708444/files/RH_yr_Hashimoto2015.nc"
+const HASHIMOTO_RS_FILE = "RS_mon_Hashimoto2015.nc"
+const HASHIMOTO_RH_FILE = "RH_yr_Hashimoto2015.nc"
+# Hashimoto product covers 1965–2012; clip to the overlap with the inversion
+# window. 2013..YEAR_END will be filled with the 2002..2012 climatology.
+const HASHIMOTO_YEAR_END = 2012
+
+const OUTPUT_FILE = "derived_nee_gpp_er_rh_$(YEAR_START)_$(YEAR_END).nc"
 
 # Working directory for raw downloads (kept outside the artifact dir so we can
 # rerun cheaply):
@@ -100,6 +129,12 @@ function ensure_downloaded(url, path)
 end
 
 ensure_downloaded(GFED5_URL, joinpath(RAW_DIR, GFED5_ZIP))
+
+# Hashimoto soil-respiration files (~1.5 GB total):
+hashimoto_dir = joinpath(RAW_DIR, "Hashimoto")
+isdir(hashimoto_dir) || mkpath(hashimoto_dir)
+ensure_downloaded(HASHIMOTO_RH_URL, joinpath(hashimoto_dir, HASHIMOTO_RH_FILE))
+ensure_downloaded(HASHIMOTO_RS_URL, joinpath(hashimoto_dir, HASHIMOTO_RS_FILE))
 
 # Extract GFED5 zip if not already done. The zip unpacks one .nc per year
 # directly into the destination (no inner folder).
@@ -325,6 +360,212 @@ end
 @info "GOSIF-GPP 1° stack built: $(size(gpp_1deg)) (g C m⁻² month⁻¹)"
 
 # ------------------------------------------------------------------
+# 5b. Read Hashimoto Rh and Rs, derive monthly Rh, regrid 0.5° → 1°
+#
+# Hashimoto 2015 (Zenodo 4708444):
+#   RH_yr_Hashimoto2015.nc — annual Rh, 1965–2012, gC m⁻² yr⁻¹, 0.5°
+#   RS_mon_Hashimoto2015.nc — monthly Rs, 1965–2012, gC m⁻² day⁻¹, 0.5°
+# Both files use the `co2` variable on dims (lon, lat, lev=1, time), with
+# lon ∈ [0.25, 359.75] (0°–360° convention), lat ∈ [-89.75, 89.75]
+# (south-to-north), fill value -999.0.
+#
+# Monthly Rh is derived by scaling monthly Rs by the per-pixel annual Rh/Rs
+# ratio (preserves the published annual Rh; takes seasonality from Rs):
+#
+#   Rh_mon[lon,lat,y,m] = Rs_mon[lon,lat,y,m] *
+#                         (Rh_yr[lon,lat,y] / Rs_yr_from_monthly[lon,lat,y])
+#   where Rs_yr = ∑_m Rs_mon[m] * days_in_month(y,m)  (used only inside the
+#   dimensionless ratio; Rh_mon comes out in the same units as Rs_mon).
+#
+# Output units: gC m⁻² day⁻¹ (Hashimoto's native unit — different from
+# nee/gpp/er in the same file, which are gC m⁻² month⁻¹). Keeping Rh as a
+# daily rate avoids a round-trip day⁻¹ → month⁻¹ → day⁻¹ in the calibration
+# pipeline (which would introduce ~2–8% per-month error since ClimaLand's
+# loader divides by the constant 365.25/12 rather than real days-in-month).
+# Hashimoto ends in 2012; 2013..YEAR_END are filled with the 2002..2012
+# monthly climatology (12-month repeating cycle, per-pixel).
+# ------------------------------------------------------------------
+
+const HASHIMOTO_FILL = -999.0
+const N_HASHIMOTO_LON_HALFSHIFT = 180   # 0..360 → -180..180 via circshift by -180
+
+"""
+    hashimoto_year_index(y)
+
+Hashimoto time axis starts in 1901; year y is index `y - 1900` in the annual
+file and months 12*(y-1901)+1 .. 12*(y-1900) in the monthly file.
+"""
+hashimoto_year_index(y) = y - 1900
+hashimoto_month_range(y) = (12 * (y - 1901) + 1):(12 * (y - 1900))
+
+"""
+    shift_lon_0_360_to_180!(A)
+
+Roll the longitude axis (dim 1) of `A` so that data on the 0..360°E grid
+([0.5, ..., 359.5] after a 1° regrid) lines up with the [-179.5, ..., 179.5]
+convention used by CT2022 / the inversion grid.
+"""
+shift_lon_0_360_to_180(A) =
+    ndims(A) == 2 ? circshift(A, (-N_HASHIMOTO_LON_HALFSHIFT, 0)) :
+                    circshift(A, (-N_HASHIMOTO_LON_HALFSHIFT, 0, 0))
+
+# Read annual Rh for 2002..2012 (gC m⁻² yr⁻¹) on the native 0.5° grid:
+function read_hashimoto_annual_rh(path; year_start, year_end)
+    n_years = year_end - year_start + 1
+    out = Array{Float64}(undef, 720, 360, n_years)
+    NCDataset(path) do ds
+        for (k, y) in enumerate(year_start:year_end)
+            slab = Array{Float64}(ds["co2"].var[:, :, 1, hashimoto_year_index(y)])
+            slab[slab .<= HASHIMOTO_FILL + 1] .= NaN
+            out[:, :, k] = slab
+        end
+    end
+    return out
+end
+
+# Read monthly Rs for 2002..2012 in its native units (gC m⁻² day⁻¹).
+# Returns (rs_mon, days_per_month_year) where days_per_month_year[y, m] is
+# the real days-in-month for that (year, month), used inside the dimensionless
+# Rh/Rs ratio to integrate Rs to an annual total.
+function read_hashimoto_monthly_rs(path; year_start, year_end)
+    n_years = year_end - year_start + 1
+    n_months = 12 * n_years
+    out = Array{Float64}(undef, 720, 360, n_months)
+    dim = Array{Float64}(undef, n_years, 12)
+    NCDataset(path) do ds
+        k = 0
+        for y in year_start:year_end, m in 1:12
+            k += 1
+            t_idx = 12 * (y - 1901) + m
+            slab = Array{Float64}(ds["co2"].var[:, :, 1, t_idx])
+            slab[slab .<= HASHIMOTO_FILL + 1] .= NaN
+            out[:, :, k] = slab
+            dim[y - year_start + 1, m] = Float64(daysinmonth(Date(y, m, 1)))
+        end
+    end
+    return out, dim
+end
+
+@info "Reading Hashimoto annual Rh (2002–$HASHIMOTO_YEAR_END)"
+rh_yr_half = read_hashimoto_annual_rh(
+    joinpath(hashimoto_dir, HASHIMOTO_RH_FILE);
+    year_start = YEAR_START,
+    year_end   = HASHIMOTO_YEAR_END,
+)
+@info "Reading Hashimoto monthly Rs (2002–$HASHIMOTO_YEAR_END)"
+rs_mon_half, days_in_month_per_year =
+    read_hashimoto_monthly_rs(
+        joinpath(hashimoto_dir, HASHIMOTO_RS_FILE);
+        year_start = YEAR_START,
+        year_end   = HASHIMOTO_YEAR_END,
+    )
+
+# Derive monthly Rh on the native 0.5° grid by scaling monthly Rs (gC m⁻²
+# day⁻¹) by the per-pixel dimensionless annual Rh/Rs ratio:
+#   Rs_yr_total[gC m⁻² yr⁻¹] = ∑_m Rs_mon[m] * days_in_month(m)
+#   ratio                    = Rh_yr / Rs_yr_total
+#   Rh_mon[m, gC m⁻² day⁻¹]  = Rs_mon[m] * ratio
+# Ocean (NaN in either) propagates; very small Rs annual totals are masked to
+# avoid divide-by-zero blowup.
+function derive_monthly_rh_half(rs_mon, rh_yr, days_in_month)
+    n_lon, n_lat, n_months = size(rs_mon)
+    n_years = size(rh_yr, 3)
+    @assert n_months == 12 * n_years
+    @assert size(days_in_month) == (n_years, 12)
+    out = similar(rs_mon)
+    fill!(out, NaN)
+    for y in 1:n_years
+        idx = (12 * (y - 1)) + 1 : (12 * y)
+        rs_slab = @view rs_mon[:, :, idx]                   # 720 × 360 × 12
+        rh_slab = @view rh_yr[:, :, y]                       # 720 × 360
+        dim_y = @view days_in_month[y, :]                    # 12
+        @inbounds for j in 1:n_lat, i in 1:n_lon
+            rh_pix = rh_slab[i, j]
+            isnan(rh_pix) && continue
+            rs_yr_total = 0.0
+            valid = true
+            for m in 1:12
+                v = rs_slab[i, j, m]
+                if isnan(v)
+                    valid = false; break
+                end
+                rs_yr_total += v * dim_y[m]
+            end
+            (!valid || rs_yr_total < 1.0) && continue        # Rs_yr < 1 gC/m²/yr ⇒ skip
+            ratio = rh_pix / rs_yr_total                     # dimensionless
+            for m in 1:12
+                out[i, j, idx[m]] = rs_slab[i, j, m] * ratio
+            end
+        end
+    end
+    return out
+end
+
+@info "Deriving monthly Rh = Rs × (annual Rh / annual Rs) on 0.5° grid"
+rh_mon_half =
+    derive_monthly_rh_half(rs_mon_half, rh_yr_half, days_in_month_per_year)
+rh_yr_half = nothing                                         # free memory
+rs_mon_half = nothing
+
+# Regrid 0.5° → 1° (factor 2) per time slice, then shift longitude:
+@info "Regridding Rh 0.5° → 1° and rolling longitude 0..360 → -180..180"
+function regrid_and_shift(rh_half)
+    n_months = size(rh_half, 3)
+    out = Array{Float64}(undef, 360, 180, n_months)
+    for k in 1:n_months
+        coarse = block_mean_nan(rh_half[:, :, k], 2)
+        out[:, :, k] = shift_lon_0_360_to_180(coarse)
+    end
+    return out
+end
+rh_mon_1deg_native = regrid_and_shift(rh_mon_half)            # 2002..2012 only
+rh_mon_half = nothing
+
+# Build the full 2002..YEAR_END monthly Rh stack:
+# years 2002..HASHIMOTO_YEAR_END use the derived monthly values directly;
+# years HASHIMOTO_YEAR_END+1..YEAR_END are filled with the 2002..2012
+# monthly climatology (mean by calendar month, per pixel, ignoring NaNs).
+function build_full_rh_stack(rh_native, year_start, year_end_native, year_end)
+    n_lon, n_lat, _ = size(rh_native)
+    n_months_full = 12 * (year_end - year_start + 1)
+    out = Array{Float64}(undef, n_lon, n_lat, n_months_full)
+    n_native = year_end_native - year_start + 1
+    out[:, :, 1:(12 * n_native)] = rh_native
+    # Compute climatology: 12 maps, mean over native years per calendar month.
+    if year_end > year_end_native
+        clim = Array{Float64}(undef, n_lon, n_lat, 12)
+        for m in 1:12
+            stack = view(rh_native, :, :, m:12:(12 * n_native))
+            tmp = Array{Float64}(undef, n_lon, n_lat)
+            @inbounds for j in 1:n_lat, i in 1:n_lon
+                s = 0.0; c = 0
+                for k in 1:size(stack, 3)
+                    v = stack[i, j, k]
+                    if !isnan(v)
+                        s += v; c += 1
+                    end
+                end
+                tmp[i, j] = c == 0 ? NaN : s / c
+            end
+            clim[:, :, m] = tmp
+        end
+        for y in (year_end_native + 1):year_end
+            base = 12 * (y - year_start)
+            for m in 1:12
+                out[:, :, base + m] = clim[:, :, m]
+            end
+        end
+    end
+    return out
+end
+
+rh_1deg = build_full_rh_stack(
+    rh_mon_1deg_native, YEAR_START, HASHIMOTO_YEAR_END, YEAR_END,
+)
+rh_mon_1deg_native = nothing
+@info "Hashimoto-derived Rh 1° monthly stack built: $(size(rh_1deg)) (g C m⁻² day⁻¹)"
+
+# ------------------------------------------------------------------
 # 6. Compute NEE and ER
 # ------------------------------------------------------------------
 
@@ -395,12 +636,19 @@ NCDataset(outpath, "c") do ds
                "long_name" => "CT2022 imposed fire flux (GFED4.1s, used internally by the inversion)",
                "description" => "Provided for diagnostic; not used in the NEE/ER derivation."
            )))
+    defVar(ds, "rh", Float32.(rh_1deg), ("lon", "lat", "time"),
+           attrib = merge(common, Dict(
+               "units" => "g C m-2 day-1",
+               "long_name" => "Heterotrophic respiration derived from Hashimoto 2015 (positive = source)",
+               "description" => "Monthly Rh = Hashimoto monthly Rs (gC m⁻² day⁻¹, native units) × (annual Hashimoto Rh / annual sum of monthly Rs × days_in_month), per pixel. Result is the mean daily rate over each month (gC m⁻² day⁻¹), kept in Hashimoto's native units to avoid a day⁻¹↔month⁻¹ round-trip in calibration. NOTE: different units from nee/gpp/er in this file. Hashimoto covers 1965–$(HASHIMOTO_YEAR_END); $(HASHIMOTO_YEAR_END + 1)–$(YEAR_END) are filled with the 2002–$(HASHIMOTO_YEAR_END) per-pixel monthly climatology. Intended as a soft constraint (magnitude prior on Rh) in calibration, not a pixel-by-pixel target.",
+               "source" => "https://zenodo.org/records/4708444 (Hashimoto et al. 2015, Biogeosciences 12: 4121–4132)"
+           )))
 
-    ds.attrib["title"] = "Derived NEE, GPP, and ER on 1°×1° monthly grid ($(YEAR_START)–$(YEAR_END))"
-    ds.attrib["sign_convention"] = "NEE, ER, fire: positive = source. GPP: positive = uptake."
+    ds.attrib["title"] = "Derived NEE, GPP, ER, and Rh on 1°×1° monthly grid ($(YEAR_START)–$(YEAR_END))"
+    ds.attrib["sign_convention"] = "NEE, ER, Rh, fire: positive = source. GPP: positive = uptake."
     ds.attrib["created_on"] = string(Dates.now())
     ds.attrib["created_by"] = "ClimaArtifacts/inversion_nee/create_artifact.jl"
-    ds.attrib["references"] = "CarbonTracker CT2022 (NOAA/GML); Chen et al. 2023 GFED5 (10.5194/essd-15-5227-2023); Li & Xiao 2019 GOSIF-GPP (10.3390/rs11050517)"
+    ds.attrib["references"] = "CarbonTracker CT2022 (NOAA/GML); Chen et al. 2023 GFED5 (10.5194/essd-15-5227-2023); Li & Xiao 2019 GOSIF-GPP (10.3390/rs11050517); Hashimoto et al. 2015 (10.5194/bg-12-4121-2015)"
 end
 
 @info "Wrote $outpath"

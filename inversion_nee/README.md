@@ -1,8 +1,8 @@
-# Derived NEE, GPP, and ER for terrestrial-model calibration
+# Derived NEE, GPP, ER, and Rh for terrestrial-model calibration
 
 ## Overview
 
-This artifact provides three derived global flux fields on a 1°×1° monthly grid
+This artifact provides four derived global flux fields on a 1°×1° monthly grid
 (2002–2020), intended for calibration of terrestrial biosphere models such as
 ClimaLand:
 
@@ -11,13 +11,15 @@ ClimaLand:
 | **NEE** | Net Ecosystem Exchange | positive = source to atmosphere |
 | **GPP** | Gross Primary Production | positive = uptake by ecosystem |
 | **ER**  | Ecosystem Respiration | positive = source to atmosphere |
+| **Rh**  | Heterotrophic Respiration | positive = source to atmosphere |
 
-The three fields are derived from three open data products:
+The four fields are derived from four open data products:
 
 ```
-NEE  =  CarbonTracker CT2022 bio_flux_opt        (positive = source)
-GPP  =  GOSIF-GPP, regridded                     (positive = uptake)
-ER   =  NEE  +  GPP                              (positive = source)
+NEE  =  CarbonTracker CT2022 bio_flux_opt              (positive = source)
+GPP  =  GOSIF-GPP, regridded                           (positive = uptake)
+ER   =  NEE  +  GPP                                    (positive = source)
+Rh   =  Hashimoto Rs_monthly × (Rh_annual / Rs_annual) (positive = source)
 ```
 
 - **NEE**: NOAA CarbonTracker CT2022 monthly 1°×1° optimized biospheric flux
@@ -36,9 +38,30 @@ ER   =  NEE  +  GPP                              (positive = source)
   on GPP and ER and tighter noise on NEE (since NEE is the most direct
   observational constraint and ER inherits the uncertainties of both
   inputs).
+- **Rh**: heterotrophic respiration, derived from Hashimoto 2015 by scaling
+  monthly Rs (the only Hashimoto monthly product) by the per-pixel annual
+  Rh/Rs ratio:
+  ```
+  ratio[lon,lat,y]    = Rh_annual[lon,lat,y]
+                        / sum_m (Rs_monthly[lon,lat,y,m] * days_in_month(y,m))
+  Rh_monthly[m, day⁻¹]= Rs_monthly[m, day⁻¹] * ratio[y]
+  ```
+  This preserves the annual Hashimoto Rh by construction and inherits Rh
+  seasonality from Rs (assumes Rh/Rs constant within a year per pixel).
+  Hashimoto coverage ends in 2012; 2013–2020 are filled with the
+  2002–2012 monthly climatology (per pixel, per calendar month). Intended
+  as a *soft constraint* in calibration (a magnitude prior on Rh) rather
+  than a pixel-by-pixel target.
 
 To compare with ClimaLand outputs that use the ecologist convention
-(NEE positive = uptake), flip the sign of `nee` and `er`.
+(NEE positive = uptake), flip the sign of `nee`, `er`, and `rh`.
+
+> ⚠️ **Unit inconsistency by design**: `rh` is stored in **g C m⁻² day⁻¹**
+> (Hashimoto native units), while `nee`, `gpp`, `er` are in **g C m⁻² month⁻¹**.
+> This avoids a day⁻¹ → month⁻¹ → day⁻¹ round-trip in the ClimaLand
+> calibration loader, which would introduce a ±5% spurious seasonality
+> (because the loader uses a constant 365.25/12 days per month, but real
+> months are 28–31 days). Check the `units` attribute on each variable.
 
 ## Data sources and choices
 
@@ -47,6 +70,7 @@ To compare with ClimaLand outputs that use the ecologist convention
 | CarbonTracker CT2022 | Monthly 1°×1° fluxes | 1°×1° | monthly | https://gml.noaa.gov/aftp/products/carbontracker/co2/CT2022/fluxes/monthly/ |
 | GFED5.1 | Global Fire Emissions Database v5 | 0.25°×0.25° | monthly | https://zenodo.org/records/16794692 |
 | GOSIF-GPP v2 | SIF-based GPP, monthly Mean GeoTIFFs | 0.05°×0.05° | monthly | http://data.globalecology.unh.edu/data/GOSIF-GPP_v2/Monthly/Mean/ |
+| Hashimoto 2015 | Global gridded Rs (monthly) and Rh (annual) | 0.5°×0.5° | monthly Rs, annual Rh | https://zenodo.org/records/4708444 |
 
 ### Why these choices
 - **CarbonTracker CT2022 over OCO-2 v10 MIP.** Initial plan was to use the
@@ -115,23 +139,26 @@ To compare with ClimaLand outputs that use the ecologist convention
 
 ## Output file
 
-`derived_nee_gpp_er_2002_2020.nc` contains:
+`derived_nee_gpp_er_rh_2002_2020.nc` contains:
 
 | Variable | Units | Sign | Description |
 |---|---|---|---|
 | `nee` | g C m⁻² month⁻¹ | + = source | NEE = CT2022 `bio_flux_opt` (fire already separated) |
 | `gpp` | g C m⁻² month⁻¹ | + = uptake | GOSIF-GPP, regridded to 1°×1° |
 | `er` | g C m⁻² month⁻¹ | + = source | Ecosystem Respiration = NEE + GPP |
+| `rh` | **g C m⁻² day⁻¹** | + = source | Heterotrophic respiration, Hashimoto Rs × annual Rh/Rs; 2013–2020 climatology-filled |
 | `fire_gfed5` | g C m⁻² month⁻¹ | + = source | GFED5.1 C emissions, regridded (diagnostic) |
 | `fire_ct` | g C m⁻² month⁻¹ | + = source | CT2022 imposed fire (GFED4.1s, diagnostic) |
 | `time` | days since 2002-01-15 | — | Mid-month timestamps |
 | `lat`, `lon` | degrees | — | 1°×1° pixel centers |
 
+Note: `rh` uses **day⁻¹** units while nee/gpp/er use **month⁻¹** — see Overview.
+
 ## Prerequisites
 
 - Julia ≥ 1.10
-- Internet connection (~2.4 GB of downloads: ~450 MB CT2022 + ~290 MB GFED5 +
-  ~1.6 GB GOSIF-GPP, compressed)
+- Internet connection (~3.9 GB of downloads: ~450 MB CT2022 + ~290 MB GFED5 +
+  ~1.6 GB GOSIF-GPP + ~1.5 GB Hashimoto Rs+Rh, compressed)
 - ~5 GB free disk space for intermediate files (decompressed GOSIF TIFFs
   expand to ~3.6 GB)
 
@@ -168,6 +195,13 @@ The script is idempotent — it will skip downloads of files that already exist.
   *Remote Sensing*, 11(5), 517. https://doi.org/10.3390/rs11050517
 - Data: http://data.globalecology.unh.edu/data/GOSIF-GPP_v2/
 
+**Hashimoto Rs/Rh**
+- Hashimoto, S., Carvalhais, N., Ito, A., Migliavacca, M., Nishina, K. &
+  Reichstein, M. (2015): Global spatiotemporal distribution of soil
+  respiration modeled using a global database. *Biogeosciences*, 12,
+  4121–4132. https://doi.org/10.5194/bg-12-4121-2015
+- Data: https://zenodo.org/records/4708444
+
 **Methodological background**
 - Friedlingstein, P., et al. (2024): Global Carbon Budget 2024. *Earth System
   Science Data*. https://doi.org/10.5194/essd-2024-519
@@ -180,6 +214,7 @@ The script is idempotent — it will skip downloads of files that already exist.
 - GFED5: CC-BY 4.0. Cite Chen et al. 2023.
 - GOSIF-GPP v2: free for non-commercial scientific research; cite Li & Xiao
   2019.
+- Hashimoto 2015 Rs/Rh dataset: cite Hashimoto et al. 2015.
 
 This derived product inherits the most restrictive license of its inputs.
-Please cite all three source papers and this artifact when using.
+Please cite all four source papers and this artifact when using.
