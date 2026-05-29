@@ -1,6 +1,6 @@
 [inversion_nee]
-git-tree-sha1 = "fcbaf7c820aae2bf52ced751104f9c322361bb3d"
+git-tree-sha1 = "d400472ea191639cb1dafac41b09ce36383aee54"
 
     [[inversion_nee.download]]
-    sha256 = "0f2555f600f10897cd3be009e8565ed0a69b03c5b58776b221fed50b8046bd5e"
+    sha256 = "84ccc2b60b276575342886535d78faa83f64dd83e327f65b31a10da8f9da721c"
     url = "https://caltech.box.com/shared/static/13xeg76obc5cc73h2sqzhogx0hr97poz.gz"

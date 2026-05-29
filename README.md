@@ -80,7 +80,7 @@ S. Gupta et al 2022, 2024](https://github.com/CliMA/ClimaArtifacts/tree/main/soi
 - [FLUXNET2015 site data](https:////github.com/CliMA/ClimaArtifacts/tree/main/fluxnet2015)
 - [Initial conditions for the optimal LAI model](https://github.com/CliMA/ClimaArtifacts/tree/main/optimal_lai_inputs)
 - [ERA5 Lake Cover and Lake Depth](https://github.com/CliMA/ClimaArtifacts/tree/main/era5_lake_cover_and_depth)
-- [NEE from CarbonTracker CT2022, GPP from GOSIF-GPP v2, and ER as their residual (monthly 1°×1°, 2015-2020)](https://github.com/CliMA/ClimaArtifacts/tree/main/inversion_nee)
+- [NEE (CarbonTracker CT2022), GPP (GOSIF-GPP v2), ER (residual), and Rh (Hashimoto 2015) on a monthly 1°×1° grid, 2002-2020](https://github.com/CliMA/ClimaArtifacts/tree/main/inversion_nee)
 
 ### Coupler/shared
 

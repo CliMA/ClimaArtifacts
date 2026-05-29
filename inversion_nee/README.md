@@ -116,9 +116,12 @@ To compare with ClimaLand outputs that use the ecologist convention
 2. **River lateral C transport** (~0.6–0.8 PgC/yr globally; Regnier et al. 2022)
    is included in the inversion's land term and not removed. This is a
    systematic land source that biology did not emit.
-3. **Ensemble mean masks structural disagreement.** The ensemble spread is
-   provided alongside the mean; use it as the observational uncertainty in any
-   calibration. Regional spread is large (especially tropics, high latitudes).
+3. **Single inversion, no internal spread.** CT2022 is one inversion, not an
+   ensemble, so no per-pixel uncertainty estimate is shipped with NEE. The
+   calibration must source NEE observational uncertainty externally (literature
+   values, CT-vintage spread, or regional standard deviations); structural
+   disagreement between inversions is large, especially in the tropics and high
+   latitudes.
 4. **Prior contamination.** Most inversions use bottom-up LSM priors. In
    data-poor regions the posterior leans on the prior, partially calibrating
    against another model. Use FLUXNET or other independent data to validate.
@@ -210,7 +213,8 @@ The script is idempotent — it will skip downloads of files that already exist.
 
 ## License
 
-- OCO-2 v10 MIP CEOS file: open access. Cite Byrne et al. 2022 (DOI above).
+- CarbonTracker CT2022: NOAA/GML, freely available without registration. Please
+  acknowledge NOAA Global Monitoring Laboratory.
 - GFED5: CC-BY 4.0. Cite Chen et al. 2023.
 - GOSIF-GPP v2: free for non-commercial scientific research; cite Li & Xiao
   2019.

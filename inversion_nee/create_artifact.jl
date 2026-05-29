@@ -26,8 +26,8 @@ which we keep as a diagnostic only). So no GFED fire subtraction is needed to
 get a near-NEE quantity; the remaining contamination is LUC and lateral
 fluxes, the same as for any inversion product.
 
-Rh derivation: Hashimoto publishes monthly Rs (1965–2012) and annual Rh
-(1965–2012) but no monthly Rh. We derive monthly Rh by scaling monthly Rs
+Rh derivation: Hashimoto publishes monthly Rs (1901–2012) and annual Rh
+(1901–2012) but no monthly Rh. We derive monthly Rh by scaling monthly Rs
 by the per-pixel annual Rh/Rs ratio:
     Rh_monthly[lon,lat,y,m] = Rs_monthly[lon,lat,y,m] *
                               Rh_annual[lon,lat,y] / sum_m Rs_monthly[lon,lat,y,m]
@@ -39,8 +39,9 @@ the calibration (a magnitude prior to keep modeled Rh from collapsing to 0),
 not a pixel-by-pixel target.
 
 Sign conventions throughout: NEE, ER, Rh are positive when carbon flows TO
-the atmosphere; GPP is positive when carbon flows INTO the ecosystem. ER and
-Rh are guaranteed non-negative by construction.
+the atmosphere; GPP is positive when carbon flows INTO the ecosystem. Rh is
+guaranteed non-negative by construction; ER (= NEE + GPP) is a residual and
+can be negative in pixel-months where the inversion sink exceeds GPP.
 
 See README.md for the choices, limitations, and citations. Run with:
 
@@ -86,8 +87,8 @@ const GOSIF_SCALE     = 0.01
 const GOSIF_FILL_VALS = (UInt16(65535), UInt16(65534))
 
 # Hashimoto 2015 soil-respiration files (Zenodo 4708444).
-# RS_mon: monthly total soil respiration, 1965–2012, 0.5°, gC m⁻² day⁻¹.
-# RH_yr:  annual heterotrophic respiration, 1965–2012, 0.5°, gC m⁻² year⁻¹.
+# RS_mon: monthly total soil respiration, 1901–2012, 0.5°, gC m⁻² day⁻¹.
+# RH_yr:  annual heterotrophic respiration, 1901–2012, 0.5°, gC m⁻² year⁻¹.
 # Both files: lon 0..360, lat -89.75..89.75, fill -999.0, variable name `co2`.
 const HASHIMOTO_RS_URL =
     "https://zenodo.org/records/4708444/files/RS_mon_Hashimoto2015.nc"
@@ -95,7 +96,7 @@ const HASHIMOTO_RH_URL =
     "https://zenodo.org/records/4708444/files/RH_yr_Hashimoto2015.nc"
 const HASHIMOTO_RS_FILE = "RS_mon_Hashimoto2015.nc"
 const HASHIMOTO_RH_FILE = "RH_yr_Hashimoto2015.nc"
-# Hashimoto product covers 1965–2012; clip to the overlap with the inversion
+# Hashimoto product covers 1901–2012; clip to the overlap with the inversion
 # window. 2013..YEAR_END will be filled with the 2002..2012 climatology.
 const HASHIMOTO_YEAR_END = 2012
 
@@ -291,12 +292,12 @@ factor = length(gfed.lon) ÷ length(ct.lon)
 fire_1deg = block_mean(gfed.C, factor)
 
 # ------------------------------------------------------------------
-# 5. Read GOSIF-GPP monthly TIFFs, scale, and regrid 0.05° → 1°
+# 4. Read GOSIF-GPP monthly TIFFs, scale, and regrid 0.05° → 1°
 #
-# Each GeoTIFF is a global 7200×3600 int16 raster of monthly-mean GPP × 100
-# (g C m⁻² day⁻¹). Special fill values (32767, 32766) are masked to NaN.
-# GeoTIFFs are stored north-up, so the row axis is reversed relative to the
-# south-to-north convention used by the MIP and GFED files; we flip it.
+# Each GeoTIFF is a global 7200×3600 UInt16 raster of monthly-mean GPP × 100
+# (g C m⁻² month⁻¹). Fill values (65535 = water, 65534 = perpetual snow/ice)
+# are masked to NaN. GeoTIFFs are stored north-up, so the row axis is reversed
+# relative to the south-to-north convention used by CT2022 and GFED5; we flip it.
 # ------------------------------------------------------------------
 
 function read_gosif_month(path::String)
@@ -360,11 +361,11 @@ end
 @info "GOSIF-GPP 1° stack built: $(size(gpp_1deg)) (g C m⁻² month⁻¹)"
 
 # ------------------------------------------------------------------
-# 5b. Read Hashimoto Rh and Rs, derive monthly Rh, regrid 0.5° → 1°
+# 5. Read Hashimoto Rh and Rs, derive monthly Rh, regrid 0.5° → 1°
 #
 # Hashimoto 2015 (Zenodo 4708444):
-#   RH_yr_Hashimoto2015.nc — annual Rh, 1965–2012, gC m⁻² yr⁻¹, 0.5°
-#   RS_mon_Hashimoto2015.nc — monthly Rs, 1965–2012, gC m⁻² day⁻¹, 0.5°
+#   RH_yr_Hashimoto2015.nc — annual Rh, 1901–2012, gC m⁻² yr⁻¹, 0.5°
+#   RS_mon_Hashimoto2015.nc — monthly Rs, 1901–2012, gC m⁻² day⁻¹, 0.5°
 # Both files use the `co2` variable on dims (lon, lat, lev=1, time), with
 # lon ∈ [0.25, 359.75] (0°–360° convention), lat ∈ [-89.75, 89.75]
 # (south-to-north), fill value -999.0.
@@ -597,7 +598,7 @@ NCDataset(outpath, "c") do ds
     defVar(ds, "lat", Float64.(ct.lat), ("lat",),
            attrib = Dict("units" => "degrees_north", "long_name" => "latitude"))
 
-    # Encode time as days since 2015-01-15 (mid-month of first record):
+    # Encode time as days since YEAR_START-01-15 (mid-month of first record):
     t_ref = DateTime(YEAR_START, 1, 15)
     t_days = [Float64((Date(year(x), month(x), 15) - Date(t_ref)).value) for x in ct.t]
     defVar(ds, "time", t_days, ("time",),
@@ -640,7 +641,7 @@ NCDataset(outpath, "c") do ds
            attrib = merge(common, Dict(
                "units" => "g C m-2 day-1",
                "long_name" => "Heterotrophic respiration derived from Hashimoto 2015 (positive = source)",
-               "description" => "Monthly Rh = Hashimoto monthly Rs (gC m⁻² day⁻¹, native units) × (annual Hashimoto Rh / annual sum of monthly Rs × days_in_month), per pixel. Result is the mean daily rate over each month (gC m⁻² day⁻¹), kept in Hashimoto's native units to avoid a day⁻¹↔month⁻¹ round-trip in calibration. NOTE: different units from nee/gpp/er in this file. Hashimoto covers 1965–$(HASHIMOTO_YEAR_END); $(HASHIMOTO_YEAR_END + 1)–$(YEAR_END) are filled with the 2002–$(HASHIMOTO_YEAR_END) per-pixel monthly climatology. Intended as a soft constraint (magnitude prior on Rh) in calibration, not a pixel-by-pixel target.",
+               "description" => "Monthly Rh = Hashimoto monthly Rs (gC m⁻² day⁻¹, native units) × (annual Hashimoto Rh / annual sum of monthly Rs × days_in_month), per pixel. Result is the mean daily rate over each month (gC m⁻² day⁻¹), kept in Hashimoto's native units to avoid a day⁻¹↔month⁻¹ round-trip in calibration. NOTE: different units from nee/gpp/er in this file. Hashimoto covers 1901–$(HASHIMOTO_YEAR_END); $(HASHIMOTO_YEAR_END + 1)–$(YEAR_END) are filled with the 2002–$(HASHIMOTO_YEAR_END) per-pixel monthly climatology. Intended as a soft constraint (magnitude prior on Rh) in calibration, not a pixel-by-pixel target.",
                "source" => "https://zenodo.org/records/4708444 (Hashimoto et al. 2015, Biogeosciences 12: 4121–4132)"
            )))
 
