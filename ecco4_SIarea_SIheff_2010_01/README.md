@@ -4,8 +4,7 @@ This artifact contains ECCO v4 data for average sea-ice concentration and sea-ic
 The data is interpolated onto a regular lat-lon grid with 1/4° resolution.
 See https://ecco-group.org/products-ECCO-V4r4.htm for more details.
 
-The artifact is set as undownloadable because ECCO requires authentication.
-Before running `create_artifacts.jl`, you must first register for an Earthdata account at https://urs.earthdata.nasa.gov/users/new.
+ECCO requires authentication; before running `create_artifacts.jl`, you must first register for an Earthdata account at https://urs.earthdata.nasa.gov/users/new.
 Then use your login information to create a `.env` file with the following content:
 ```
 ECCO_USERNAME=your_ecco_username
