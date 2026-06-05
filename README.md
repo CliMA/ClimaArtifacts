@@ -53,6 +53,7 @@ artifacts.
 - [Soil crganic carbon densities for the soil co2 model; derived from SoilGrids](https://github.com/CliMA/ClimaArtifacts/tree/main/soilgrids_ocd)
 - [Soil parameters needed for Richards equation; global at 1km resolution from
 S. Gupta et al 2022, 2024](https://github.com/CliMA/ClimaArtifacts/tree/main/soil_params_Gupta2020_2022)
+- [Soil parameters needed for Richards equation; global at 0.25 degree resolution from Montzka, C et al. (2017) (ROSETTA)](https://github.com/CliMA/ClimaArtifacts/tree/main/soil_params_rosetta)
 - [Foliage clumping index, derived from MODIS data for 2006](https:////github.com/CliMA/ClimaArtifacts/tree/main/modis_clumping_index)
 - [Leaf area index, derived from MODIS data for 2000-2020](https:////github.com/CliMA/ClimaArtifacts/tree/main/modis_lai)
 - [MODIS LAI data for 4 AMERIFLUX SITES](https:////github.com/CliMA/ClimaArtifacts/tree/main/MODIS_LAI_fluxnet_sites)

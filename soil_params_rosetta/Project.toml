@@ -1,0 +1,5 @@
+[deps]
+ArtifactUtils = "8b73e784-e7d8-4ea5-973d-377fed4e3bce"
+ClimaArtifactsHelper = "6ffa2572-8378-4377-82eb-ea11db28b255"
+NCDatasets = "85f8d34a-cbdd-5861-8df4-14fed0d494ab"
+Pkg = "44cfe95a-1eb2-52ea-b672-e2afdf69b78f"
