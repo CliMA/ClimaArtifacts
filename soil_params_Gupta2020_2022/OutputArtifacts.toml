@@ -1,8 +1,12 @@
 [soil_params_Gupta2020_2022]
-git-tree-sha1 = "9370b7272968bfb92b48f2d4f495c278fa9f741d"
+git-tree-sha1 = "013d162175e1d440c08b36b0500eaf90eaaf45bd"
+
+    [[soil_params_Gupta2020_2022.download]]
+    sha256 = "982205d534aadf20aa41c8158e77fc4c293fe6255fb429be6712fe9a74729565"
+    url = "https://caltech.box.com/shared/static/qfsefngwj3i3as4fyyt4dae29nrijr4g.gz"
 [soil_params_Gupta2020_2022_lowres]
-git-tree-sha1 = "e6d18714edfdcbd0244203146521d32df338385a"
+git-tree-sha1 = "18448e4a7699b4361db4121e4491cfc89453709d"
 
     [[soil_params_Gupta2020_2022_lowres.download]]
-    sha256 = "3e8ca24c57589eb3ccf20e52e74dd56bb46f9122048c0ee468889b1c631bb2a2"
-    url = "https://caltech.box.com/shared/static/cg8ib5f6ps7wc1nn1p6wk2dnhmvwwr2p.gz"
+    sha256 = "6812e7824f7b90eca6bc774a1f27f14bb68ee4fa4cef5691c24da454b3613411"
+    url = "https://caltech.box.com/shared/static/gv8nxzalvbrlubtwv1gdceqmng236vg9.gz"
