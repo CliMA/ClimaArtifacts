@@ -112,4 +112,5 @@ var5.attrib["units"] = attrib_theta_r.varunits
 var5.attrib["title"] = attrib_theta_r.vartitle
 var5[:, :, :] .= data[:,:,:,5]
 close(ds)
+Base.mv("soil_params_rosetta.nc", joinpath(outputdir, "soil_params_rosetta.nc"))
 create_artifact_guided(outputdir; artifact_name = basename(@__DIR__))
