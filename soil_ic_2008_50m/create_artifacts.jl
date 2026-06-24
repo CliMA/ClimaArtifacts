@@ -44,7 +44,7 @@ function replace_nan_with_mean!(x)
 end
 
 outfilepath = joinpath(outdir, "soil_ic_2008_50m.nc")
-ds = NCDataset(outfilepath, "c")    
+ds = NCDataset(outfilepath, "c")
 
 for i in 1:length(var_attribs)
     var_attrib = var_attribs[i]
