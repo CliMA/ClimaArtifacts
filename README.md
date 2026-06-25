@@ -44,6 +44,7 @@ artifacts.
 - [Monthly total solar irradiance from 1850 to 2299](https://github.com/CliMA/ClimaArtifacts/tree/main/cmip_monthly_tsi)
 - [Pre-computed orographic gravity wave drag tensors (h_elem=6,8,12,16)](https://github.com/CliMA/ClimaArtifacts/tree/main/ogw_computed_drag)
 - [WeatherQuest initial conditions](https://github.com/CliMA/ClimaArtifacts/tree/main/wxquest_initial_condition)
+- [PyCLES reference data](https://github.com/CliMA/ClimaArtifacts/tree/main/pycles_scm_les_data)
 
 ### Land
 - [Spun up initial conditions for soil, Jan 1, 2008, with free drainage at the bottom](https://github.com/CliMA/ClimaArtifacts/tree/main/soil_ic_2008_50m)
@@ -149,11 +150,11 @@ concentration)
    to clone the repository on a drive where you have enough storage space/quota.
    Most of the undownloadable artifacts mention the file size in their README.
 2. Navigate to the artifact of interest `cd historical_sst_sic`
-3. Instantiate the Julia project: `julia --project=. -e 'using Pkg; Pkg.instantiate()'` 
+3. Instantiate the Julia project: `julia --project=. -e 'using Pkg; Pkg.instantiate()'`
 4. In `create_artifact.jl`, comment out the line with the
    `create_artifact_guided` function (in the future, we will automate this step)
 5. Run the `create_artifact.jl` script: `julia --project=. create_artifact.jl`
-   This will automatically download and process the data. 
+   This will automatically download and process the data.
    Note also that some of the artifacts might require some set up (e.g., obtaining
    authentication tokens). These extra steps are explained in the associated README.
 > [!WARNING]
