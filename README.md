@@ -63,6 +63,8 @@ S. Gupta et al 2022, 2024](https://github.com/CliMA/ClimaArtifacts/tree/main/soi
 - [TwoStream model implementation test data](https:////github.com/CliMA/ClimaArtifacts/tree/main/twostr_test)
 - [Berkeley Earth Global Gridded Temperature Data](https:////github.com/CliMA/ClimaArtifacts/tree/main/surface_temperatures)
 - [Selected FLUXNET tower data](https:////github.com/CliMA/ClimaArtifacts/tree/main/fluxnet_sites)
+- [CalLMIP Phase 1 evaluation data (flux observations + CO2 forcing)](https://github.com/CliMA/ClimaArtifacts/tree/main/callmip_phase1)
+- [CalLMIP Phase 1b meteorological forcing (21 sites; FLUXNET2015 / PLUMBER2)](https://github.com/CliMA/ClimaArtifacts/tree/main/callmip_phase1_forcing)
 - [ESM-SnowMIP data](https://github.com/CliMA/ClimaArtifacts/tree/main/snowmip)
 - [ERA5 Monthly Averages 2008](https:////github.com/CliMA/ClimaArtifacts/tree/main/era5_surface_fluxes_2008)
 - [Earth bedrock depth at 30 and 60 arc-second resolutions](https:////github.com/CliMA/ClimaArtifacts/tree/main/bedrock_depth)
