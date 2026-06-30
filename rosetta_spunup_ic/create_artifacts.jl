@@ -53,7 +53,7 @@ function replace_nan_with_mean!(x)
     return nothing
 end
 
-outfilepath = joinpath(outdir, "rosetta_spunup_ic_20years.nc")
+outfilepath = joinpath(outdir, "rosetta_spunup_ic.nc")
 ds = NCDataset(outfilepath, "c")    
 
 for i in 1:length(var_3d_attribs)
