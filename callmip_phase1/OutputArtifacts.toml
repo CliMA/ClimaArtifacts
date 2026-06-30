@@ -1,4 +1,2 @@
-# CalLMIP Phase 1 evaluation data (flux observations + CO2 forcing).
-# Copy this entry into the consuming package's Artifacts.toml.
 [callmip_phase1]
 git-tree-sha1 = "c8014d3bbd838fcaa01bd2a69523b3fa98f28c5c"

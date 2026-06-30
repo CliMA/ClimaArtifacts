@@ -1,4 +1,2 @@
-# CalLMIP Phase 1b meteorological forcing (21 *_Met.nc; PLUMBER2 / FLUXNET2015, CC-BY-4.0).
-# Copy this entry into the consuming package's Artifacts.toml.
 [callmip_phase1_forcing]
 git-tree-sha1 = "a0c004071c73d047095a01faedf017571e5237ef"
