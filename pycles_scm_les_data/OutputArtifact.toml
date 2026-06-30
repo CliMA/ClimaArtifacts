@@ -1,0 +1,6 @@
+[pycles_scm_les_data]
+git-tree-sha1 = "e69ae8066f1fa46324f1e3b7b81d600153f9b122"
+
+    [[pycles_scm_les_data.download]]
+    sha256 = "659547eac2ed2f94bdecea7616187926bac3561eee9250d0a96b7df2fb06d503"
+    url = "https://caltech.box.com/shared/static/bhatumhupxxmeagwm7g96nontv50g2tv.gz"
