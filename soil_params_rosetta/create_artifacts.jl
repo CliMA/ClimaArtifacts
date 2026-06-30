@@ -15,7 +15,7 @@ native_lat = nc_data["latitude"][:];
 native_lon = nc_data["longitude"][:];
 close(nc_data)
 # Parameters specific to this data
-native_z = [-2.0, -1.0, -0.6, -0.3, -0.15, -0.05, 0] # depth of soil layer
+native_z = [-2.0, -1.0, -0.6, -0.3, -0.15, -0.05, 0] # decreasing in depth of soil layer, increasing in z
 nlayers = length(native_z)
 lat_ct = length(native_lat)
 lon_ct = length(native_lon)
@@ -29,21 +29,24 @@ else
     mkdir(outputdir)
 end
 
-files = ["Hydraul_Param_SoilGrids_Schaap_sl1.nc",
-         "Hydraul_Param_SoilGrids_Schaap_sl2.nc",
-         "Hydraul_Param_SoilGrids_Schaap_sl3.nc",
-         "Hydraul_Param_SoilGrids_Schaap_sl4.nc",
-         "Hydraul_Param_SoilGrids_Schaap_sl5.nc",
+files = ["Hydraul_Param_SoilGrids_Schaap_sl7.nc",
          "Hydraul_Param_SoilGrids_Schaap_sl6.nc",
-         "Hydraul_Param_SoilGrids_Schaap_sl7.nc"]
+         "Hydraul_Param_SoilGrids_Schaap_sl5.nc",
+         "Hydraul_Param_SoilGrids_Schaap_sl4.nc",
+         "Hydraul_Param_SoilGrids_Schaap_sl3.nc",
+         "Hydraul_Param_SoilGrids_Schaap_sl2.nc",
+         "Hydraul_Param_SoilGrids_Schaap_sl1.nc"] # increasing z, decreasing depth
 transform_ksat(x) = ismissing(x)  ? 0f0 : x / (100 * 24 * 3600) # cm/day -> m/s
 no_transform(x) = ismissing(x)  ? 0f0 : x
 transform_alpha(x) = ismissing(x)  ? 0f0 : x*100 # 1/cm -> 1/m
-levels = ["0cm", "5cm", "15cm", "30cm", "60cm", "100cm", "200cm" ]
+levels = ["200cm", "100cm", "60cm", "30cm", "15cm", "5cm", "0cm" ] # increasing in z, decreasing in depth
 for i in 1:7
     file= joinpath(filedir, files[i])
     nc_data = NCDatasets.NCDataset(file)
     level = levels[i]
+    @show nc_data.attrib["title"]
+    @show level
+    @show native_z[i]
     data[:,:,i, 1] .= transform_ksat.(nc_data["mean_Ks_$level"][:,:])
     data[:,:,i, 2] .= transform_alpha.(nc_data["alpha_fit_$level"][:,:])
     data[:,:,i, 3] .= no_transform.(nc_data["n_fit_$level"][:,:])
