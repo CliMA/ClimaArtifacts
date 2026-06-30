@@ -14,39 +14,36 @@ The artifact mirrors the `Data/` tree of the CalLMIP Phase 1 repository:
 | `Data/Phase1b/*.nc` | Daily-aggregated flux observation files for the **21 Phase 1b sites** (same variable set). |
 | `Data/Non-site-specific_forcing/CO2_1700_2024_TRENDYv2025.txt` | Atmospheric CO2 forcing (TRENDY v2025) for the site runs. |
 
-## What is NOT included: the meteorological forcing
+## Meteorological forcing (companion artifact)
 
-The per-site **meteorological forcing** (e.g. `*_Met.nc`, which also carries LAI) is **not**
-in the CalLMIP GitHub repository. Per the CalLMIP Phase 1 protocol (v2), the gap-filled
-in-situ met forcing is downloaded from **modelevaluation.org (ME-org)**, the CalLMIP
-workspace (requires an ME-org account). It derives from the **PLUMBER2 dataset**
-(Abramowitz et al., 2024), which provides pre-selected **FLUXNET2015 (CC-BY-4.0)** sites.
-
-Because ME-org requires authentication, the met forcing cannot be auto-downloaded here.
-The forcing is CC-BY-4.0, so it may be redistributed (with citation): a companion artifact
-that bundles the ME-org/PLUMBER2 met-forcing files (placed manually at build time) can be
-created so a consuming package has both forcing and observations. See the consuming
-package's docs for which path it expects.
+This artifact holds the flux **observations** and the **atmospheric CO₂ forcing** (listed
+above). The per-site **meteorological forcing** (`*_Met.nc`, the atmospheric drivers + LAI) is
+*not* part of the CalLMIP repository and is **not** included here — it is provided separately in
+the companion [`callmip_phase1_forcing`](../callmip_phase1_forcing) artifact. Together the two
+give a consuming package the observations + CO₂ forcing (here) and the meteorological drivers
+(there).
 
 ## Source and citation
 
 - Repository: https://github.com/callmip-org/Phase1 (MIT license)
-- Project: CalLMIP — https://callmip-org.github.io
-- The flux observations derive from FLUXNET2015; please also follow the FLUXNET2015 /
-  ICOS data-use policy and cite the contributing sites.
+- Project: **CalLMIP** (Calibration of Land Models Intercomparison Project),
+  https://callmip-org.github.io
+- Flux observations derive from **FLUXNET2015**: Pastorello, G., et al. (2020). The FLUXNET2015
+  dataset and the ONEFlux processing pipeline for eddy covariance data. *Scientific Data* 7, 225.
+  https://doi.org/10.1038/s41597-020-0534-3
 
-When using this artifact, cite the CalLMIP project and the underlying FLUXNET2015 data.
+When using this artifact, cite the **CalLMIP project** (https://callmip-org.github.io) and the
+underlying **FLUXNET2015** data, and follow the FLUXNET2015 / ICOS data-use policy.
 
 ## Recreating the artifact
 
-```
+```bash
 cd callmip_phase1
 julia --project create_artifact.jl
 ```
 
-The script downloads the CalLMIP Phase 1 repository tarball, extracts its `Data/` tree,
-and runs the guided artifact-creation flow. You will be asked to upload the produced
-`callmip_phase1_artifact.tar.gz` to the Caltech Data Archive / Box and paste its direct
-link; the resulting `OutputArtifacts.toml` entry is then copied into the consuming
-package's `Artifacts.toml`. Pin `COMMIT` in `create_artifact.jl` to a specific CalLMIP
-commit SHA for full reproducibility.
+The script downloads the pinned CalLMIP Phase 1 commit (`COMMIT` in `create_artifact.jl`,
+which reproduces the `git-tree-sha1` in `OutputArtifacts.toml`), extracts its `Data/` tree, and
+runs the guided artifact-creation flow. You will be asked to upload the produced
+`callmip_phase1_artifact.tar.gz` and paste its direct link; the resulting `OutputArtifacts.toml`
+entry is then copied into the consuming package's `Artifacts.toml`.

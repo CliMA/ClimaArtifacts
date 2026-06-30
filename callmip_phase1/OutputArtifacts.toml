@@ -1,7 +1,4 @@
-# CalLMIP Phase 1 evaluation data (flux observations + CO2 forcing) from the
-# callmip-org/Phase1 GitHub repository (MIT). Copy this entry into the consuming
-# package's Artifacts.toml. The [[...download]] section (sha256 + url) is added after
-# the tarball is uploaded to the Caltech Data Archive / Box; for cluster-only use, bind
-# this git-tree-sha1 to the cluster path via Overrides.toml.
+# CalLMIP Phase 1 evaluation data (flux observations + CO2 forcing).
+# Copy this entry into the consuming package's Artifacts.toml.
 [callmip_phase1]
 git-tree-sha1 = "c8014d3bbd838fcaa01bd2a69523b3fa98f28c5c"

@@ -17,8 +17,10 @@
 using Downloads
 using ClimaArtifactsHelper
 
-# Pin to a specific commit for reproducibility (update as needed).
-const COMMIT = "main"
+# Pinned to a specific callmip-org/Phase1 commit for reproducibility: building from this
+# commit reproduces the git-tree-sha1 in OutputArtifacts.toml
+# (c8014d3bbd838fcaa01bd2a69523b3fa98f28c5c). Bump this SHA to repackage a newer release.
+const COMMIT = "4101e36679de42789fbd600f4ee69d0cf16b78fc"
 const REPO_TARBALL = "https://github.com/callmip-org/Phase1/archive/$(COMMIT).tar.gz"
 
 output_dir = "callmip_phase1_artifact"
