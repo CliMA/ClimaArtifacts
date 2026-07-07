@@ -1,6 +1,6 @@
 [soil_params_rosetta]
-git-tree-sha1 = "3835c13c2dbf2ee26b2c5ca8a709a2298a57bf5c"
+git-tree-sha1 = "11ff294c5e3047cc42e35fd181842c74f8a47db9"
 
     [[soil_params_rosetta.download]]
-    sha256 = "e026f72dc05ee946357d95e2acf71ad3a8d149b4511397a47e0047278757357e"
+    sha256 = "004ba7f59fa67e00cbd594b7c33c80087c6e546eef3426aed1af05cfaf910000"
     url = "https://caltech.box.com/shared/static/2vz4nevjbo1t80nxc6m4ozyy5f5eusfo.gz"
