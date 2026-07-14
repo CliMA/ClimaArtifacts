@@ -1,0 +1,6 @@
+[en4_temperature_salinity_2010_01]
+git-tree-sha1 = "7fb52a88a1d34e491a302aa4da4e07efae5d8b08"
+
+    [[en4_temperature_salinity_2010_01.download]]
+    sha256 = "5359c8f9d224a98ec7f34fa07c9f555de00f7e2adfe473efe6a2191f0318e201"
+    url = "https://caltech.box.com/shared/static/9tbapu65ibnlafgoikzdffwa2qudojlk.gz"
