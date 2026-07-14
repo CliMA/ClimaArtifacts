@@ -32,3 +32,4 @@ docs/site/
 
 # Ignore .env files with usernames and passwords
 .env
+
