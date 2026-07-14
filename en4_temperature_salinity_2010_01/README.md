@@ -2,7 +2,7 @@
 This artifact contains EN4.2.2 data (with .g10 bias corrections) for observed subsurface ocean temperature and salinity profiles for the month of January 2010.
 The data is interpolated onto a regular lat-lon grid with 1° resolution in the horizontal and 42 vertical levels.
 
-After running `create_artifacts.jl`, the subfolder `en4_temperature_salinity_2010_01` should contain the following file:
+Navigate to this directory `cd /path/to/en4_temperature_salinity_2010_01` and run `julia --project=. create_artifacts.jl`. This should generate a subfolder `en4_temperature_salinity_2010_01` containing the following file:
 - `EN.4.2.2.f.analysis.g10.201001.nc` (26 MB)
 
 ## Citation
