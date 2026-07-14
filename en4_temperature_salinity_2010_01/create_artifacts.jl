@@ -2,9 +2,6 @@ using ClimaArtifactsHelper
 using Downloads
 using ZipFile
 
-# NFS woes... see Issue #177
-pushfirst!(DEPOT_PATH, mktempdir(; prefix = "clima_artifacts_depot_"))
-
 # URL for EN4 data
 url = "http://www.metoffice.gov.uk/hadobs/en4/data/en4-2-1/EN.4.2.2/EN.4.2.2.analyses.g10.2010.zip"
 
