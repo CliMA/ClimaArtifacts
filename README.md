@@ -92,6 +92,7 @@ S. Gupta et al 2022, 2024](https://github.com/CliMA/ClimaArtifacts/tree/main/soi
 - [Measured sea ice concentration and sea surface
   temperature](https://github.com/CliMA/ClimaArtifacts/tree/main/historical_sst_sic)
 - [ECCO v4 sea-ice concentration and thickness for January 2010](https://github.com/CliMA/ClimaArtifacts/tree/main/ecco4_SIarea_SIheff_2010_01)
+- [EN4 temperature and salinity for January 2010](https://github.com/CliMA/ClimaArtifacts/tree/main/en4_temperature_salinity_2010_01)
 - [GPCP precipitation data](https://github.com/CliMA/ClimaArtifacts/tree/main/precipitation_obs)
 - [CERES radiative fluxes data](https://github.com/CliMA/ClimaArtifacts/tree/main/radiation_obs)
 - [RMSE for CMIP models](https://github.com/CliMA/ClimaArtifacts/tree/main/cmip_model_rmse)
