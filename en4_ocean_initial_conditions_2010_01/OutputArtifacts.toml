@@ -2,5 +2,5 @@
 git-tree-sha1 = "c8cc433a24246fec509978a0c6a8c874b946a73d"
 
     [[en4_ocean_initial_conditions_2010_01.download]]
-    sha256 = "0b2ac321d10731fe5fa76d157a9c463949e2fa7c961d4350366e853c553b2068"
-    url = "REPLACE_WITH_UPLOAD_URL"
+    sha256 = "9a08624664b7f92d87074366fa18e8aac6a0972f175523cf3e3c138591df18b1"
+    url = "https://caltech.box.com/shared/static/5fe65xshpkpez1w2trp6eq59mwccezqm.gz"
