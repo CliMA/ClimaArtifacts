@@ -1,9 +1,6 @@
 # Generates the `tripolar_one_degree_bathymetry` artifact: ETOPO bathymetry regridded onto the
 # 360x180 tripolar grid that ClimaCoupler's `tripolar_ocean_simulation` uses.
 #
-# The regridding parameters below must match ClimaCoupler's `ext/ClimaCouplerCMIPExt/oceananigans.jl`
-# exactly, since ClimaCoupler validates them against this artifact's attributes.
-#
 # Run with:
 #   cd tripolar_one_degree_bathymetry && julia --project=. create_artifact.jl
 
@@ -23,8 +20,6 @@ const minimum_depth = 10
 const major_basins = 2
 const interpolation_passes = 10
 
-# The regridding is horizontal, so the vertical grid does not affect the result. These values match
-# ClimaCoupler's defaults and are supplied only because TripolarGrid requires them.
 const generation_vertical_size = 32
 const generation_depth = 5500
 

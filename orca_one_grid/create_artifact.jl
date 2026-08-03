@@ -1,5 +1,5 @@
 # Generates the `orca_one_grid` artifact: the eORCA1 horizontal mesh and bathymetry, in a form
-# ClimaCoupler can read without NumericalEarth.
+# ClimaCoupler can read.
 #
 # Run with:
 #   cd orca_one_grid && julia --project=. create_artifact.jl

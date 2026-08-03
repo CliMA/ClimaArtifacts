@@ -5,15 +5,15 @@ longitude–latitude–depth grid.
 
 ## Source
 
-`NumericalEarth.DataWrangling.EN4.EN4Monthly`, date 2010-01-01, variables `temperature` and
-`salinity`. NumericalEarth downloads the Met Office EN4 monthly objective analysis.
+Met Office EN4 monthly objective analysis data (via `NumericalEarth.DataWrangling.EN4.EN4Monthly`); date 2010-01-01, 
+variables `temperature` and `salinity`.
 
 ## Contents
 
 `en4_ocean_initial_conditions_2010_01.nc`, a 360 × 173 × 42 grid:
 
 - `temperature` (°C) and `salinity` (g/kg), inpainted
-- `longitude`, `latitude`, `z` — cell centres, for inspection
+- `longitude`, `latitude`, `z` — cell centers, for inspection
 - `longitude_interfaces`, `latitude_interfaces`, `z_interfaces` — what the reader uses
 
 Observed ranges: temperature −4.00 to 30.78 °C, salinity 4.57 to 40.79 g/kg, longitude 1 to 360,
@@ -26,24 +26,13 @@ ocean grid ClimaCoupler runs, and changing `Nz`, `depth` or `zstar` needs no new
 ClimaCoupler rebuilds this `LatitudeLongitudeGrid` from the stored interfaces and hands it to
 Oceananigans' `interpolate!`.
 
-The interfaces are stored, not just the centres, because they are what determines the grid. A
+The interfaces are stored, not just the centers, because they are what determines the grid. A
 periodic axis reports only N face nodes, so the script appends the closing interface to give the N+1
 a grid expects.
 
 ## Inpainting
 
-`NearestNeighborInpainting(Inf)`, NumericalEarth's default for temperature and salinity, is applied
-on the native grid before writing. This is the expensive, hard-to-reproduce step, and baking it is
-what lets ClimaCoupler do plain interpolation with no land-masking. The script asserts no NaNs
-remain.
-
-## Accuracy
-
-ClimaCoupler's `test/artifact_parity/ocean_initial_conditions_parity.jl` compares interpolation from
-this artifact against NumericalEarth's `set!(field, metadatum)` on the one-degree tripolar grid:
-maximum absolute difference 2.7e-4 °C for temperature and 2.1e-4 g/kg for salinity, with global means
-agreeing to roughly 1e-9 relative. The two paths are not bit-identical because they interpolate the
-same inpainted native field through separate code.
+`NearestNeighborInpainting(Inf)` is applied on the native grid before writing. 
 
 ## Regenerating
 
@@ -59,15 +48,20 @@ Generated with the versions pinned in this directory's `Project.toml` and `Manif
 ClimaOcean 0.10.0, NumericalEarth 0.6.0, Oceananigans 0.110.12. The pins are exact (`=`) so the
 artifact stays reproducible as those packages move on.
 
-To add another date, copy this directory, change `start_date`, and add the date to
-`supported_initial_condition_dates` in ClimaCoupler's
-`ext/ClimaCouplerCMIPExt/ocean_data_artifacts.jl`.
+To add another date, copy this directory, change `start_date`.
 
-## Publishing status
+## Citation
 
-`OutputArtifacts.toml` carries the `git-tree-sha1` and the tarball `sha256`, but `url` is still
-`REPLACE_WITH_UPLOAD_URL`: the archive `en4_ocean_initial_conditions_2010_01_artifact.tar.gz` in this directory has not been
-uploaded to the Caltech Box yet. Until it is, the entry resolves only from a local Julia artifact
-store. Upload the archive, take the `/shared/static/` direct-download link — a `/s/` preview link
-serves HTML and fails the hash check — and put it in place of the placeholder. `git-tree-sha1` is a
-content hash and does not depend on where the tarball is hosted.
+Good, S. A., M. J. Martin and N. A. Rayner, 2013. EN4: quality controlled ocean temperature and
+salinity profiles and monthly objective analyses with uncertainty estimates, *Journal of Geophysical
+Research: Oceans*, doi:10.1002/2013JC009067.
+
+EN.4.2.2 data were obtained from https://www.metoffice.gov.uk/hadobs/en4/ and are © British Crown
+Copyright, Met Office, 2026, provided under a Non-Commercial Government Licence
+http://www.nationalarchives.gov.uk/doc/non-commercial-government-licence/version/2/
+
+## License
+
+Non-Commercial Government Licence v2.0 (NCGL-UK-2.0), reproduced in `LICENSE`. The license permits
+copying, distribution and adaptation for non-commercial purposes only, and requires the attribution
+above to travel with the data.
