@@ -1,0 +1,6 @@
+[ecco4_seaice_initial_conditions_2010_01]
+git-tree-sha1 = "da31a2a1c640923aae4f64e756443048200684ec"
+
+    [[ecco4_seaice_initial_conditions_2010_01.download]]
+    sha256 = "f4c79b09378aa70bb309250a222eb3bb33d746d446e7a8897d0474562156ca7d"
+    url = "https://caltech.box.com/shared/static/0bz3xuvqzmaqslwn051jtvttcygub4fv.gz"
