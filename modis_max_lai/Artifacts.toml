@@ -1,0 +1,8 @@
+# Source artifact for computing the climatology
+# Copy from modis_lai/OutputArtifacts.toml
+[modis_lai]
+git-tree-sha1 = "81d4bc1b22e94d66eec3d80a2d21b5dd5303bf8f"
+
+    [[modis_lai.download]]
+    sha256 = "4a244428fe480aa05ff863af69299d2ed8ca66ed324b9e1bffcb440792fb4cce"
+    url = "https://caltech.box.com/shared/static/99ktg026kciezykyegsawd1gjwj1du74.gz"
