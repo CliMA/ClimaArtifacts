@@ -1,4 +1,0 @@
-[deps]
-ClimaArtifactsHelper = "6ffa2572-8378-4377-82eb-ea11db28b255"
-NCDatasets = "85f8d34a-cbdd-5861-8df4-14fed0d494ab"
-StatsBase = "2913bbd2-ae8a-5f71-8c99-4fb6c76f3a91"
