@@ -1,4 +1,4 @@
-# All Sky Monthly averages of Solar-Induce Chlorphyll Fluoresence from 2018-2021
+# All Sky Monthly Averages of Solar-Induce Chlorphyll Fluoresence from 2018-2021
 
 This artifact repackages data coming from TROPOMI ("https://ftp.sron.nl/open-access-data-2/TROPOMI/tropomi/sif/v2.1/l2b/")
 
