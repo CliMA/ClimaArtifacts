@@ -1,0 +1,6 @@
+[ClimaArtifacts]
+git-tree-sha1 = "c993fa3f297c7e814cc86015c8c7cabaf02276a5"
+
+    [[ClimaArtifacts.download]]
+    sha256 = "4b51fa187ec1beee6629e107339c9ab15b2061e0ace02f308434f6ce9482bb96"
+    url = "https://caltech.box.com/shared/static/u2paxm438wlxtnnkt2obru7rpalontye.gz"
