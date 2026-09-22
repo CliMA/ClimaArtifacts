@@ -15,7 +15,7 @@ const RES = 1 # bin size in lon/lat degrees
 const MIN_COUNT_SPACE = 10
 const MIN_COUNT_TIME = 8
 
-years = ["2020", "2021"]
+years = ["2018", "2019", "2020", "2021"]
 months = ["01","02","03","04","05","06","07","08","09","10","11","12"]
 
 job_id = parse(Int, ENV["SLURM_ARRAY_TASK_ID"])
