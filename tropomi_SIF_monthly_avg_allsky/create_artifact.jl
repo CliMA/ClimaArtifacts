@@ -10,7 +10,7 @@ const BASE_FILE_PATH = "https://ftp.sron.nl/open-access-data-2/TROPOMI/tropomi/s
 const DATE_LOWER_BOUND = Date(2018,5) #No data availible until this date
 
 const IQR_MULT_SPACE = 1.5 # IQR Multiplier # MUST BE FLOAT
-const IQR_MULT_TIME = 3.0 # IQR Multiplier # IQR Multiplier # MUST BE FLOAT
+const IQR_MULT_TIME = 3.0 # IQR Multiplier # MUST BE FLOAT
 const RES = 1 # bin size in lon/lat degrees
 const MIN_COUNT_SPACE = 10
 const MIN_COUNT_TIME = 8
