@@ -40,7 +40,10 @@ def submit_request(year):
         "temperature",
         "u_component_of_wind",
         "v_component_of_wind",
-        "vertical_velocity"
+        "vertical_velocity",
+        "fraction_of_cloud_cover",
+        "specific_cloud_liquid_water_content",
+        "specific_cloud_ice_water_content",
     ],
     "pressure_level": [
         "1", "2", "3",
