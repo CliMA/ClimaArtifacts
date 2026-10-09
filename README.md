@@ -59,6 +59,7 @@ S. Gupta et al 2022, 2024](https://github.com/CliMA/ClimaArtifacts/tree/main/soi
 - [Foliage clumping index, derived from MODIS data for 2006](https:////github.com/CliMA/ClimaArtifacts/tree/main/modis_clumping_index)
 - [Leaf area index, derived from MODIS data for 2000-2020, land-fraction corrected](https:////github.com/CliMA/ClimaArtifacts/tree/main/modis_lai)
 - [Monthly climatology of land-fraction corrected MODIS leaf area index (2000-2020)](https:////github.com/CliMA/ClimaArtifacts/tree/main/modis_lai_climatology)
+- [Maximum land-fraction corrected MODIS leaf area index (2000-2020)](https:////github.com/CliMA/ClimaArtifacts/tree/main/modis_max_lai)
 - [MODIS LAI data for 4 AMERIFLUX SITES](https:////github.com/CliMA/ClimaArtifacts/tree/main/MODIS_LAI_fluxnet_sites)
 - [Subset of ILAMB datasets](https:////github.com/CliMA/ClimaArtifacts/tree/main/ilamb_data)
 - [Subset of ILAMB datasets for ecosystem respiration and net ecosystem exchange](https:////github.com/CliMA/ClimaArtifacts/tree/main/ilamb_respiration_nee)
