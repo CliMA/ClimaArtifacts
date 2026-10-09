@@ -1,0 +1,3 @@
+# Source artifact, copied from modis_lai/OutputArtifacts.toml
+[modis_lai]
+git-tree-sha1 = "4ddb58ecdd73852895632044b9da367d767a2774"

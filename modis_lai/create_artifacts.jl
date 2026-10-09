@@ -10,10 +10,15 @@
 # system modeling at global and regional scales. Scientific Data. 9: 258
 # https://doi.org/10.1038/s41597-022-01346-x
 
+# The GriddingMachine data averages water pixels as LAI = 0, so we divide out
+# the ERA5 land fraction to obtain the LAI of the land part of each cell
+# (see land_fraction_correction.jl and the README).
+
 ################################################################################
 # IMPORTS                                                                      #
 ################################################################################
 
+using Artifacts
 using NCDatasets
 using Dates
 
@@ -22,6 +27,8 @@ using GriddingMachine.Indexer
 using GriddingMachine.Blender
 
 using ClimaArtifactsHelper
+
+include("land_fraction_correction.jl")
 
 ################################################################################
 # CONSTANTS                                                                    #
@@ -58,6 +65,11 @@ else
     mkdir(OUTPUT_DIR)
 end
 
+# ERA5 land fraction on 0.1° nodes, used to correct the LAI of partially land cells
+lsm = NCDataset(joinpath(artifact"era5_land_fraction", "era5_land_fraction.nc")) do ds
+    Float64.(ds["lsm"][:, :])
+end
+
 for year in YEARS
     # Dataset to be fetched via the GriddingMachine
     MODIS_LAI_DATASET = MODIS_LAI_DATASET_PREFIX * string(year) *
@@ -84,7 +96,8 @@ for year in YEARS
     orig_lon = orig_data["lon"][:]
     close(orig_data)
 
-    # Convert all NANs in the data to 0.0 (i.e, LAI should be 0 over the ocean)
+    # Convert all NANs (cells without any land pixel) to 0.0, as the source data
+    # does for water pixels
     lai_data_regridded .= ifelse.(isnan.(lai_data_regridded), 0.0f0,
                                                              lai_data_regridded)
 
@@ -93,6 +106,10 @@ for year in YEARS
     # data.
     out_lon = (orig_lon[1:2:end] .+ orig_lon[2:2:end]) ./ 2
     out_lat = (orig_lat[1:2:end] .+ orig_lat[2:2:end]) ./ 2
+
+    # Recover the LAI of the land part of each cell
+    fland = cell_land_fraction(lsm, out_lon, out_lat)
+    lai_data_regridded = land_fraction_corrected(lai_data_regridded, fland)
 
     # Write the regridded data to the output directory
     output_path = joinpath(OUTPUT_DIR, OUTPUT_FILE)
@@ -109,6 +126,7 @@ for year in YEARS
     lo      = defVar(ds, "lon", Float32, ("lon",))
     month   = defVar(ds, "time", Int32, ("time",))
     lai_var = defVar(ds, "lai", Float32, ("lon", "lat", "time"))
+    fland_var = defVar(ds, "land_fraction", Float32, ("lon", "lat"))
 
     # Set the attributes of the variables.
     la.attrib["units"]              = "degrees_north"
@@ -120,6 +138,9 @@ for year in YEARS
     month.attrib["calendar"]        = "proleptic_gregorian"
     lai_var.attrib["units"]         = "m^2 m^-2"
     lai_var.attrib["standard_name"] = "Leaf area index"
+    lai_var.attrib["long_name"]     = "Leaf area index of the land part of the grid cell"
+    fland_var.attrib["units"]       = "1"
+    fland_var.attrib["long_name"]   = "ERA5 land fraction used for the correction"
 
     # Write the data for each variable out to the nc file
     la[:]     = out_lat
@@ -133,6 +154,7 @@ for year in YEARS
     times     = [DateTime(year, 1, 1) + Dates.Day(30 * (k - 1)) for k in 1:12]
     month[:]  = Int32.([Dates.datetime2unix(t) for t in times])
     lai_var[:, :, :] = lai_data_regridded
+    fland_var[:, :] = fland
     close(ds)
 
     # Remove the initial downloaded artifact file - desired data is now stored
