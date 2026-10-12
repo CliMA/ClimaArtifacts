@@ -2,5 +2,5 @@
 git-tree-sha1 = "135f148951f20f170c3a4896848911a37500d88b"
 
     [[water_conservation_test.download]]
-    sha256 = "6f66eaf01fc8c796dfc7d879c4aec4412d06d02cba2cbf6b7ec283d4b3834838"
-    url = "https://caltech.box.com/shared/static/sid7bo8at7nxirfgmd2o7pqq8vky71pb.gz"
+    sha256 = "fcc1a9178d3df303db9cf1f87c406d2f9cf222b74e1095d11bbda8ff61c935aa"
+    url = "https://caltech.box.com/shared/static/255r53a81m0dcbc2ac9dhvvadm2j2lqi.gz"
