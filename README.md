@@ -61,6 +61,7 @@ S. Gupta et al 2022, 2024](https://github.com/CliMA/ClimaArtifacts/tree/main/soi
 - [MODIS LAI data for 4 AMERIFLUX SITES](https:////github.com/CliMA/ClimaArtifacts/tree/main/MODIS_LAI_fluxnet_sites)
 - [Subset of ILAMB datasets](https:////github.com/CliMA/ClimaArtifacts/tree/main/ilamb_data)
 - [Subset of ILAMB datasets for ecosystem respiration and net ecosystem exchange](https:////github.com/CliMA/ClimaArtifacts/tree/main/ilamb_respiration_nee)
+- [Subset of ILAMB datasets for FLUXCOM latent and sensible heat fluxes](https:////github.com/CliMA/ClimaArtifacts/tree/main/ilamb_fluxcom_energy)
 - [Bonan 2019 Richards equation data](https:////github.com/CliMA/ClimaArtifacts/tree/main/bonan_richards_eqn)
 - [TwoStream model implementation test data](https:////github.com/CliMA/ClimaArtifacts/tree/main/twostr_test)
 - [Berkeley Earth Global Gridded Temperature Data](https:////github.com/CliMA/ClimaArtifacts/tree/main/surface_temperatures)
