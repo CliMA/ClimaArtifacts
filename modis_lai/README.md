@@ -1,65 +1,102 @@
 # Leaf Area Index, derived from MODIS data for 2000-2020
 
-This artifact repackages data coming from:
+This recipe creates two artifacts with the monthly leaf area index (LAI) of the
+*land part* of each grid cell, for each year from 2000 to 2020:
+
+| artifact            | grid  | files                             | size    |
+| ------------------- | ----- | --------------------------------- | ------- |
+| `modis_lai`         | 1°    | `Yuan_et_al_YYYY_1x1.nc`          | 14 MB   |
+| `modis_lai_0.25deg` | 0.25° | `Yuan_et_al_YYYY_0.25x0.25.nc`    | 136 MB  |
+
+The data comes from:
 Hua Yuan, Yongjiu Dai, Zhiqiang Xiao, Duoying Ji, Wei Shangguan,Reprocessing the MODIS Leaf Area Index products for land surface and climate modelling, Remote Sensing of Environment, Volume 115, Issue 5, 2011, Pages 1171-1187, ISSN 0034-4257, https://doi.org/10.1016/j.rse.2011.01.001.
 
-The data is fetched in NetCDF format and reprojected to WGS84 via the GriddingMachine.jl package:
+It is fetched at 0.05° in NetCDF format via the GriddingMachine.jl package
+(datasets `LAI_MODIS_20X_1M_YYYY_V1`):
 Y. Wang, P. Köhler, R. K. Braghiere, M. Longo, R. Doughty, A. A. Bloom, and C. Frankenberg. 2022. GriddingMachine, a database and software for Earth system modeling at global and regional scales. Scientific Data. 9: 258. [DOI](https://doi.org/10.1038/s41597-022-01346-x)
 
-We regrid the data to 1 degree resolution, correct it for the land fraction of
-each cell (see below), and output a netCDF file with the following variables:
-  - `lai`  : Leaf area index of the land part of the grid cell, m^2/m^2
-  - `land_fraction`: ERA5 land fraction used for the correction
-  - `lat`  : Latitude, degrees north
-  - `lon`  : Longitude, degrees east
-  - `month`: Month of the year, in `DateTime` format
+Each file contains:
+  - `lai` (lon, lat, time): leaf area index of the land part of the cell, m² m⁻².
+    It is stored as `Int16` with `scale_factor = 0.001`; NetCDF readers that
+    follow the CF conventions (NCDatasets.jl, ClimaUtilities, ClimaAnalysis,
+    xarray) unpack it to floats. The source precision is 0.1.
+  - `land_fraction` (lon, lat): land fraction of the cell (ETOPO 2022 with
+    lakes removed and land below sea level added, see below)
+  - `lat`, `lon`: cell centers, degrees north and east
+  - `time`: 12 values, 30 days apart starting on January 1 (even spacing is
+    required by ClimaLand's `PeriodicCalendar`)
 
-for each year from 2000-2020
+To recreate the artifacts, run `julia --project create_artifacts.jl` in this
+folder. It downloads 5.8 GB of 0.05° data to `~/GriddingMachine` (removed at the
+end), and takes about 10 minutes, mostly downloading.
 
-To recreate the artifact, run `julia --project create_artifacts.jl` in this
-folder (GriddingMachine 0.2 is required).
+## Aggregation over land
 
-## Land-fraction correction
+The 0.05° GriddingMachine data averages the water part of each pixel as LAI = 0
+(and then stores LAI = 0 as NaN): a coastal pixel holds about
+`land fraction × LAI of its land part`. Its LAI divided by that of the
+neighboring fully-land pixels is `-0.07 + 0.94 f`, with `f` the land fraction of
+the pixel (vegetated coasts, July 2010). Averaging the pixels with water counted
+as 0, which is how the 0.5° GriddingMachine data used by the previous version of
+this artifact was built, gives coastal and lake-side cells an LAI that is too
+low by their land fraction: for example a 2000-2020 mean of 1.2 instead of
+4.0 m² m⁻² in the 1° cell of the GF-Guy FLUXNET site, which is 14% land.
 
-The GriddingMachine data averages water pixels (ocean and inland water) as
-LAI = 0, so the LAI of a coastal or lake-side 1° cell is approximately
-`land_fraction × LAI of its land part`: dividing the LAI of such cells by that
-of their fully-land neighbors gives a ratio that tracks the ERA5 land fraction
-(slope 1.02) rather than 1. Lake cells are diluted too, which is why the
-correction uses the ERA5 land fraction ([`era5_land_fraction`](../era5_land_fraction),
-lakes are water) rather than the ETOPO `landsea_mask` (lakes are filled). A
-model reading the uncorrected data at a coastal site or grid point sees an LAI
-that is too low by the land fraction, for example an annual mean of 1.2 instead
-of 5.0 m² m⁻² at the GF-Guy FLUXNET site.
+Instead, the LAI of each output cell is
 
-With `f` the 0.1° ERA5 land fraction averaged over each 1° cell
-(`land_fraction_correction.jl`):
-  - `f ≥ 0.5`: `LAI / f`;
-  - `0 < f < 0.5`: mean of the corrected neighbors with `f ≥ 0.5`, or
-    `LAI / 0.5` if there is none (isolated islands). Below `f = 0.5`, `LAI / f`
-    is biased high because the MODIS and ERA5 coastlines differ within the cell;
-  - `f = 0`: extended from the nearest land cells, one ring of cells at a time,
-    so that interpolating near a coastline never samples water;
-  - values are capped at the largest uncorrected LAI of the year, which only
-    binds on a few island cells.
+    LAI = Σ a LAI_pixel / Σ a f
 
-Ratio of the 2000-2020 mean LAI of a cell to that of its fully-land neighbors
-(vegetated cells, quartiles):
+over its 0.05° pixels (`land_fraction_correction.jl`), where `a` is the area of
+the pixel, `LAI_pixel` its LAI (NaN counted as 0), and `f` its land fraction:
+  - `f` is the fraction of the 6 × 6 cells of the 30 arc-second ETOPO 2022
+    land-sea mask ([`landsea_mask_30arcseconds`](../landsea_mask)) in the pixel
+    that are land;
+  - the ETOPO mask counts lakes as land, so a pixel without vegetation in any
+    month of 2000-2020 where the 0.1° ERA5 land fraction
+    ([`era5_land_fraction`](../era5_land_fraction)) is below 0.5 is a lake
+    (`f = 0`);
+  - the ETOPO mask floods land below sea level that connects to the sea (the
+    Dutch polders, parts of the Nile and Po deltas), so a vegetated pixel with
+    an ETOPO land fraction below 0.5 and an ERA5 land fraction of at least 0.9
+    is land (`f = 1`): the LAI of such pixels matches that of their fully-land
+    neighbors;
+  - pixels that MODIS sees as vegetated in some month count as at least half
+    land (`f ≥ 0.5`): the MODIS and ETOPO coastlines differ by up to a pixel,
+    and dividing by a smaller fraction blows up on small islands;
+  - the land fractions are the same for all years, so they do not add
+    interannual variability.
 
-| ERA5 land fraction | cells | before          | after           |
-| ------------------ | ----- | --------------- | --------------- |
-| (0, 0.1]           | 135   | 0.01 0.06 0.13  | 0.95 1.02 1.12  |
-| (0.1, 0.3]         | 202   | 0.24 0.32 0.45  | 0.95 1.01 1.12  |
-| (0.3, 0.5]         | 205   | 0.43 0.51 0.64  | 0.95 1.01 1.10  |
-| (0.5, 0.7]         | 238   | 0.48 0.61 0.78  | 0.84 1.00 1.23  |
-| (0.7, 0.9]         | 399   | 0.70 0.82 0.97  | 0.86 1.00 1.17  |
-| (0.9, 0.99]        | 2194  | 0.85 0.96 1.06  | 0.87 0.98 1.08  |
-| (0.99, 1]          | 5275  | 0.91 1.00 1.07  | 0.91 1.00 1.07  |
+Cells without water get the plain average of their pixels. Cells whose only
+land is lakes get LAI = 0. Ocean cells are filled from the nearest cells, one
+ring of cells at a time, so that interpolating near a coastline never samples
+water; use `land_fraction` to mask them when needed.
 
-Cells with `f ≥ 0.99` change by at most 0.056 m² m⁻² (2000-2020 mean).
+2000-2020 mean LAI of the previous version of this artifact (0.5° data with
+water counted as 0, averaged to 1°) relative to the new 1° data, by land
+fraction of the cell (cells with a mean LAI above 0.05):
 
-Because water cells are filled, the files have nonzero LAI over the ocean; use
-`land_fraction` to mask it when needed. The uncorrected data is the artifact
-with `git-tree-sha1 = "81d4bc1b22e94d66eec3d80a2d21b5dd5303bf8f"`.
+| land fraction | cells | previous / new, quartiles | ratio of means |
+| ------------- | ----- | ------------------------- | -------------- |
+| (0, 0.2)      | 1889  | 0.04 0.10 0.20            | 0.16           |
+| [0.2, 0.5)    | 992   | 0.38 0.46 0.53            | 0.46           |
+| [0.5, 0.8)    | 978   | 0.60 0.68 0.75            | 0.67           |
+| [0.8, 0.95)   | 730   | 0.86 0.90 0.93            | 0.89           |
+| [0.95, 0.999) | 1010  | 0.98 0.99 1.00            | 0.98           |
+| [0.999, 1]    | 10254 | 1.00 1.00 1.00            | 1.00           |
+
+## Limitations
+
+- Lakes smaller than a 0.05° pixel are not detected: pixels partly covered by
+  lakes stay diluted, so in lake districts (Finland, Canadian Shield) the LAI
+  is likely too low by up to the lake fraction of the cell (about 10%).
+- Land below sea level is recovered only where ERA5 sees land at 0.1°;
+  elsewhere its vegetated pixels count as half land, so their LAI can be up to
+  twice too high.
+- The LAI of a cell that is mostly water is that of its actual shoreline
+  (beaches, mangroves, mudflats, bare reefs), which can differ from the
+  vegetation inland.
+
+The previous version of the 1° data is the artifact with
+`git-tree-sha1 = "81d4bc1b22e94d66eec3d80a2d21b5dd5303bf8f"`.
 
 License: Creative Commons Zero

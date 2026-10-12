@@ -1,12 +1,18 @@
-# MODIS LAI monthly climatology, land-fraction corrected
+# MODIS LAI monthly climatology, land part of each cell
 
-This artifact contains a 1° monthly climatology (2000-2020) of the leaf area
-index (LAI) of the *land part* of each grid cell: for each month, the mean of the
-21 yearly files of the [`modis_lai`](../modis_lai) artifact. The yearly files
-are corrected for the land fraction of each cell, since the source data averages
-water pixels as LAI = 0; see the [`modis_lai` README](../modis_lai/README.md)
-for the correction and its validation. Like the yearly files, the climatology
-has nonzero LAI over the ocean, extended from the nearest land cells.
+This recipe creates two artifacts with the monthly climatology (2000-2020) of
+the leaf area index (LAI) of the *land part* of each grid cell: for each month,
+the mean of the 21 yearly files of the [`modis_lai`](../modis_lai) recipe.
+
+| artifact                        | grid  | file                                 |
+| ------------------------------- | ----- | ------------------------------------ |
+| `modis_lai_climatology`         | 1°    | `modis_lai_climatology.nc`           |
+| `modis_lai_climatology_0.25deg` | 0.25° | `modis_lai_climatology_0.25x0.25.nc` |
+
+The yearly files aggregate 0.05° MODIS LAI over land only, since the source
+data averages water as LAI = 0; see the [`modis_lai` README](../modis_lai/README.md)
+for the method and its validation. Like the yearly files, the climatology has
+nonzero LAI over the ocean, extended from the nearest land cells.
 
 ## Source data
 
@@ -17,14 +23,17 @@ https://doi.org/10.1016/j.rse.2011.01.001.
 
 ## Output format
 
-A single NetCDF file `modis_lai_climatology.nc` on the 1° grid of `modis_lai`:
-  - `lai` (lon, lat, time): leaf area index of the land part of the cell, m² m⁻²
-  - `land_fraction` (lon, lat): ERA5 land fraction used for the correction
+Each NetCDF file contains, on the grid of the corresponding yearly files:
+  - `lai` (lon, lat, time): leaf area index of the land part of the cell,
+    m² m⁻², stored as `Int16` with `scale_factor = 0.001` (unpacked by
+    CF-compliant readers)
+  - `land_fraction` (lon, lat): land fraction of the cell (see the `modis_lai` README)
   - `lon`, `lat`: cell centers, degrees east and north
   - `time`: 12 values, 30 days apart starting 2000-01-01, as required by
     ClimaLand's `PeriodicCalendar`
 
-To recreate the artifact, run `julia --project create_artifact.jl` in this folder.
+To recreate the artifacts, run `julia --project create_artifact.jl` in this
+folder, after creating the `modis_lai` artifacts.
 
 ## Usage
 

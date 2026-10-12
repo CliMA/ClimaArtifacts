@@ -1,25 +1,18 @@
-# MODIS maximum LAI, land-fraction corrected
+# MODIS maximum LAI, land part of each cell
 
-This artifact contains the 1° maximum leaf area index (LAI) of the *land part*
-of each grid cell over 2000-2020: for each cell, the maximum over all months of
-the yearly files of the [`modis_lai`](../modis_lai) artifact. The yearly files
-are corrected for the land fraction of each cell, since the source data averages
-water pixels as LAI = 0; see the [`modis_lai` README](../modis_lai/README.md)
-for the correction and its validation. Like the yearly files, the maximum LAI is
+This recipe creates two artifacts with the maximum leaf area index (LAI) of the
+*land part* of each grid cell over 2000-2020: for each cell, the maximum over
+all months of the yearly files of the [`modis_lai`](../modis_lai) recipe.
+
+| artifact                | grid  | file                         |
+| ----------------------- | ----- | ---------------------------- |
+| `modis_max_lai`         | 1°    | `modis_max_lai.nc`           |
+| `modis_max_lai_0.25deg` | 0.25° | `modis_max_lai_0.25x0.25.nc` |
+
+The yearly files aggregate 0.05° MODIS LAI over land only, since the source
+data averages water as LAI = 0; see the [`modis_lai` README](../modis_lai/README.md)
+for the method and its validation. Like the yearly files, the maximum LAI is
 nonzero over the ocean, extended from the nearest land cells.
-
-Ratio of the maximum LAI of a cell to that of its fully-land neighbors
-(vegetated cells, quartiles):
-
-| ERA5 land fraction | cells | before          | after           |
-| ------------------ | ----- | --------------- | --------------- |
-| (0, 0.1]           | 163   | 0.01 0.06 0.12  | 0.93 0.99 1.08  |
-| (0.1, 0.3]         | 264   | 0.21 0.30 0.44  | 0.92 0.99 1.06  |
-| (0.3, 0.5]         | 256   | 0.39 0.49 0.63  | 0.93 0.98 1.06  |
-| (0.5, 0.7]         | 307   | 0.49 0.59 0.73  | 0.82 0.98 1.17  |
-| (0.7, 0.9]         | 541   | 0.68 0.80 0.96  | 0.83 0.98 1.15  |
-| (0.9, 0.99]        | 2762  | 0.85 0.96 1.05  | 0.88 0.98 1.08  |
-| (0.99, 1]          | 6843  | 0.91 1.00 1.07  | 0.91 1.00 1.07  |
 
 ## Source data
 
@@ -30,12 +23,15 @@ ISSN 0034-4257, https://doi.org/10.1016/j.rse.2011.01.001.
 
 ## Output format
 
-A single NetCDF file `modis_max_lai.nc` on the 1° grid of `modis_lai`:
-  - `lai` (lon, lat): maximum leaf area index of the land part of the cell, m² m⁻²
-  - `land_fraction` (lon, lat): ERA5 land fraction used for the correction
+Each NetCDF file contains, on the grid of the corresponding yearly files:
+  - `lai` (lon, lat): maximum leaf area index of the land part of the cell,
+    m² m⁻², stored as `Int16` with `scale_factor = 0.001` (unpacked by
+    CF-compliant readers)
+  - `land_fraction` (lon, lat): land fraction of the cell (see the `modis_lai` README)
   - `lon`, `lat`: cell centers, degrees east and north
 
-To recreate the artifact, run `julia --project create_artifact.jl` in this folder.
+To recreate the artifacts, run `julia --project create_artifact.jl` in this
+folder, after creating the `modis_lai` artifacts.
 
 ## Usage
 
