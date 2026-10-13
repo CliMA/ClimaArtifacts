@@ -26,103 +26,65 @@ days = [@sprintf "%02i" k for k in 1:31]
 lats = -90:RES:89
 lons = -180:RES:179
 
-gridval = [Float64[] for _ in 1:length(lons), _ in 1:length(lats)] # non averaged values
-griderror = [Float64[] for _ in 1:length(lons), _ in 1:length(lats)] # non averaged errors
+nlats = length(lats)
+nlons = length(lons)
 
-valid_day_values = [Float64[] for _ in 1:length(lons), _ in 1:length(lats)] #all daily values
-valid_day_errors = [Float64[] for _ in 1:length(lons), _ in 1:length(lats)] #all daily errors
+gridval = [Float32[] for _ in 1:nlons, _ in 1:nlats]# non averaged values
+griderror = [Float32[] for _ in 1:nlons, _ in 1:nlats] # non averaged errors
 
-new_data = [Float64[] for _ in 1:length(lons), _ in 1:length(lats)]
-new_data_err = [Float64[] for _ in 1:length(lons), _ in 1:length(lats)]
+valid_day_values = [Float32[] for _ in 1:nlons, _ in 1:nlats] #all daily values
+valid_day_errors = [Float32[] for _ in 1:nlons, _ in 1:nlats] #all daily errors
 
-#used for spatial_clipping, called per day
-function spatial_clipping!(
-    new_data::Matrix{Vector{Float64}},
-    new_data_err::Matrix{Vector{Float64}},
-    data::Matrix{Vector{Float64}},
-    data_err::Matrix{Vector{Float64}},
-    mult::Float64 = IQR_MULT_SPACE
+new_data = [Float32[] for _ in 1:nlons, _ in 1:nlats]
+new_data_err = [Float32[] for _ in 1:nlons, _ in 1:nlats]
+
+temp_data_month = [Float32[] for _ in 1:nlons, _ in 1:nlats]
+temp_err_month = [Float32[] for _ in 1:nlons, _ in 1:nlats]
+
+function iqr_clipping!(
+    target_data::Matrix{Vector{Float32}},
+    target_err::Matrix{Vector{Float32}},
+    source_data::Matrix{Vector{Float32}},
+    source_err::Matrix{Vector{Float32}},
+    mult::Float32,
+    min_count::Int
 )
+    for i in 1:size(source_data, 1)
+        for j in 1:size(source_data, 2)
+            empty!(target_data[i, j])
+            empty!(target_err[i, j])
 
-    for i in 1:size(data, 1)
-        for j in 1:size(data, 2)
+            isempty(source_data[i, j]) && continue
 
-            empty!(new_data[i,j])
-            empty!(new_data_err[i,j])
+            clean_data = copy(source_data[i, j])
+            clean_data_err = copy(source_err[i, j])
 
-            isempty(data[i,j]) && continue
+            # Filter once and reuse
+            valid_vals = filter(!isnan, clean_data)
+            isempty(valid_vals) && continue
 
-            clean_data = copy(data[i,j])
-            clean_data_err = copy(data_err[i,j])
+            i_q_r = iqr(valid_vals)
+            lower_val = percentile(valid_vals, 25) - (mult * i_q_r)
+            upper_val = percentile(valid_vals, 75) + (mult * i_q_r)
 
-            isempty(filter(!isnan, clean_data)) && continue
-
-            i_q_r = iqr(filter(!isnan, clean_data))
-
-            lower_val = percentile(filter(!isnan, clean_data), 25) - (mult *i_q_r)
-            upper_val = percentile(filter(!isnan, clean_data), 75) + (mult *i_q_r)
             for k in eachindex(clean_data)
                 if (clean_data[k] < lower_val) || (clean_data[k] > upper_val)
                     clean_data[k] = NaN 
                     clean_data_err[k] = NaN 
                 end
             end
-                        # Enforce MIN_COUNT
-            if count(!isnan, clean_data) < MIN_COUNT_SPACE
+
+            # Enforce minimum count constraint
+            if count(!isnan, clean_data) < min_count
                 clean_data .= NaN
-                clean_data_err  .= NaN
+                clean_data_err .= NaN
             end
 
-            new_data[i,j] = clean_data
-            new_data_err[i,j] = clean_data_err
+            target_data[i, j] = clean_data
+            target_err[i, j] = clean_data_err
         end
     end
-    return new_data, new_data_err
-end
-
-#used for temporal_clipping, per month
-function temporal_clipping!(
-    data::Matrix{Vector{Float64}},
-    data_err::Matrix{Vector{Float64}},
-    mult::Float64 = IQR_MULT_TIME
-)
-
-    new_data_month = [Float64[] for _ in 1:length(lons), _ in 1:length(lats)]
-    new_data_err_month = [Float64[] for _ in 1:length(lons), _ in 1:length(lats)]
-
-    for i in 1:size(data, 1)
-        for j in 1:size(data, 2)
-            
-            isempty(data[i,j]) && continue
-
-            clean_data = copy(data[i,j])
-            clean_data_err = copy(data_err[i,j])
-
-            isempty(filter(!isnan, clean_data)) && continue
-
-            i_q_r = iqr(filter(!isnan, clean_data))
-
-            lower_val = percentile(filter(!isnan, clean_data), 25) - (mult *i_q_r)
-            upper_val = percentile(filter(!isnan, clean_data), 75) + (mult *i_q_r)
-            for k in eachindex(clean_data)
-                if (clean_data[k] < lower_val) || (clean_data[k] > upper_val)
-
-                    clean_data[k] = NaN 
-                    clean_data_err[k] = NaN
-
-                end
-            end
-                        # Enforce MIN_COUNT
-            if count(!isnan, clean_data) < MIN_COUNT_TIME
-                clean_data .= NaN
-                clean_data_err  .= NaN
-            end
-
-            new_data_month[i,j] = clean_data
-            new_data_err_month[i,j] = clean_data_err
-        end
-    end
-    return new_data_month, new_data_err_month
+    return target_data, target_err
 end
 
 if isdir(OUTPUT_DIRECTORY)
@@ -131,8 +93,6 @@ if isdir(OUTPUT_DIRECTORY)
 else
     mkdir(OUTPUT_DIRECTORY)
 end 
-
-
 
 file = joinpath(OUTPUT_DIRECTORY,"binned_$(year)_full_run.nc") #new file name
 ds_new = NCDataset(file,"c") #create new .nc file
@@ -219,7 +179,7 @@ for month in months
                     end
                 end
 
-                clean_gridval, clean_griderror = spatial_clipping!(new_data, new_data_err, gridval, griderror)
+                clean_gridval, clean_griderror = iqr_clipping!(new_data, new_data_err, gridval, griderror, Float32(IQR_MULT_SPACE), MIN_COUNT_SPACE)
 
                 append!.(valid_day_values, clean_gridval)
                 append!.(valid_day_errors, clean_griderror)
@@ -236,7 +196,7 @@ for month in months
             end
         end
 
-        monthly_grid, monthly_err = temporal_clipping!(valid_day_values,valid_day_errors)
+        monthly_grid, monthly_err = iqr_clipping!(temp_data_month, temp_err_month, valid_day_values, valid_day_errors, Float32(IQR_MULT_TIME), MIN_COUNT_TIME)
 
         month_idx = parse(Int, month)
 
@@ -249,5 +209,5 @@ end
 close(ds_new)
 
 
-create_artifact_guided(OUTPUT_DIR; artifact_name = basename(@__DIR__), append = true)
+create_artifact_guided(OUTPUT_DIRECTORY; artifact_name = basename(@__DIR__), append = true)
 
