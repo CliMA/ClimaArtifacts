@@ -86,6 +86,7 @@ S. Gupta et al 2022, 2024](https://github.com/CliMA/ClimaArtifacts/tree/main/soi
 - [FLUXNET2015 site data](https:////github.com/CliMA/ClimaArtifacts/tree/main/fluxnet2015)
 - [Initial conditions for the optimal LAI model](https://github.com/CliMA/ClimaArtifacts/tree/main/optimal_lai_inputs)
 - [ERA5 Lake Cover and Lake Depth](https://github.com/CliMA/ClimaArtifacts/tree/main/era5_lake_cover_and_depth)
+- [TROPOMI SIF Monthly Allsky Average](https://github.com/CliMA/ClimaArtifacts/tree/87cfd79eaee89dbc726a6298187a9ee673ec319d/tropomi_SIF_monthly_avg_allsky)
 
 ### Coupler/shared
 
