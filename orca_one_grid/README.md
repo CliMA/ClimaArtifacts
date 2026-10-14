@@ -13,7 +13,7 @@ Both are downloaded by `NumericalEarth.DataWrangling.ORCA.ORCAOne`.
 
 ## Contents
 
-`orca_one_grid.nc`, a 362 × 297 mesh:
+`orca_one_grid.nc`, a 360 × 296 mesh:
 
 - 20 metric arrays — `λ`, `φ`, `Δx`, `Δy` and `Az` at the `ᶜᶜ`, `ᶠᶜ`, `ᶜᶠ` and `ᶠᶠ` stagger positions,
   under ASCII names (`lambda_cca`, `phi_fca`, `dx_cfa`, `area_ffa`, …) since NetCDF does not carry the
@@ -30,7 +30,7 @@ with `Oceananigans.BoundaryConditions.fill_halo_regions!`, which resolves the pe
 and the north fold from the `(Periodic, RightFaceFolded, Bounded)` topology. This keeps `halo` a free
 argument. 
 
-**Face-in-y metrics have Ny+1 = 298 rows**, one more than the Center-in-y ones, hence the separate
+**Face-in-y metrics have Ny+1 = 297 rows**, one more than the Center-in-y ones, hence the separate
 `y_face` dimension. Storing only Ny rows drops the fold row, which `fill_halo_regions!` cannot
 reconstruct.
 
@@ -51,7 +51,7 @@ The script writes `orca_one_grid_artifact/orca_one_grid.nc` and then hands it to
 `create_artifact_guided`, which archives it and walks through the upload.
 
 Generated with the versions pinned in this directory's `Project.toml` and `Manifest.toml`:
-ClimaOcean 0.10.0, NumericalEarth 0.6.0, Oceananigans 0.110.12. `major_basins = 2`. The pins are
+NumericalEarth 0.8.2, Oceananigans 0.113.6. `major_basins = 2`. The pins are
 exact (`=`) so the artifact stays reproducible as those packages move on.
 
 ## Citation
