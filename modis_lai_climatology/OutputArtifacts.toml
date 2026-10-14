@@ -1,0 +1,6 @@
+["modis_lai_climatology_0.25deg"]
+git-tree-sha1 = "bd5d1cf6e0d403fd65846a291b6ddf8d9f27c8b5"
+
+    [["modis_lai_climatology_0.25deg".download]]
+    sha256 = "e8ff1e476178a850da669f73bbacc32ca2571fa6a914428978923d395c139832"
+    url = "https://caltech.box.com/shared/static/tio26exkt869err40kezpusgk03fnd7t.gz"

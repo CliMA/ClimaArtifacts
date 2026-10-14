@@ -1,0 +1,6 @@
+["modis_max_lai_0.25deg"]
+git-tree-sha1 = "a9ea3ab397fd0a5aaca5bf12ea671b4af3ab24e6"
+
+    [["modis_max_lai_0.25deg".download]]
+    sha256 = "14f3368cd0776372a955fb2e650026d5ac93a5e1e74fd1db33aa91e8446a145e"
+    url = "https://caltech.box.com/shared/static/xq5om00l25iiisui5d094gkymnhvoc6m.gz"

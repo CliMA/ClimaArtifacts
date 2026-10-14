@@ -1,12 +1,8 @@
 # Leaf Area Index, derived from MODIS data for 2000-2020
 
-This recipe creates two artifacts with the monthly leaf area index (LAI) of the
-*land part* of each grid cell, for each year from 2000 to 2020:
-
-| artifact            | grid  | files                             | size    |
-| ------------------- | ----- | --------------------------------- | ------- |
-| `modis_lai`         | 1°    | `Yuan_et_al_YYYY_1x1.nc`          | 14 MB   |
-| `modis_lai_0.25deg` | 0.25° | `Yuan_et_al_YYYY_0.25x0.25.nc`    | 136 MB  |
+This recipe creates the `modis_lai_0.25deg` artifact (136 MB) with the monthly
+leaf area index (LAI) of the *land part* of each 0.25° grid cell, for each year
+from 2000 to 2020, in files `Yuan_et_al_YYYY_0.25x0.25.nc`.
 
 The data comes from:
 Hua Yuan, Yongjiu Dai, Zhiqiang Xiao, Duoying Ji, Wei Shangguan,Reprocessing the MODIS Leaf Area Index products for land surface and climate modelling, Remote Sensing of Environment, Volume 115, Issue 5, 2011, Pages 1171-1187, ISSN 0034-4257, https://doi.org/10.1016/j.rse.2011.01.001.
@@ -26,7 +22,7 @@ Each file contains:
   - `time`: 12 values, 30 days apart starting on January 1 (even spacing is
     required by ClimaLand's `PeriodicCalendar`)
 
-To recreate the artifacts, run `julia --project create_artifacts.jl` in this
+To recreate the artifact, run `julia --project create_artifacts.jl` in this
 folder. It downloads 5.8 GB of 0.05° data to `~/GriddingMachine` (removed at the
 end), and takes about 10 minutes, mostly downloading.
 
@@ -72,8 +68,8 @@ ring of cells at a time, so that interpolating near a coastline never samples
 water; use `land_fraction` to mask them when needed.
 
 2000-2020 mean LAI of the previous version of this artifact (0.5° data with
-water counted as 0, averaged to 1°) relative to the new 1° data, by land
-fraction of the cell (cells with a mean LAI above 0.05):
+water counted as 0, averaged to 1°) relative to the 0.05° data aggregated over
+land to 1°, by land fraction of the cell (cells with a mean LAI above 0.05):
 
 | land fraction | cells | previous / new, quartiles | ratio of means |
 | ------------- | ----- | ------------------------- | -------------- |
@@ -96,7 +92,8 @@ fraction of the cell (cells with a mean LAI above 0.05):
   (beaches, mangroves, mudflats, bare reefs), which can differ from the
   vegetation inland.
 
-The previous version of the 1° data is the artifact with
-`git-tree-sha1 = "81d4bc1b22e94d66eec3d80a2d21b5dd5303bf8f"`.
+The previous version of this artifact is the 1° `modis_lai` artifact with
+`git-tree-sha1 = "81d4bc1b22e94d66eec3d80a2d21b5dd5303bf8f"` (see
+`OutputArtifacts.toml`).
 
 License: Creative Commons Zero

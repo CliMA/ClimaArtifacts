@@ -1,6 +1,7 @@
-# Source artifacts, created by ../modis_lai/create_artifacts.jl
-[modis_lai]
-git-tree-sha1 = "fc5a789ff3b9e07bc9fddd3e9836f3eaffcce706"
-
+# Source artifact, copied from ../modis_lai/OutputArtifacts.toml
 ["modis_lai_0.25deg"]
 git-tree-sha1 = "bdebef65eee5430c1665e326708969205a033c42"
+
+    [["modis_lai_0.25deg".download]]
+    sha256 = "3edfa7b6882196f15ad63826b9aad1537ec3d2013c4aead5cd6b6f684f68c278"
+    url = "https://caltech.box.com/shared/static/1k71dwt1nx2iohh1m3bps1jb3y08xf6s.gz"

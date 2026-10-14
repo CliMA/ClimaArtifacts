@@ -1,13 +1,10 @@
 # MODIS LAI monthly climatology, land part of each cell
 
-This recipe creates two artifacts with the monthly climatology (2000-2020) of
-the leaf area index (LAI) of the *land part* of each grid cell: for each month,
-the mean of the 21 yearly files of the [`modis_lai`](../modis_lai) recipe.
-
-| artifact                        | grid  | file                                 |
-| ------------------------------- | ----- | ------------------------------------ |
-| `modis_lai_climatology`         | 1°    | `modis_lai_climatology.nc`           |
-| `modis_lai_climatology_0.25deg` | 0.25° | `modis_lai_climatology_0.25x0.25.nc` |
+This recipe creates the `modis_lai_climatology_0.25deg` artifact with the
+monthly climatology (2000-2020) of the leaf area index (LAI) of the *land part*
+of each 0.25° grid cell, in the file `modis_lai_climatology_0.25x0.25.nc`: for
+each month, the mean of the 21 yearly files of the `modis_lai_0.25deg` artifact
+of the [`modis_lai`](../modis_lai) recipe.
 
 The yearly files aggregate 0.05° MODIS LAI over land only, since the source
 data averages water as LAI = 0; see the [`modis_lai` README](../modis_lai/README.md)
@@ -23,7 +20,7 @@ https://doi.org/10.1016/j.rse.2011.01.001.
 
 ## Output format
 
-Each NetCDF file contains, on the grid of the corresponding yearly files:
+The NetCDF file contains, on the grid of the yearly files:
   - `lai` (lon, lat, time): leaf area index of the land part of the cell,
     m² m⁻², stored as `Int16` with `scale_factor = 0.001` (unpacked by
     CF-compliant readers)
@@ -32,14 +29,18 @@ Each NetCDF file contains, on the grid of the corresponding yearly files:
   - `time`: 12 values, 30 days apart starting 2000-01-01, as required by
     ClimaLand's `PeriodicCalendar`
 
-To recreate the artifacts, run `julia --project create_artifact.jl` in this
-folder, after creating the `modis_lai` artifacts.
+To recreate the artifact, run `julia --project create_artifact.jl` in this
+folder. `Artifacts.toml` gives the download link of its `modis_lai_0.25deg`
+source.
 
 ## Usage
 
 ```julia
 using ClimaUtilities.ClimaArtifacts
-lai_file = joinpath(@clima_artifact("modis_lai_climatology"), "modis_lai_climatology.nc")
+lai_file = joinpath(
+    @clima_artifact("modis_lai_climatology_0.25deg"),
+    "modis_lai_climatology_0.25x0.25.nc",
+)
 ```
 
 ## License

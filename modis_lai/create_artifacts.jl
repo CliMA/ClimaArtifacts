@@ -4,7 +4,7 @@
 # and climate modelling.
 
 # We use GriddingMachine.jl to fetch the MODIS LAI data at 0.05° and aggregate
-# it to the 1° and 0.25° grids consumed by the Land model:
+# it to the 0.25° grid consumed by the Land model:
 # Y. Wang, P. Köhler, R. K. Braghiere, M. Longo, R. Doughty, A. A. Bloom, and
 # C. Frankenberg. 2022. GriddingMachine, a database and software for Earth
 # system modeling at global and regional scales. Scientific Data. 9: 258
@@ -42,7 +42,6 @@ const YEARS = 2000:2020
 # Output artifacts: directory (= artifact name), cells per degree, file suffix.
 # All outputs are aggregated from 0.25° sums, so their resolution must divide 0.25°.
 const OUTPUTS = [
-    (dir = "modis_lai", cells_per_degree = 1, suffix = "1x1"),
     (dir = "modis_lai_0.25deg", cells_per_degree = 4, suffix = "0.25x0.25"),
 ]
 const SUM_CELLS_PER_DEGREE = 4
@@ -168,4 +167,3 @@ end
 Collector.clean_collections!(lai_collector)
 
 create_artifact_guided(OUTPUTS[1].dir; artifact_name = OUTPUTS[1].dir)
-create_artifact_guided(OUTPUTS[2].dir; artifact_name = OUTPUTS[2].dir, append = true)

@@ -1,6 +1,6 @@
-# MODIS maximum LAI (2000-2020) at 1° and 0.25°: for each cell, the maximum over
-# all months of the yearly files of the `modis_lai` and `modis_lai_0.25deg`
-# artifacts (LAI of the land part of each cell).
+# MODIS maximum LAI (2000-2020) at 0.25°: for each cell, the maximum over all
+# months of the yearly files of the `modis_lai_0.25deg` artifact (LAI of the
+# land part of each cell).
 
 using Artifacts
 using NCDatasets
@@ -13,13 +13,6 @@ const YEARS = 2000:2020
 const LAI_SCALE_FACTOR = 0.001f0
 
 const OUTPUTS = [
-    (
-        source_name = "modis_lai",
-        source = artifact"modis_lai",
-        suffix = "1x1",
-        name = "modis_max_lai",
-        file = "modis_max_lai.nc",
-    ),
     (
         source_name = "modis_lai_0.25deg",
         source = artifact"modis_lai_0.25deg",
@@ -87,4 +80,3 @@ for out in OUTPUTS
 end
 
 create_artifact_guided(OUTPUTS[1].name * "_artifact"; artifact_name = OUTPUTS[1].name)
-create_artifact_guided(OUTPUTS[2].name * "_artifact"; artifact_name = OUTPUTS[2].name, append = true)
