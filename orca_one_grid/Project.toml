@@ -1,6 +1,5 @@
 [deps]
 ClimaArtifactsHelper = "6ffa2572-8378-4377-82eb-ea11db28b255"
-ClimaOcean = "0376089a-ecfe-4b0e-a64f-9c555d74d754"
 ClimaUtilities = "b3f4f4ca-9299-4f7f-bd9b-81e1242a7513"
 CodecZlib = "944b1d66-785c-5afd-91f1-9de20f533193"
 NCDatasets = "85f8d34a-cbdd-5861-8df4-14fed0d494ab"
@@ -12,9 +11,8 @@ Tar = "a4e569a6-e804-4fa4-b0f3-eef7a1d5b13e"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
 [compat]
-ClimaOcean = "=0.10.0"
 NCDatasets = "0.14"
-NumericalEarth = "=0.6.0"
-Oceananigans = "=0.110.12"
+NumericalEarth = "=0.8.2"
+Oceananigans = "=0.113.6"
 OffsetArrays = "1"
 julia = "1.11"

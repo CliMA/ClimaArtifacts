@@ -6,7 +6,7 @@
 
 using NumericalEarth.Bathymetry: ORCAGrid, remove_minor_basins!, read_2d_nemo_variable, orient_xy
 using NumericalEarth.DataWrangling: Metadatum, dataset_variable_name
-using NumericalEarth.DataWrangling.ORCA: ORCAOne, default_south_rows_to_remove
+using NumericalEarth.DataWrangling.ORCA: ORCAOne, default_south_rows_to_remove, periodic_overlap
 using Downloads: download
 using Oceananigans
 using Oceananigans.Grids: topology
@@ -87,10 +87,9 @@ function orca_bottom_height(grid)
 
     data = orient_xy(data, size(data)...; name = string(variable_name))
 
+    overlap = periodic_overlap(ORCAOne())
     southern_rows_removed = default_south_rows_to_remove(ORCAOne())
-    if southern_rows_removed > 0
-        data = data[:, southern_rows_removed+1:end]
-    end
+    data = data[2:end-overlap+1, southern_rows_removed+1:end-1]
 
     bottom_height = Float64.(coalesce.(data, 0.0))
     bottom_height .= ifelse.(isfinite.(bottom_height) .& (bottom_height .> 0), .-bottom_height, 100.0)
