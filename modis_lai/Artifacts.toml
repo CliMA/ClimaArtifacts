@@ -1,0 +1,15 @@
+# Source artifact, copied from era5_land_fraction/OutputArtifacts.toml
+[era5_land_fraction]
+git-tree-sha1 = "7f14ef1c7859da1363b8973743b2a376c008f29f"
+
+    [[era5_land_fraction.download]]
+    sha256 = "1d6acf98656b50f1a324ee3daa267281fb017314d2169dbfda25208299f44870"
+    url = "https://caltech.box.com/shared/static/glqlyb626j3szcjltyuwp534yzzhf770.gz"
+
+# Source artifact, copied from landsea_mask/OutputArtifacts.toml
+[landsea_mask_30arcseconds]
+git-tree-sha1 = "517c925535981f9d17ac9e7a65e2c35c3ce9597d"
+
+    [[landsea_mask_30arcseconds.download]]
+    sha256 = "11eaf6b7606056d198f3735f7b76ead76269cced186de78075f415101cf39088"
+    url = "https://caltech.box.com/shared/static/z013ay1k6oqofnw69bv5held9x374sux.gz"

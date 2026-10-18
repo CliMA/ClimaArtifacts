@@ -1,6 +1,15 @@
+# Previous version, at 1° (0.5° data with water counted as LAI = 0), no longer
+# created by create_artifacts.jl
 [modis_lai]
 git-tree-sha1 = "81d4bc1b22e94d66eec3d80a2d21b5dd5303bf8f"
 
     [[modis_lai.download]]
     sha256 = "4a244428fe480aa05ff863af69299d2ed8ca66ed324b9e1bffcb440792fb4cce"
     url = "https://caltech.box.com/shared/static/99ktg026kciezykyegsawd1gjwj1du74.gz"
+
+["modis_lai_0.25deg"]
+git-tree-sha1 = "bdebef65eee5430c1665e326708969205a033c42"
+
+    [["modis_lai_0.25deg".download]]
+    sha256 = "3edfa7b6882196f15ad63826b9aad1537ec3d2013c4aead5cd6b6f684f68c278"
+    url = "https://caltech.box.com/shared/static/1k71dwt1nx2iohh1m3bps1jb3y08xf6s.gz"
