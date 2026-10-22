@@ -1,0 +1,6 @@
+[optimal_lai_state_and_clm_maps]
+git-tree-sha1 = "e65017b77172d6713a8908b96665b9de78c0a5e9"
+
+    [[optimal_lai_state_and_clm_maps.download]]
+    sha256 = "369933d75decedf6d3e6ee4fef7924b890916bc6f2cc92c4d91cfd5cdcb4c2fe"
+    url = "https://caltech.box.com/shared/static/lc0oz6d7dxzv4ixoo1kuqrpd4pnekerp.gz"
