@@ -24,7 +24,7 @@ The prognostic variables of the optimal LAI model of ClimaLand (Zhou et al., 202
 | `PET_annual` | mol H₂O m⁻² yr⁻¹ | Annual potential evapotranspiration |
 | `VPDgs_annual` | Pa s yr⁻¹ | VPD summed while the air is above freezing |
 | `growing_days` | days | Days above freezing in a year |
-| `snow_store` | mol H₂O m⁻² | Degree-day snow store |
+| `snow_store` | mol H₂O m⁻² | Degree-day snow store (no longer read by ClimaLand, which takes the melt from its snow model) |
 | `water_30d`, `PET_30d` | mol H₂O m⁻² (30 days)⁻¹ | 30-day totals of the water input (rain and snowmelt) and of the PET |
 | `VPD_moist_annual` | Pa s | VPD summed over the moist growing season |
 | `moist_days` | days | Days of the moist growing season |
@@ -37,12 +37,16 @@ interpolated between months. Where the file has data, its variables replace the
 climatological seeds of the `optimal_lai_inputs` artifact.
 
 The states were written by a spin-up of the global land model with prognostic LAI,
-`experiments/long_runs/optimal_lai_spinup.jl` in ClimaLand.jl (PR
-[#1901](https://github.com/CliMA/ClimaLand.jl/pull/1901), commit `de43e9d7e`), run on
-Buildkite (build 5127 of `climaland-long-runs`). Forced by ERA5, it runs from March 1
-2002, starting from the `optimal_lai_inputs` climatology with a 1-year memory of the
-annual totals, until December 1 2008. The state depends on the model and its
-parameters; it has to be recreated when they change.
+`experiments/long_runs/optimal_lai_spinup.jl` of ClimaLand.jl at commit `de43e9d7e` of PR
+[#1901](https://github.com/CliMA/ClimaLand.jl/pull/1901), run on Buildkite (build 5127 of
+`climaland-long-runs`). Forced by ERA5, it runs from March 1 2002, starting from the
+`optimal_lai_inputs` climatology with a 1-year memory of the annual totals, until
+December 1 2008. The state depends on the model and its parameters; it has to be
+recreated when they change. The spin-up script, with `optimal_lai_spinup.toml` and
+`optimal_lai_state.jl`, is kept on the
+[`ar/lai_emulator`](https://github.com/CliMA/ClimaLand.jl/tree/ar/lai_emulator) branch of
+ClimaLand.jl, not on its main branch; it takes about two and a half hours on a GPU and
+writes `optimal_lai_spinup_gpu/optimal_lai_state.nc`.
 
 In some months, the spin-up wrote 0 rather than NaN over part of the ocean: its land
 mask came from a field whose ocean nodes were unset on the GPU. `create_artifact.jl`
