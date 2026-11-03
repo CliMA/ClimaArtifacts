@@ -15,9 +15,12 @@ License: Creative Commons Zero
 
 ## Reproducing the artifact
 
-Run `julia +1.11 --project create_artifacts.jl` with the committed `Manifest.toml`.
-It pins GriddingMachine 0.2.9 (0.4.0 fails to load) and the `NetCDF_jll` and
-`HDF5_jll` builds, whose versions are written into the output file, so other builds
-change the artifact's `git-tree-sha1` even when the data is identical. The pinned
-`NetCDF_jll` requires Julia 1.11 or older. GriddingMachine stores its downloads in
-`~/GriddingMachine`.
+Navigate to this directory and run
+
+```
+julia +1.11 --project -e 'using Pkg; Pkg.instantiate()'
+julia +1.11 --project create_artifacts.jl
+```
+
+GriddingMachine downloads the source data as Julia artifacts in `~/.julia/artifacts`,
+and the script deletes them when it finishes.

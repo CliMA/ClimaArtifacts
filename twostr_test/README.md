@@ -15,12 +15,12 @@ GPL 2.0.
 
 ## Creating the artifact
 
-The script runs the Python fork above, so first install the pinned Python packages
-(tested with Python 3.12):
+Run the following commands in this directory (tested with Python 3.12):
 
 ```
 python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
-julia --project create_artifacts.jl
+julia +1.11 --project -e 'using Pkg; Pkg.instantiate()'
+julia +1.11 --project create_artifacts.jl
 ```
