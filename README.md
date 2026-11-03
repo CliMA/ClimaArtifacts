@@ -44,6 +44,7 @@ artifacts.
 - [Monthly total solar irradiance from 1850 to 2299](https://github.com/CliMA/ClimaArtifacts/tree/main/cmip_monthly_tsi)
 - [Pre-computed orographic gravity wave drag tensors (h_elem=6,8,12,16)](https://github.com/CliMA/ClimaArtifacts/tree/main/ogw_computed_drag)
 - [WeatherQuest initial conditions](https://github.com/CliMA/ClimaArtifacts/tree/main/wxquest_initial_condition)
+- [ERA5 atmospheric initial condition for 1 January 2010, compressed to download](https://github.com/CliMA/ClimaArtifacts/tree/main/era5_atmos_initial_conditions_2010_01)
 - [PyCLES reference data](https://github.com/CliMA/ClimaArtifacts/tree/main/pycles_scm_les_data)
 
 ### Land
