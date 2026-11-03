@@ -12,3 +12,12 @@ We regrid the data to 1 degree resolution, and output a netCDF file with the fol
   - `lon`: Longitude, degrees east
 
 License: Creative Commons Zero
+
+## Reproducing the artifact
+
+Run `julia +1.11 --project create_artifacts.jl` with the committed `Manifest.toml`.
+It pins GriddingMachine 0.2.9 (0.4.0 fails to load) and the `NetCDF_jll` and
+`HDF5_jll` builds, whose versions are written into the output file, so other builds
+change the artifact's `git-tree-sha1` even when the data is identical. The pinned
+`NetCDF_jll` requires Julia 1.11 or older. GriddingMachine stores its downloads in
+`~/GriddingMachine`.
