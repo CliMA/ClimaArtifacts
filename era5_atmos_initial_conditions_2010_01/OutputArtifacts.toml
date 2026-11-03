@@ -1,0 +1,6 @@
+[era5_atmos_initial_conditions_2010_01]
+git-tree-sha1 = "e662fc4393c0bd0cb688337896dcf4467e77a437"
+
+    [[era5_atmos_initial_conditions_2010_01.download]]
+    sha256 = "c0d4781aab640b8703a78b4aa8fa71962dd998f9aa77241a4f49351b7d4191cc"
+    url = "https://caltech.box.com/shared/static/wb3a4ms9dsw0ma6ck95x4oxrj42nnj79.gz"
