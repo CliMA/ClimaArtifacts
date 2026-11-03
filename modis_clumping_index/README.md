@@ -12,3 +12,15 @@ We regrid the data to 1 degree resolution, and output a netCDF file with the fol
   - `lon`: Longitude, degrees east
 
 License: Creative Commons Zero
+
+## Reproducing the artifact
+
+Navigate to this directory and run
+
+```
+julia +1.11 --project -e 'using Pkg; Pkg.instantiate()'
+julia +1.11 --project create_artifacts.jl
+```
+
+GriddingMachine downloads the source data as Julia artifacts in `~/.julia/artifacts`,
+and the script deletes them when it finishes.

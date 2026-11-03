@@ -12,3 +12,15 @@ We use a fork of the repository which has been patched to work with Python 3.
 The code used to generate this test data is licensed under GPL 2.0; the data
 itself is generated from this code and therefore we will also license it under
 GPL 2.0.
+
+## Creating the artifact
+
+Run the following commands in this directory (tested with Python 3.12):
+
+```
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+julia +1.11 --project -e 'using Pkg; Pkg.instantiate()'
+julia +1.11 --project create_artifacts.jl
+```

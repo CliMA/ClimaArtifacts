@@ -1,4 +1,10 @@
 [deps]
 ClimaArtifactsHelper = "6ffa2572-8378-4377-82eb-ea11db28b255"
 GriddingMachine = "f20cf718-bf4d-4727-bc8f-485b1f283ac6"
+HDF5_jll = "0234f1f7-429e-5d53-9886-15a909be8d59"
 NCDatasets = "85f8d34a-cbdd-5861-8df4-14fed0d494ab"
+NetCDF_jll = "7243133f-43d8-5620-bbf4-c2c921802cf3"
+NetcdfIO = "6a36f34d-89cf-423a-87c4-84549e82f670"
+
+[sources]
+ClimaArtifactsHelper = {path = "../ClimaArtifactsHelper.jl"}
