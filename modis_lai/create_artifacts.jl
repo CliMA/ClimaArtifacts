@@ -3,141 +3,167 @@
 # Wei, 2011. Reprocessing the MODIS Leaf Area Index products for land surface
 # and climate modelling.
 
-# We will use GriddingMachine.jl to fetch and process the MODIS LAI data into 
-# the desired format for consumption by the Land model:
+# We use GriddingMachine.jl to fetch the MODIS LAI data at 0.05° and aggregate
+# it to the 0.25° grid consumed by the Land model:
 # Y. Wang, P. Köhler, R. K. Braghiere, M. Longo, R. Doughty, A. A. Bloom, and
 # C. Frankenberg. 2022. GriddingMachine, a database and software for Earth
 # system modeling at global and regional scales. Scientific Data. 9: 258
 # https://doi.org/10.1038/s41597-022-01346-x
 
+# The GriddingMachine data averages water as LAI = 0, so we aggregate the 0.05°
+# pixels over land only, using the ETOPO 30″ land fraction of each pixel (see
+# land_fraction_correction.jl and the README).
+
 ################################################################################
 # IMPORTS                                                                      #
 ################################################################################
 
+using Artifacts
 using NCDatasets
 using Dates
 
 using GriddingMachine.Collector
-using GriddingMachine.Indexer
-using GriddingMachine.Blender
 
 using ClimaArtifactsHelper
+
+include("land_fraction_correction.jl")
 
 ################################################################################
 # CONSTANTS                                                                    #
 ################################################################################
 
-# Dataset to be fetched via the GriddingMachine
-MODIS_LAI_DATASET_PREFIX = "MODIS_2X_1M_"
-MODIS_LAI_DATASET_SUFFIX = "_V1"
-
-# Output directory
-OUTPUT_DIR = "modis_lai"
-
-# Output nc file name
-OUTPUT_FILE_PREFIX = "Yuan_et_al_"
-
-# Output nc file name suffix
-OUTPUT_FILE_SUFFIX = "_1x1.nc"
-
-# Output data resolution
-RESOLUTION = 1
+# Source dataset: monthly LAI at 0.05° (20 pixels per degree)
+dataset_name(year) = "MODIS_20X_1M_$(year)_V1"
+const PIXELS_PER_DEGREE = 20
 
 # Years to fetch
-YEARS = range(2000, 2020)
+const YEARS = 2000:2020
+
+# Output artifacts: directory (= artifact name), cells per degree, file suffix.
+# All outputs are aggregated from 0.25° sums, so their resolution must divide 0.25°.
+const OUTPUTS = [
+    (dir = "modis_lai_0.25deg", cells_per_degree = 4, suffix = "0.25x0.25"),
+]
+const SUM_CELLS_PER_DEGREE = 4
+
+# LAI is stored as Int16 with this scale factor: the source precision is 0.1
+const LAI_SCALE_FACTOR = 0.001f0
 
 ################################################################################
 # MAIN                                                                         #
 ################################################################################
 
-if isdir(OUTPUT_DIR)
-    @warn "$OUTPUT_DIR already exists. Content will end up in the artifact and
-           may be overwritten."
-    @warn "Abort this calculation, unless you know what you are doing."
-else
-    mkdir(OUTPUT_DIR)
+for out in OUTPUTS
+    if isdir(out.dir)
+        @warn "$(out.dir) already exists. Content will end up in the artifact and
+               may be overwritten."
+        @warn "Abort this calculation, unless you know what you are doing."
+    else
+        mkdir(out.dir)
+    end
 end
 
+npix_lon, npix_lat = 360 * PIXELS_PER_DEGREE, 180 * PIXELS_PER_DEGREE
+pix_lon = [-180 + (i - 0.5) / PIXELS_PER_DEGREE for i in 1:npix_lon]
+pix_lat = [-90 + (j - 0.5) / PIXELS_PER_DEGREE for j in 1:npix_lat]
+pix_area = Float32.(cosd.(pix_lat))
+n_sum = PIXELS_PER_DEGREE ÷ SUM_CELLS_PER_DEGREE
+
+# Pass over the years: sums of area × LAI on the 0.25° grid, and the pixels that
+# are vegetated in any month of any year
+lai_collector = Collector.lai_collection()
+lai_sums = Dict{Int, Array{Float32, 3}}()
+vegetated = falses(npix_lon, npix_lat)
 for year in YEARS
-    # Dataset to be fetched via the GriddingMachine
-    MODIS_LAI_DATASET = MODIS_LAI_DATASET_PREFIX * string(year) *
-                         MODIS_LAI_DATASET_SUFFIX
-
-    # Output nc file name
-    OUTPUT_FILE = OUTPUT_FILE_PREFIX * string(year) * OUTPUT_FILE_SUFFIX
-
-    # Download the LAI data as a julia artifact.
-    lai_collector  = Collector.lai_collection()
-    download_path = Collector.query_collection(lai_collector, MODIS_LAI_DATASET)
-
-    # Read the data from the dowloaded nc file
-    lai_data = Indexer.read_LUT(download_path)
-
-    # Regrid the data to the desired simulation resolution - 1x1 degree. Note
-    # that the regridder will require integer trucation of the divider (1/R)
-    lai_data_regridded = Blender.regrid(lai_data[1], Int64(1 / RESOLUTION))
-
-    # Get the original the lat/lon vectors of the dataset so that we may compute
-    # the lat/lon of the regridded data.
-    orig_data = NCDataset(download_path, "r")
-    orig_lat = orig_data["lat"][:]
-    orig_lon = orig_data["lon"][:]
-    close(orig_data)
-
-    # Convert all NANs in the data to 0.0 (i.e, LAI should be 0 over the ocean)
-    lai_data_regridded .= ifelse.(isnan.(lai_data_regridded), 0.0f0,
-                                                             lai_data_regridded)
-
-    # Since we regridded to half of the resolution of the original data, we need
-    # to average every 2 lat/lon points to get the lat/lon of the regridded
-    # data.
-    out_lon = (orig_lon[1:2:end] .+ orig_lon[2:2:end]) ./ 2
-    out_lat = (orig_lat[1:2:end] .+ orig_lat[2:2:end]) ./ 2
-
-    # Write the regridded data to the output directory
-    output_path = joinpath(OUTPUT_DIR, OUTPUT_FILE)
-    ds          = NCDataset(output_path, "c")
-
-    # Define the dimensions of the data -> 2D spatially varying data over 12
-    # months
-    defDim(ds, "lon", size(lai_data_regridded)[1])
-    defDim(ds, "lat", size(lai_data_regridded)[2])
-    defDim(ds, "time", 12)
-
-    # Define the variables of the data - lat, lon, and the lai
-    la      = defVar(ds, "lat", Float32, ("lat",))
-    lo      = defVar(ds, "lon", Float32, ("lon",))
-    month   = defVar(ds, "time", Int32, ("time",))
-    lai_var = defVar(ds, "lai", Float32, ("lon", "lat", "time"))
-
-    # Set the attributes of the variables.
-    la.attrib["units"]              = "degrees_north"
-    la.attrib["standard_name"]      = "latitude"
-    lo.attrib["units"]              = "degrees_east"
-    lo.attrib["standard_name"]      = "longitude"
-    month.attrib["units"]           = "seconds since 1970-01-01"
-    month.attrib["standard_name"]   = "time"
-    month.attrib["calendar"]        = "proleptic_gregorian"
-    lai_var.attrib["units"]         = "m^2 m^-2"
-    lai_var.attrib["standard_name"] = "Leaf area index"
-
-    # Write the data for each variable out to the nc file
-    la[:]     = out_lat
-    lo[:]     = out_lon
-    
-    # Data from the gridding machhine is month (1:1:12), and we need to convert
-    # to DateTime format for the time variable so that we can use the
-    # periodicCalendar calendar boundary condition in the Land model.
-    # Note that even spacing on the timestamps is required for the
-    # periodicCalendar boundary condition
-    times     = [DateTime(year, 1, 1) + Dates.Day(30 * (k - 1)) for k in 1:12]
-    month[:]  = Int32.([Dates.datetime2unix(t) for t in times])
-    lai_var[:, :, :] = lai_data_regridded
-    close(ds)
-
-    # Remove the initial downloaded artifact file - desired data is now stored
-    # in the CliMA artifact.
-    Collector.clean_collections!(lai_collector)
+    @info "Aggregating $year"
+    download_path = Collector.query_collection(lai_collector, dataset_name(year))
+    NCDataset(download_path) do ds
+        @assert ds["lon"][:] ≈ pix_lon && ds["lat"][:] ≈ pix_lat
+        sums = zeros(Float32, 360 * SUM_CELLS_PER_DEGREE, 180 * SUM_CELLS_PER_DEGREE, 12)
+        for month in 1:12
+            lai = ds["data"][:, :, month]
+            vegetated .|= .!isnan.(lai)
+            weighted_block_sum!(view(sums, :, :, month), lai, pix_area, n_sum)
+        end
+        lai_sums[year] = sums
+    end
 end
 
-create_artifact_guided(OUTPUT_DIR; artifact_name = basename(@__DIR__))
+# Land fraction of each pixel from the ETOPO 30″ land-sea mask (6 × 6 values
+# per pixel), and lakes from the ERA5 land fraction on 0.1° nodes
+f_etopo = NCDataset(joinpath(artifact"landsea_mask_30arcseconds", "landsea_mask.nc")) do ds
+    @assert ds["lon"][1] ≈ -180 + 1 / 240 && ds["lat"][1] ≈ -90 + 1 / 240
+    block_mean(ds["landsea"][:, :], 6)
+end
+era5_land_fraction = NCDataset(joinpath(artifact"era5_land_fraction", "era5_land_fraction.nc")) do ds
+    nearest_node_values(ds["lsm"][:, :], pix_lon, pix_lat)
+end
+f_land, f_weight = pixel_weights(f_etopo, era5_land_fraction, vegetated)
+weighted_sum(f) = weighted_block_sum!(
+    zeros(Float32, 360 * SUM_CELLS_PER_DEGREE, 180 * SUM_CELLS_PER_DEGREE),
+    f, pix_area, n_sum,
+)
+area_sum, land_sum, weight_sum, etopo_sum =
+    weighted_sum.((ones(Float32, npix_lon, npix_lat), f_land, f_weight, f_etopo))
+
+for out in OUTPUTS
+    k = SUM_CELLS_PER_DEGREE ÷ out.cells_per_degree
+    cell_area, cell_weight, cell_etopo = block_sum.((area_sum, weight_sum, etopo_sum), k)
+    land_fraction = block_sum(land_sum, k) ./ cell_area
+    lon = Float32[-180 + (i - 0.5) / out.cells_per_degree for i in 1:(360 * out.cells_per_degree)]
+    lat = Float32[-90 + (j - 0.5) / out.cells_per_degree for j in 1:(180 * out.cells_per_degree)]
+
+    for year in YEARS
+        lai = land_lai(block_sum(lai_sums[year], k), cell_weight, cell_etopo)
+        @assert all(isfinite, lai) && 0 <= minimum(lai) && maximum(lai) < typemax(Int16) * LAI_SCALE_FACTOR
+
+        output_path = joinpath(out.dir, "Yuan_et_al_$(year)_$(out.suffix).nc")
+        NCDataset(output_path, "c") do ds
+            # 2D spatially varying data over 12 months
+            defDim(ds, "lon", length(lon))
+            defDim(ds, "lat", length(lat))
+            defDim(ds, "time", 12)
+
+            ds.attrib["title"] = "MODIS leaf area index $year of the land part of each cell"
+            ds.attrib["source"] = "Yuan et al. (2011) MODIS LAI at 0.05° from GriddingMachine.jl ($(dataset_name(year))), aggregated over land"
+            ds.attrib["history"] = "Created by CliMA (see modis_lai folder in ClimaArtifacts)"
+
+            la = defVar(ds, "lat", Float32, ("lat",))
+            la.attrib["units"] = "degrees_north"
+            la.attrib["standard_name"] = "latitude"
+            la[:] = lat
+
+            lo = defVar(ds, "lon", Float32, ("lon",))
+            lo.attrib["units"] = "degrees_east"
+            lo.attrib["standard_name"] = "longitude"
+            lo[:] = lon
+
+            # Uniform 30-day spacing, required by ClimaLand's PeriodicCalendar
+            month = defVar(ds, "time", Int32, ("time",))
+            month.attrib["units"] = "seconds since 1970-01-01"
+            month.attrib["standard_name"] = "time"
+            month.attrib["calendar"] = "proleptic_gregorian"
+            month[:] = [Int32(datetime2unix(DateTime(year) + Day(30 * (k - 1)))) for k in 1:12]
+
+            lai_var = defVar(
+                ds, "lai", Int16, ("lon", "lat", "time");
+                deflatelevel = 5, shuffle = true, chunksizes = (length(lon), length(lat), 1),
+                attrib = ["scale_factor" => LAI_SCALE_FACTOR, "add_offset" => 0.0f0],
+            )
+            lai_var.attrib["units"] = "m^2 m^-2"
+            lai_var.attrib["standard_name"] = "leaf_area_index"
+            lai_var.attrib["long_name"] = "Leaf area index of the land part of the grid cell"
+            lai_var[:, :, :] = lai
+
+            fland_var = defVar(ds, "land_fraction", Float32, ("lon", "lat"); deflatelevel = 5, shuffle = true)
+            fland_var.attrib["units"] = "1"
+            fland_var.attrib["long_name"] = "Land fraction of the cell (ETOPO 2022 30 arc-second land-sea mask, lakes removed, land below sea level added)"
+            fland_var[:, :] = land_fraction
+        end
+    end
+end
+
+# Remove the downloaded data - desired data is now stored in the CliMA artifacts
+Collector.clean_collections!(lai_collector)
+
+create_artifact_guided(OUTPUTS[1].dir; artifact_name = OUTPUTS[1].dir)
