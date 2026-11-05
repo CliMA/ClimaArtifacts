@@ -87,6 +87,7 @@ S. Gupta et al 2022, 2024](https://github.com/CliMA/ClimaArtifacts/tree/main/soi
 - [Initial conditions for the optimal LAI model](https://github.com/CliMA/ClimaArtifacts/tree/main/optimal_lai_inputs)
 - [ERA5 Lake Cover and Lake Depth](https://github.com/CliMA/ClimaArtifacts/tree/main/era5_lake_cover_and_depth)
 - [GRACE TWSA](https://github.com/CliMA/ClimaArtifacts/tree/main/grace)
+- [Live woody carbon of Xu et al. (2021), 2000-2019 mean on a 1° grid](https://github.com/CliMA/ClimaArtifacts/tree/main/xusaatchi_woody_carbon)
 
 ### Coupler/shared
 
