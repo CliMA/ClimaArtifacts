@@ -88,6 +88,7 @@ S. Gupta et al 2022, 2024](https://github.com/CliMA/ClimaArtifacts/tree/main/soi
 - [Initial conditions for the optimal LAI model](https://github.com/CliMA/ClimaArtifacts/tree/main/optimal_lai_inputs)
 - [ERA5 Lake Cover and Lake Depth](https://github.com/CliMA/ClimaArtifacts/tree/main/era5_lake_cover_and_depth)
 - [GRACE TWSA](https://github.com/CliMA/ClimaArtifacts/tree/main/grace)
+- [Water table depth from Fan et al. (2017), at 30 arc-seconds and 1 degree](https://github.com/CliMA/ClimaArtifacts/tree/main/fan2017_water_table_depth)
 
 ### Coupler/shared
 
