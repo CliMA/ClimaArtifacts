@@ -1,11 +1,13 @@
 # Leaf area index of the land part of each cell, reprocessed MODIS Collection 6.1, 2000-2025
 
-This recipe creates the `modis_lai_yuan_v061_0.25deg` artifact (169 MB). It holds the monthly
-leaf area index (LAI) of the *land part* of each 0.25° grid cell, one file per year from 2000
-to 2025, named `Yuan_et_al_YYYY_0.25x0.25.nc`.
+This recipe creates one artifact:
+
+| Artifact | Content | Size | Downloadable |
+| -------- | ------- | ---- | ------------ |
+| `modis_lai_yuan_v061_0.25deg` | monthly LAI of the land part of each 0.25° cell, 2000-2025, one file per year `Yuan_et_al_YYYY_0.25x0.25.nc` | 169 MB (175 MB tarball) | Yes |
 
 It is the same product as the `modis_lai_0.25deg` artifact (recipe in the `modis_lai` folder
-of CliMA/ClimaArtifacts#186). It uses the same aggregation over land, the same grid, the same
+of CliMA/ClimaArtifacts#186, commit 26a25bb). It uses the same aggregation over land, the same grid, the same
 file names and the same variables and encoding. ClimaLand can switch between the two by
 changing only the artifact name. The differences are:
 - **Source:** the newer reprocessed MODIS Collection 6.1 release (version 6.1) from the data
@@ -22,11 +24,14 @@ The data comes from:
   Environment, Volume 115, Issue 5, 2011, Pages 1171-1187,
   https://doi.org/10.1016/j.rse.2011.01.001
 
-It is downloaded at 0.05° (monthly, NetCDF) from the Land-Atmosphere Interaction Research
-Group at Sun Yat-sen University,
-`http://globalchange.bnu.edu.cn/laiv061/global_lai_0.05/lai_monthly_0.05_YYYY.nc`
-(project page: http://globalchange.bnu.edu.cn/research/laiv061). The 2025 file used here was
-created by the provider on 2026-11-01.
+The source is the monthly 0.05° NetCDF data set "Reprocessed MODIS Version 6.1 LAI" of the
+Land-Atmosphere Interaction Research Group at Sun Yat-sen University:
+- project page: http://globalchange.bnu.edu.cn/research/laiv061
+- files: `http://globalchange.bnu.edu.cn/laiv061/global_lai_0.05/lai_monthly_0.05_YYYY.nc`
+
+The recipe downloads them directly from the provider. Their SHA-256 sums, as downloaded on
+2026-11-12, are in `source_sha256.txt`; the recipe warns if a file differs. The provider adds new
+years and may update the latest ones, and the 2025 file used here was created on 2026-11-01.
 
 Each file contains:
   - `lai` (lon, lat, time): leaf area index of the land part of the cell, m² m⁻².
@@ -40,11 +45,29 @@ Each file contains:
   - `time`: 12 values, 30 days apart starting on January 1 (even spacing is
     required by ClimaLand's `PeriodicCalendar`)
 
-To recreate the artifact, run `julia --project create_artifacts.jl` in this folder.
-- It downloads 5.1 GB of 0.05° data to `yuan_v061_source/`, which is removed at the end.
-- To reuse files you have already downloaded, set `YUAN_V061_DIR` to their folder; they are
-  then kept.
-- Aggregation takes about 5 minutes and needs about 10 GB of memory.
+## Reproducing the artifact
+
+Run this anywhere with internet access, about 15 GB of free disk and 10 GB of memory; it does not
+need the `clima` server. From the root of this repository:
+
+```bash
+cd modis_lai_yuan_v061
+julia --project=. -e 'using Pkg; Pkg.instantiate()'
+julia --project=. create_artifacts.jl
+```
+
+The script:
+1. downloads the 26 yearly 0.05° files (5.1 GB) to `yuan_v061_source/`. To reuse files you
+   already have, set `YUAN_V061_DIR` to their folder; they are then not deleted;
+2. checks them against `source_sha256.txt`;
+3. aggregates them over land to 0.25° (about 5 minutes);
+4. writes the 26 files to `modis_lai_yuan_v061_0.25deg/`;
+5. deletes the downloaded files (unless `YUAN_V061_DIR` is set);
+6. creates the tarball and asks for its Caltech Box static link, which produces
+   `OutputArtifacts.toml`.
+
+It also downloads two small source artifacts listed in `Artifacts.toml`: the ETOPO 30″ land-sea
+mask and the ERA5 land fraction.
 
 ## Aggregation over land
 
@@ -106,5 +129,15 @@ annual-mean ratio goes from 1.027 (2003) to 0.984 (2020).
 - **The last year is provisional:** the 2025 file is new, and the provider may reprocess the
   last years when it adds new ones.
 
-License: see the terms of the data provider (project page above); cite Lin et al. (2023) and
-Yuan et al. (2011) when using this artifact.
+## Citation and license
+
+The provider's page asks users to cite:
+
+Lin, W., Yuan, H., Dong, W., Zhang, S., Liu, S., Wei, N., Lu, X., Wei, Z., Hu, Y., Dai, Y., 2023.
+Reprocessed MODIS Version 6.1 Leaf Area Index Dataset and Its Evaluation for Land Surface and
+Climate Modeling. Remote Sensing, 15(7), 1780. https://doi.org/10.3390/rs15071780
+
+Please also cite Yuan et al. (2011) for the method. The data set is freely downloadable from the
+project page. The page states no license; questions go to the contacts it lists. The
+artifacts used for the land fraction keep their own licenses (see `landsea_mask` and
+`era5_land_fraction`).

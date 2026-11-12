@@ -19,6 +19,7 @@ using Artifacts
 using NCDatasets
 using Dates
 using Downloads
+using SHA
 
 using ClimaArtifactsHelper
 
@@ -35,6 +36,12 @@ const PIXELS_PER_DEGREE = 20
 
 # Years to process
 const YEARS = 2000:2025
+
+# SHA-256 of the source files used to make the artifact (downloaded 2026-11-12;
+# the provider updates the latest years when it adds new ones)
+const SOURCE_SHA256 = Dict(
+    reverse(split(line)) for line in eachline(joinpath(@__DIR__, "source_sha256.txt"))
+)
 
 # Folder with the source files. Set YUAN_V061_DIR to reuse files downloaded
 # before; otherwise they are downloaded here and removed at the end.
@@ -61,7 +68,7 @@ for out in OUTPUTS
                may be overwritten."
         @warn "Abort this calculation, unless you know what you are doing."
     else
-        mkdir(out.dir)
+        mkpath(out.dir)
     end
 end
 
@@ -85,6 +92,9 @@ function read_source(year)
         @info "Downloading $(source_url(year))"
         Downloads.download(source_url(year), path)
     end
+    sha = open(io -> bytes2hex(sha256(io)), path)
+    sha == SOURCE_SHA256[source_file(year)] ||
+        @warn "$(source_file(year)) differs from the file used to make the artifact (the provider may have updated it)" sha expected = SOURCE_SHA256[source_file(year)]
     NCDataset(path) do ds
         # The source is lai(lon, lat, time) in Julia order, latitudes from north to south
         @assert dimnames(ds["lai"]) == ("lon", "lat", "time")

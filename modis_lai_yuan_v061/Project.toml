@@ -4,6 +4,7 @@ ClimaArtifactsHelper = "6ffa2572-8378-4377-82eb-ea11db28b255"
 Dates = "ade2ca70-3891-5945-98fb-dc099432e06a"
 Downloads = "f43a241f-c20a-4ad4-852c-f6b1247861c6"
 NCDatasets = "85f8d34a-cbdd-5861-8df4-14fed0d494ab"
+SHA = "ea8e919c-243c-51af-8825-aaa63cd721ce"
 
 [sources]
 ClimaArtifactsHelper = {path = "../ClimaArtifactsHelper.jl"}
