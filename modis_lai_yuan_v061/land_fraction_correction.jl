@@ -2,7 +2,7 @@
 # here as NaN), so a coastal pixel holds about `land fraction × LAI of its land
 # part`. These functions aggregate the 0.05° pixels to coarser cells over the
 # land only. See the README for details. Copied unchanged (apart from this
-# header) from modis_lai/land_fraction_correction.jl of CliMA/ClimaArtifacts#186.
+# header) from land_fraction_correction.jl of the modis_lai recipe.
 
 """
 Smallest land fraction given to a pixel that MODIS sees as vegetated. The MODIS

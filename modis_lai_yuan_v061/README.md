@@ -6,10 +6,9 @@ This recipe creates one artifact:
 | -------- | ------- | ---- | ------------ |
 | `modis_lai_yuan_v061_0.25deg` | monthly LAI of the land part of each 0.25° cell, 2000-2025, one file per year `Yuan_et_al_YYYY_0.25x0.25.nc` | 169 MB (175 MB tarball) | Yes |
 
-It is the same product as the `modis_lai_0.25deg` artifact (recipe in the `modis_lai` folder
-of CliMA/ClimaArtifacts#186, commit 26a25bb). It uses the same aggregation over land, the same grid, the same
-file names and the same variables and encoding. ClimaLand can switch between the two by
-changing only the artifact name. The differences are:
+It is the same product as the `modis_lai_0.25deg` artifact (the `modis_lai` recipe). It uses
+the same aggregation over land, the same grid, the same file names and the same variables and
+encoding. The differences are:
 - **Source:** the newer reprocessed MODIS Collection 6.1 release (version 6.1) from the data
   provider, instead of the earlier release served by GriddingMachine.jl.
 - **Years:** 2000-2025 instead of 2000-2020.
@@ -29,26 +28,23 @@ Land-Atmosphere Interaction Research Group at Sun Yat-sen University:
 - project page: http://globalchange.bnu.edu.cn/research/laiv061
 - files: `http://globalchange.bnu.edu.cn/laiv061/global_lai_0.05/lai_monthly_0.05_YYYY.nc`
 
-The recipe downloads them directly from the provider. Their SHA-256 sums, as downloaded on
-2026-11-12, are in `source_sha256.txt`; the recipe warns if a file differs. The provider adds new
-years and may update the latest ones, and the 2025 file used here was created on 2026-11-01.
+The recipe downloads them directly from the provider and logs the SHA-256 sum of each file.
+The files used here were downloaded on 2026-11-12. The provider adds new years and may update
+the latest ones; the 2025 file used here was created on 2026-11-01.
 
 Each file contains:
   - `lai` (lon, lat, time): leaf area index of the land part of the cell, m² m⁻².
-    It is stored as `Int16` with `scale_factor = 0.001`; NetCDF readers that
-    follow the CF conventions (NCDatasets.jl, ClimaUtilities, ClimaAnalysis,
-    xarray) unpack it to floats.
+    It is stored as `Int16` with `scale_factor = 0.001`.
   - `land_fraction` (lon, lat): land fraction of the cell (ETOPO 2022 with
     lakes removed and land below sea level added). It is identical to the one in
     `modis_lai_0.25deg`.
   - `lat`, `lon`: cell centers, degrees north and east
-  - `time`: 12 values, 30 days apart starting on January 1 (even spacing is
-    required by ClimaLand's `PeriodicCalendar`)
+  - `time`: 12 values, 30 days apart starting on January 1
 
 ## Reproducing the artifact
 
-Run this anywhere with internet access, about 15 GB of free disk and 10 GB of memory; it does not
-need the `clima` server. From the root of this repository:
+Run this anywhere with internet access, about 15 GB of free disk and 10 GB of memory. From the
+root of this repository:
 
 ```bash
 cd modis_lai_yuan_v061
@@ -59,7 +55,7 @@ julia --project=. create_artifacts.jl
 The script:
 1. downloads the 26 yearly 0.05° files (5.1 GB) to `yuan_v061_source/`. To reuse files you
    already have, set `YUAN_V061_DIR` to their folder; they are then not deleted;
-2. checks them against `source_sha256.txt`;
+2. logs their SHA-256 sums;
 3. aggregates them over land to 0.25° (about 5 minutes);
 4. writes the 26 files to `modis_lai_yuan_v061_0.25deg/`;
 5. deletes the downloaded files (unless `YUAN_V061_DIR` is set);
@@ -71,10 +67,10 @@ mask and the ERA5 land fraction.
 
 ## Aggregation over land
 
-This is the same as for `modis_lai_0.25deg`; see the README of the `modis_lai` folder in
-CliMA/ClimaArtifacts#186 for the details and the justification.
-`land_fraction_correction.jl` is a copy of the file of that PR; only its header comment
-changed. In short, the LAI of each output cell is
+This is the same as for `modis_lai_0.25deg`. `land_fraction_correction.jl` is a copy of the
+file of the `modis_lai` recipe; only its header comment changed. The source averages the
+water part of each 0.05° pixel as LAI = 0, so averaging pixels over the whole cell would dilute
+the LAI of coastal cells. Instead, the LAI of each output cell is the LAI of its land part:
 
     LAI = Σ a LAI_pixel / Σ a f
 

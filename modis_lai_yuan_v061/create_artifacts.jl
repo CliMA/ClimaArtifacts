@@ -37,12 +37,6 @@ const PIXELS_PER_DEGREE = 20
 # Years to process
 const YEARS = 2000:2025
 
-# SHA-256 of the source files used to make the artifact (downloaded 2026-11-12;
-# the provider updates the latest years when it adds new ones)
-const SOURCE_SHA256 = Dict(
-    reverse(split(line)) for line in eachline(joinpath(@__DIR__, "source_sha256.txt"))
-)
-
 # Folder with the source files. Set YUAN_V061_DIR to reuse files downloaded
 # before; otherwise they are downloaded here and removed at the end.
 const SOURCE_DIR = get(ENV, "YUAN_V061_DIR", "yuan_v061_source")
@@ -92,9 +86,8 @@ function read_source(year)
         @info "Downloading $(source_url(year))"
         Downloads.download(source_url(year), path)
     end
-    sha = open(io -> bytes2hex(sha256(io)), path)
-    sha == SOURCE_SHA256[source_file(year)] ||
-        @warn "$(source_file(year)) differs from the file used to make the artifact (the provider may have updated it)" sha expected = SOURCE_SHA256[source_file(year)]
+    # The provider may update the latest years; log the checksum of the file used
+    @info "$(source_file(year))" sha256 = open(io -> bytes2hex(sha256(io)), path)
     NCDataset(path) do ds
         # The source is lai(lon, lat, time) in Julia order, latitudes from north to south
         @assert dimnames(ds["lai"]) == ("lon", "lat", "time")
@@ -171,7 +164,7 @@ for out in OUTPUTS
             lo.attrib["standard_name"] = "longitude"
             lo[:] = lon
 
-            # Uniform 30-day spacing, required by ClimaLand's PeriodicCalendar
+            # Monthly values 30 days apart starting on January 1
             month = defVar(ds, "time", Int32, ("time",))
             month.attrib["units"] = "seconds since 1970-01-01"
             month.attrib["standard_name"] = "time"
