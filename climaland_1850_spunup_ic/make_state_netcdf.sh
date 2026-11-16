@@ -25,4 +25,4 @@ julia --project="${CLIMALAND_DIR}/.buildkite" "${SCRIPTS}/soc_spinup_figure.jl" 
     climaland_1850_spunup_ic.nc . end of spin-up cycle C5 at 1850 CO2 with CRU-JRA 1901-1920 recycled
 
 julia --project=. -e 'using Pkg; Pkg.instantiate()'
-julia --project=. create_artifacts.jl climaland_1850_spunup_ic.nc
+julia --project=. create_artifacts.jl climaland_1850_spunup_ic.nc "${SCRIPTS}/co2_annual_1700_2025.csv"

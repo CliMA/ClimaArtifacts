@@ -22,6 +22,13 @@ Every column is written, including those the land mask leaves out, so that the f
 reproduces the state exactly: the conversion reads the file back and compares every value
 with the state.
 
+`co2_annual_1700_2025.csv`: the annual global-mean CO2 (ppm, columns `year,co2_ppm,source`)
+of the spin-up (its 1850 value, 286.8 ppm) and of the transient runs from it: the Law Dome
+spline (Etheridge et al. 1996, 1998; MacFarling Meure et al. 2006) to 1958, with an offset
+ramping from 0 in 1900 to +0.28 ppm in 1958 so that it meets Mauna Loa; Mauna Loa annual
+means for 1959–1979 and NOAA global marine surface means from 1980 (NOAA GML). It is built
+by `co2_series.py` on the ClimaLand branch below.
+
 ## How it was made
 
 The state comes from the spin-up recorded on the ClimaLand branch
