@@ -57,6 +57,7 @@ artifacts.
 S. Gupta et al 2022, 2024](https://github.com/CliMA/ClimaArtifacts/tree/main/soil_params_Gupta2020_2022)
 - [Soil parameters needed for Richards equation; global at 0.25 degree resolution from Montzka, C et al. (2017) (ROSETTA)](https://github.com/CliMA/ClimaArtifacts/tree/main/soil_params_rosetta)
 - [Spun up initial conditions (100 years) corresponding to these soil parameters: global at 0.25 degree resolution from Montzka, C et al. (2017) (ROSETTA)](https://github.com/CliMA/ClimaArtifacts/tree/main/rosetta_spunup_ic)
+- [Spun up initial conditions (140 years) for a deeper water table, TOPMODEL `f_over` = 0.7](https://github.com/CliMA/ClimaArtifacts/tree/main/deep_water_table_spunup_ic)
 - [Foliage clumping index, derived from MODIS data for 2006](https:////github.com/CliMA/ClimaArtifacts/tree/main/modis_clumping_index)
 - [Leaf area index, derived from MODIS data for 2000-2020](https:////github.com/CliMA/ClimaArtifacts/tree/main/modis_lai)
 - [Leaf area index of the land part of each cell, reprocessed MODIS Collection 6.1 for 2000-2025, at 0.25 degree](https:////github.com/CliMA/ClimaArtifacts/tree/main/modis_lai_yuan_v061)
