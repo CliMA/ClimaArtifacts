@@ -59,6 +59,7 @@ S. Gupta et al 2022, 2024](https://github.com/CliMA/ClimaArtifacts/tree/main/soi
 - [Spun up initial conditions (100 years) corresponding to these soil parameters: global at 0.25 degree resolution from Montzka, C et al. (2017) (ROSETTA)](https://github.com/CliMA/ClimaArtifacts/tree/main/rosetta_spunup_ic)
 - [Foliage clumping index, derived from MODIS data for 2006](https:////github.com/CliMA/ClimaArtifacts/tree/main/modis_clumping_index)
 - [Leaf area index, derived from MODIS data for 2000-2020](https:////github.com/CliMA/ClimaArtifacts/tree/main/modis_lai)
+- [Leaf area index of the land part of each cell, reprocessed MODIS Collection 6.1 for 2000-2025, at 0.25 degree](https:////github.com/CliMA/ClimaArtifacts/tree/main/modis_lai_yuan_v061)
 - [MODIS LAI data for 4 AMERIFLUX SITES](https:////github.com/CliMA/ClimaArtifacts/tree/main/modis_lai_fluxnet_sites)
 - [Subset of ILAMB datasets](https:////github.com/CliMA/ClimaArtifacts/tree/main/ilamb_data)
 - [Subset of ILAMB datasets for ecosystem respiration and net ecosystem exchange](https:////github.com/CliMA/ClimaArtifacts/tree/main/ilamb_respiration_nee)

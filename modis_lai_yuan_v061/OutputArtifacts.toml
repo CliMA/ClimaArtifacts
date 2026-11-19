@@ -1,0 +1,6 @@
+["modis_lai_yuan_v061_0.25deg"]
+git-tree-sha1 = "94a53d2e0ea64868305cd123068a71fa4ada9e11"
+
+    [["modis_lai_yuan_v061_0.25deg".download]]
+    sha256 = "1b6cb7af69574c094d3ffa07d62f2fb341f672d8643d42a8c022d512eb82ff28"
+    url = "https://caltech.box.com/shared/static/yw9qvjnvbf5fpw7l3uysgwgthd012yuf.gz"
