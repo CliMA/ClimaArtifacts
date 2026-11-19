@@ -1,0 +1,7 @@
+[deps]
+ClimaArtifactsHelper = "6ffa2572-8378-4377-82eb-ea11db28b255"
+NCDatasets = "85f8d34a-cbdd-5861-8df4-14fed0d494ab"
+SHA = "ea8e919c-243c-51af-8825-aaa63cd721ce"
+
+[sources]
+ClimaArtifactsHelper = {path = "../ClimaArtifactsHelper.jl"}
