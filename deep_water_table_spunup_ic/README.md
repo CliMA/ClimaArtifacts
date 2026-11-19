@@ -53,7 +53,7 @@ so it can replace it as the initial condition of a run.
    - Five 20-year cycles, from 2000-03 to 2100-03.
 3. **40 more years with the deeper water table,** from the end of step 2 (2100-03 to
    2140-03).
-   - Code: branch `ar/hydrology_spinup_A` at `18124131`. It has the physics of
+   - Code: branch `ar/hydrology_spinup_A` at `18124131`, not yet on GitHub. It has the physics of
      CliMA/ClimaLand.jl#1958 except its change to the saturated area:
      - drainage of water perched on the frost table;
      - infiltration into frozen soil over its permeable fraction;
