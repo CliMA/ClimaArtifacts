@@ -1,0 +1,8 @@
+.maap_token
+granules/
+monthly/
+earthcare_clp_artifact/
+Manifest.toml
+generate.log
+*.tar.gz
+earthcare_clp_lowres_artifact/
