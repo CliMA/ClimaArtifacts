@@ -1,6 +1,0 @@
-[orca_one_grid]
-git-tree-sha1 = "c6489a5249e1457493590f1735e83a5a4454becd"
-
-    [[orca_one_grid.download]]
-    sha256 = "9041850fb9cbd04fa44e68f36f3fbb5e08f721670de8cbcba5b2ac0b3ec66c17"
-    url = "https://caltech.box.com/shared/static/rq8iq35nf80xc9rrumdnxvzsm0zr7rff.gz"
