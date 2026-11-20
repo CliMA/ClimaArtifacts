@@ -41,7 +41,7 @@ julia --project=. create_artifact.jl                 # every resolution not yet 
 julia --project=. create_artifact.jl half quarter    # only the named resolutions
 ```
 
-For each resolution the script writes `<artifact>_artifact/<artifact>.nc` and hands it to
+For each resolution the script writes `<artifact>/<artifact>.nc` and hands it to
 `create_artifact_guided`, which archives it, walks through the upload and appends the entry to
 `OutputArtifacts.toml`. Resolutions already listed there are skipped; delete an entry to regenerate it.
 

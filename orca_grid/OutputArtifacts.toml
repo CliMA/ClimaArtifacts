@@ -1,19 +1,18 @@
 [orca_one_grid]
 git-tree-sha1 = "c6489a5249e1457493590f1735e83a5a4454becd"
-
     [[orca_one_grid.download]]
     sha256 = "9041850fb9cbd04fa44e68f36f3fbb5e08f721670de8cbcba5b2ac0b3ec66c17"
     url = "https://caltech.box.com/shared/static/rq8iq35nf80xc9rrumdnxvzsm0zr7rff.gz"
+
 [orca_half_grid]
 git-tree-sha1 = "039cac97a664c1062b7ce73dcd5fc344043c1cc3"
-
     [[orca_half_grid.download]]
     sha256 = "ec7d856533e1d06b0cd9d952b001c091e025176f7bccf6a181cfdc4340957128"
     size = 21122422
     url = "https://caltech.box.com/shared/static/q8yvt1765s7p7bp2t177pyt5az4fdoqb.gz"
+
 [orca_quarter_grid]
 git-tree-sha1 = "0afc0d5aabc29c39f6cd3818952d14721e7bbb34"
-
     [[orca_quarter_grid.download]]
     sha256 = "29d442fefdf908b8022f117022eb4a9abb52688449dc78ec27227c3c54bb586f"
     size = 85162899

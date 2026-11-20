@@ -155,12 +155,12 @@ end
 """
     write_orca_grid(source, artifact_name)
 
-Build the ORCA mesh described by `source` and write it to `<artifact_name>_artifact/<artifact_name>.nc`.
+Build the ORCA mesh described by `source` and write it to `<artifact_name>/<artifact_name>.nc`.
 Return the output directory.
 """
 function write_orca_grid(source, artifact_name)
     (; dataset, label) = source
-    output_directory = joinpath(output_root, artifact_name * "_artifact")
+    output_directory = joinpath(output_root, artifact_name)
     output_path = joinpath(output_directory, artifact_name * ".nc")
 
     @info "Building the $label mesh with NumericalEarth (downloads $(source.download_size) from $(source.source_record) on first run)"

@@ -32,11 +32,11 @@ const generation_depth = 5500
 """
     write_bathymetry(resolution, Nx, Ny, artifact_name)
 
-Regrid ETOPO onto the `Nx` x `Ny` tripolar grid and write it to `<artifact_name>_artifact/<artifact_name>.nc`.
+Regrid ETOPO onto the `Nx` x `Ny` tripolar grid and write it to `<artifact_name>/<artifact_name>.nc`.
 Return the output directory.
 """
 function write_bathymetry(resolution, Nx, Ny, artifact_name)
-    output_directory = joinpath(output_root, artifact_name * "_artifact")
+    output_directory = joinpath(output_root, artifact_name)
     output_path = joinpath(output_directory, artifact_name * ".nc")
 
     z = ExponentialDiscretization(generation_vertical_size, -generation_depth, 0; mutable = true)
