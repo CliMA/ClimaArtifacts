@@ -1,0 +1,6 @@
+[xusaatchi_woody_carbon]
+git-tree-sha1 = "b1a485375efc776e0f9a3cd2f9f414ea286a1776"
+
+    [[xusaatchi_woody_carbon.download]]
+    sha256 = "1bf1d1d71328f9f8caab997453ce32802520bc6d360d46c5c0c2306364f15a2b"
+    url = "https://caltech.box.com/shared/static/wlst659b9v907i8vws15h4jzqhzei2z3.gz"
