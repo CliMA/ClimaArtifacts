@@ -6,8 +6,9 @@
 #
 # - `fan2017_water_table_depth_30arcseconds`: the tiles mosaicked onto one global lat-lon
 #   grid, without interpolation or averaging;
-# - `fan2017_water_table_depth_1degree`: the mean over each 1-degree cell of the depth capped
-#   at 15 m, the observations of the ClimaLand water table leaderboard.
+# - `fan2017_water_table_depth_1degree`: the mean over each 1-degree cell of the depth, and of
+#   the depth capped at 1, 2, ..., 100 m, the observations of the ClimaLand water table
+#   leaderboard.
 #
 # Run from this directory with `julia --project create_artifact.jl`.
 
@@ -39,10 +40,10 @@ const NLAT = 180 * CELLS_PER_DEGREE
 # for the fill value. All other values are exactly the negation of the source values.
 const FILL_VALUE = typemin(Int16)
 
-# Depth (m) at which the 1-degree product caps the depth before averaging: the depth of the
-# soil column in ClimaLand, so that the mean is comparable with the grid-mean water table of
-# TOPMODEL. This cap is a ClimaLand choice, not part of Fan et al. (2017)
-const CAP_1DEG = 15.0
+# Depths (m) at which the 1-degree product also caps the depth before averaging. The water
+# table of a model whose soil column is D m deep cannot be deeper than D, so its grid mean
+# compares with the mean capped at D. The caps are not part of Fan et al. (2017)
+const CAPS_1DEG = collect(1.0:1.0:100.0)
 
 # Global attributes copied from the source files
 const SOURCE_GLOBAL_ATTRIBUTES =
@@ -210,50 +211,61 @@ block_range(block) =
     ((block - 1) * CELLS_PER_DEGREE - CELLS_PER_DEGREE ÷ 2 + 1):((block - 1) * CELLS_PER_DEGREE + CELLS_PER_DEGREE ÷ 2)
 
 """
-    mean_capped_depth(packed, scale_factor, add_offset)
+    mean_depths(packed, scale_factor, add_offset)
 
-Return the mean over each 1-degree cell of the depth capped at `CAP_1DEG`, given the packed
-30 arc-second depths. Cells without land data are NaN.
+Return the mean over each 1-degree cell of the depth, and of the depth capped at each of
+`CAPS_1DEG`, given the packed 30 arc-second depths. Cells without land data are NaN.
 
 Cells are centered on whole degrees: longitudes -180, ..., 179 and latitudes -90, ..., 89.
 The cell at -180 wraps around the dateline, the cell at -90 is half a cell, and the 30
 arc-second cells north of 89.5 (no land in the data) are not used.
 """
-function mean_capped_depth(packed::Matrix{Int16}, scale_factor::Float64, add_offset::Float64)
-    wtd_mean15 = fill(NaN32, 360, 180)
-    for jb in axes(wtd_mean15, 2), ib in axes(wtd_mean15, 1)
+function mean_depths(packed::Matrix{Int16}, scale_factor::Float64, add_offset::Float64)
+    num_caps = length(CAPS_1DEG)
+    wtd_mean = fill(NaN32, 360, 180)
+    wtd_mean_capped = fill(NaN32, 360, 180, num_caps)
+    totals_capped = zeros(num_caps)
+    for jb in axes(wtd_mean, 2), ib in axes(wtd_mean, 1)
         total = 0.0
+        fill!(totals_capped, 0.0)
         num_cells = 0
         for j in block_range(jb)
             1 <= j <= NLAT || continue
             for i in block_range(ib)
                 value = packed[mod1(i, NLON), j]
                 value == FILL_VALUE && continue
-                total += min(value * scale_factor + add_offset, CAP_1DEG)
+                depth = value * scale_factor + add_offset
+                total += depth
+                for (k, cap) in enumerate(CAPS_1DEG)
+                    totals_capped[k] += min(depth, cap)
+                end
                 num_cells += 1
             end
         end
-        num_cells > 0 && (wtd_mean15[ib, jb] = total / num_cells)
+        if num_cells > 0
+            wtd_mean[ib, jb] = total / num_cells
+            wtd_mean_capped[ib, jb, :] .= totals_capped ./ num_cells
+        end
     end
-    return wtd_mean15
+    return wtd_mean, wtd_mean_capped
 end
 
 function create_1deg_mean()
     NCDataset(OUTPUT_FILE_30ARCSEC) do ds_in
         var = ds_in["wtd"]
-        wtd_mean15 = mean_capped_depth(
+        wtd_mean, wtd_mean_capped = mean_depths(
             var.var[:, :],
             Float64(var.attrib["scale_factor"]),
             Float64(var.attrib["add_offset"]),
         )
-        @info "1-degree cells with data: $(count(isfinite, wtd_mean15))"
+        @info "1-degree cells with data: $(count(isfinite, wtd_mean))"
         lon = collect(-180.0:179.0)
         lat = collect(-90.0:89.0)
 
         NCDataset(OUTPUT_FILE_1DEG, "c") do ds
             ds.attrib["title"] =
                 "Global water table depth, annual mean, from Fan et al. (2017), " *
-                "capped at $(CAP_1DEG) m and averaged on a 1-degree grid"
+                "averaged on a 1-degree grid, uncapped and capped at several depths"
             for name in SOURCE_GLOBAL_ATTRIBUTES
                 ds.attrib[name] = ds_in.attrib[name]
             end
@@ -276,21 +288,47 @@ function create_1deg_mean()
                 ("lat",);
                 attrib = ["units" => "degrees_north", "standard_name" => "latitude"],
             )
+            defVar(
+                ds,
+                "cap",
+                CAPS_1DEG,
+                ("cap",);
+                attrib = [
+                    "units" => "m",
+                    "long_name" => "Depth at which the water table depth is capped",
+                ],
+            )
             # NaN, not a fill value, marks cells without land: the ClimaLand leaderboard
             # masks with isfinite
             defVar(
                 ds,
-                "wtd_mean15",
-                wtd_mean15,
+                "wtd_mean",
+                wtd_mean,
                 ("lon", "lat");
                 deflatelevel = 4,
                 attrib = [
                     "units" => "m",
                     "long_name" => "Water table depth",
                     "description" =>
+                        "Mean over the 1 degree cell (centred on whole degrees) of WTD, " *
+                        "the annual-mean depth at 30 arc-seconds, positive below the " *
+                        "surface. NaN without land data.",
+                ],
+            )
+            defVar(
+                ds,
+                "wtd_mean_capped",
+                wtd_mean_capped,
+                ("lon", "lat", "cap");
+                deflatelevel = 4,
+                shuffle = true,
+                attrib = [
+                    "units" => "m",
+                    "long_name" => "Water table depth, capped",
+                    "description" =>
                         "Mean over the 1 degree cell (centred on whole degrees) of " *
-                        "min(WTD, $(CAP_1DEG) m), WTD the annual-mean depth at 30 " *
-                        "arc-seconds, positive below the surface. NaN without land data.",
+                        "min(WTD, cap), WTD the annual-mean depth at 30 arc-seconds, " *
+                        "positive below the surface. NaN without land data.",
                 ],
             )
         end

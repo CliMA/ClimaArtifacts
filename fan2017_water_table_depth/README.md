@@ -18,7 +18,7 @@ two artifacts:
 | Artifact | File | Content | Size |
 |---|---|---|---|
 | `fan2017_water_table_depth_30arcseconds` | `fan2017_wtd_annualmean_30arcsec.nc` | `wtd(lon, lat)`, the tiles mosaicked onto one global 43200 × 21600 grid | 300 MB |
-| `fan2017_water_table_depth_1degree` | `fan2017_wtd_1deg.nc` | `wtd_mean15(lon, lat)`, the mean over each 1-degree cell of the depth capped at 15 m | 88 kB |
+| `fan2017_water_table_depth_1degree` | `fan2017_wtd_1deg.nc` | `wtd_mean(lon, lat)` and `wtd_mean_capped(lon, lat, cap)`, the mean over each 1-degree cell of the depth, uncapped and capped at 1, 2, ..., 100 m | 5.8 MB |
 
 The monthly climatology (`monthlymeans/`, about 4 GB) is not included.
 
@@ -52,11 +52,18 @@ The monthly climatology (`monthlymeans/`, about 4 GB) is not included.
 
 ### 1-degree file
 
-`wtd_mean15` is the observation of the water table leaderboard of ClimaLand. It is the
-mean over each 1-degree cell of `min(wtd, 15 m)`, taken over the 30 arc-second cells with
-data. 15 m is the depth of the ClimaLand soil column, so the result compares with the
-grid-mean water table of TOPMODEL. **The 15 m cap is a ClimaLand choice, not part of
-Fan et al. (2017).**
+The file holds two means over each 1-degree cell, taken over the 30 arc-second cells with
+data:
+
+- `wtd_mean(lon, lat)`, the mean of `wtd`;
+- `wtd_mean_capped(lon, lat, cap)`, the mean of `min(wtd, cap)`, for `cap` = 1, 2, ..., 100 m.
+
+The water table of a model whose soil column is D m deep cannot be deeper than D, so its
+grid mean compares with the mean capped at D, not with the uncapped mean. Capping the mean
+afterwards gives a different number: on the 18,141 cells with data, the area-weighted mean
+of `min(wtd_mean, 15 m)` is 11.8 m, against 8.4 m for the mean capped at 15 m. The water
+table leaderboard of ClimaLand takes `wtd_mean_capped` at the depth of the simulated soil
+column. **The caps are not part of Fan et al. (2017).**
 
 Cells are centered on whole degrees (longitudes -180, ..., 179; latitudes -90, ..., 89)
 and cover [center - 0.5, center + 0.5). Cells without data are NaN, with no `_FillValue`.
