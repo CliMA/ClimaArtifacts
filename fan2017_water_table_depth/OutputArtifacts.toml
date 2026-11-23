@@ -1,0 +1,12 @@
+[fan2017_water_table_depth_30arcseconds]
+git-tree-sha1 = "e8848201079540c9699a717320e50e39ec1a1595"
+
+    [[fan2017_water_table_depth_30arcseconds.download]]
+    sha256 = "47fc453e4eedf68f5c7993e5d6e9e5d43ca9d6e714ba8613f9d24570803d9736"
+    url = "https://caltech.box.com/shared/static/xg1v5pvhb9n880razkcl5y39uknz8tpk.gz"
+[fan2017_water_table_depth_1degree]
+git-tree-sha1 = "ce255529d9fc4a3ec50d810c8c43351c4792e2c4"
+
+    [[fan2017_water_table_depth_1degree.download]]
+    sha256 = "688121cb0db64e25afb1d3baa40215c46fc0d4122340fd5a8f334ea5276bde72"
+    url = "https://caltech.box.com/shared/static/k92qews2s9nvp5p6vvd643o345mryib4.gz"
