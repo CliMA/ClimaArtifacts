@@ -11,13 +11,13 @@ using ClimaArtifactsHelper
 # Base Flux", J. Atmos. Sci., 62, 2302-2315.
 
 artifacts = [
-    (4, "https://caltech.box.com/shared/static/ghkb0xe93tm4aorub444wllf1jupocra.hdf5"),
-    (6, "https://caltech.box.com/shared/static/hgt34tmy209g0z68mr7xj4nyzytik4bo.hdf5"),
-    (8, "https://caltech.box.com/shared/static/xshzmpklwrrjvf09m3i9iy3mk0dx4agc.hdf5"),
-    (12, "https://caltech.box.com/shared/static/go8jandvoy5ofeyghz0rosx9v050kbc3.hdf5"),
-    (16, "https://caltech.box.com/shared/static/ib5pkrgfwt7tubc6pflpq2o5chlhbgzj.hdf5"),
-    (30, "https://caltech.box.com/shared/static/pv3jwp2gy8x2nux3v8ra4drno68mirrw.hdf5"),
-    (60, "https://caltech.box.com/shared/static/7fqhuxuwk9llv2hqmhqfzjde0vvkrijl.hdf5"),
+    (4, "https://caltech.box.com/shared/static/2lwn4qcnag1xlz7ggrgn27zzwxbyb53h.hdf5"),
+    (6, "https://caltech.box.com/shared/static/a3izc3vd7zmjrrp6hbe1e01ilcioyh9n.hdf5"),
+    (8, "https://caltech.box.com/shared/static/f1pwqwvee0ewm4i9kcyqdrx2lj6rsgpz.hdf5"),
+    (12, "https://caltech.box.com/shared/static/sq5l8rb4pldvmik4mw3ty9zl32960osa.hdf5"),
+    (16, "https://caltech.box.com/shared/static/m842l5uaa3wzz0e6sk6q00jlancbgram.hdf5"),
+    (30, "https://caltech.box.com/shared/static/lkwl4g99rjqdnofyep8vwo5odqn0tp3y.hdf5"),
+    (60, "https://caltech.box.com/shared/static/dtajt8lpjrvdpp3lmbs35mgf1cm5xxuf.hdf5"),
 ]
 
 existing_artifacts = if isfile("OutputArtifacts.toml")

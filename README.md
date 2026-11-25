@@ -42,7 +42,7 @@ artifacts.
 - [MODIS liquid and ice water path (monthly mean 2002 to 2025)](https://github.com/CliMA/ClimaArtifacts/tree/main/modis_lwp_iwp)
 - [CloudSat/CALIPSO 3S-GEOPROF-COMB dataset](https://github.com/CliMA/ClimaArtifacts/tree/main/calipso_cloudsat)
 - [Monthly total solar irradiance from 1850 to 2299](https://github.com/CliMA/ClimaArtifacts/tree/main/cmip_monthly_tsi)
-- [Pre-computed orographic gravity wave drag tensors (h_elem=6,8,12,16)](https://github.com/CliMA/ClimaArtifacts/tree/main/ogw_computed_drag)
+- [Pre-computed orographic gravity wave drag tensors (h_elem=4,6,8,12,16,30,60)](https://github.com/CliMA/ClimaArtifacts/tree/main/ogw_computed_drag)
 - [WeatherQuest initial conditions](https://github.com/CliMA/ClimaArtifacts/tree/main/wxquest_initial_conditions)
 - [PyCLES reference data](https://github.com/CliMA/ClimaArtifacts/tree/main/pycles_scm_les_data)
 - [ARM SGP VARANAL forcing and observations for single column simulations](https://github.com/CliMA/ClimaArtifacts/tree/main/arm_varanal)
